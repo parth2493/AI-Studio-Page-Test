@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VueXR Studio | AI-Powered XR Content Creation</title>
+    <meta
+      name="description"
+      content="VueXR Studio is a local AI-driven desktop app for generating, previewing, and publishing XR-ready 3D assets with offline-first performance."
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="#">VueXR Studio</a>
+        <a class="nav-cta" href="#early-access">Get Early Access</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <p class="eyebrow">AI-Powered XR Content Creation</p>
+            <h1>VueXR Studio</h1>
+            <h2>Create <span class="highlight">production-ready</span> 3D assets locally from simple text prompts.</h2>
+            <p class="hero-copy">
+              Built for enterprise teams that need speed, privacy, and control, VueXR Studio turns
+              prompt-based ideation into publishable XR assets through a unified desktop workflow.
+            </p>
+          </div>
+
+          <aside id="early-access" class="signup-card" aria-label="Email signup">
+            <h3>Join the Early Access Program</h3>
+            <p>Get product updates, pilot access, and launch timelines.</p>
+            <form>
+              <label for="email" class="sr-only">Work email</label>
+              <input id="email" name="email" type="email" placeholder="you@company.com" required />
+              <button type="submit">Request Access</button>
+            </form>
+            <small>Windows x64 + macOS Apple Silicon support</small>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" id="features">
+        <div class="container">
+          <h2 class="section-title">Key <span class="highlight">Differentiating</span> Features</h2>
+          <div class="feature-grid">
+            <article class="card interactive">
+              <h3><span class="icon" aria-hidden="true">🧠</span> Prompt-to-3D with Local AI Models</h3>
+              <p>
+                Generate 3D meshes using modular open-source model backends such as SAM-3D,
+                Hunyuan3D, and Point-E through a Python bridge.
+              </p>
+            </article>
+            <article class="card interactive">
+              <h3><span class="icon" aria-hidden="true">🧩</span> Integrated Unity 3D Workspace</h3>
+              <p>
+                Work inside a desktop interface with chat history, model selection, prompt input,
+                and a real-time 3D viewport for orbit, pan, and zoom inspection.
+              </p>
+            </article>
+            <article class="card interactive">
+              <h3><span class="icon" aria-hidden="true">🚀</span> One-Click Publish and Export</h3>
+              <p>
+                Move from preview to distribution with secure VueXR publishing and export options
+                including GLB, FBX, and OBJ from the same workflow.
+              </p>
+            </article>
+            <article class="card interactive">
+              <h3><span class="icon" aria-hidden="true">🖥️</span> Cross-Platform Consistency</h3>
+              <p>
+                Maintain identical user experience and output flow across Windows and macOS without
+                cloud dependency.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="workflow">
+        <div class="container">
+          <h2 class="section-title"><span class="highlight">Workflow</span></h2>
+          <ol class="workflow">
+            <li class="interactive">
+              <h3><span class="icon" aria-hidden="true">✍️</span> 1. Prompt</h3>
+              <p>Describe the asset in natural language and select an AI model backend.</p>
+            </li>
+            <li class="interactive">
+              <h3><span class="icon" aria-hidden="true">⚙️</span> 2. Generate</h3>
+              <p>Run local GPU-accelerated inference to produce mesh, textures, and metadata.</p>
+            </li>
+            <li class="interactive">
+              <h3><span class="icon" aria-hidden="true">👁️</span> 3. Preview</h3>
+              <p>Inspect quality in the built-in 3D viewer and refine before final output.</p>
+            </li>
+            <li class="interactive">
+              <h3><span class="icon" aria-hidden="true">📦</span> 4. Publish</h3>
+              <p>Publish to VueXR or save locally with enterprise-friendly export formats.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section" id="why-vuexr">
+        <div class="container">
+          <h2 class="section-title">Why <span class="highlight">VueXR Studio</span></h2>
+          <div class="pillars">
+            <article class="pillar">
+              <h3>Offline-First by Design</h3>
+              <p>Operate fully without internet and avoid recurring cloud inference cost.</p>
+            </article>
+            <article class="pillar">
+              <h3>Local AI Inference</h3>
+              <p>Keep models and generation workflows under your control for privacy-sensitive use.</p>
+            </article>
+            <article class="pillar">
+              <h3>GPU Acceleration</h3>
+              <p>Designed for CUDA and Metal to deliver fast preview generation on modern laptops.</p>
+            </article>
+            <article class="pillar">
+              <h3>Flexible Export Formats</h3>
+              <p>Export in GLB, FBX, and OBJ with optional compression and texture map support.</p>
+            </article>
+            <article class="pillar">
+              <h3>Unity-Based 3D Viewer</h3>
+              <p>Validate geometry and visual quality in an interactive Unity runtime viewport.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="audience">
+        <div class="container split">
+          <div class="card subtle">
+            <h2>Who It’s For</h2>
+            <p>
+              XR studios, enterprise innovation teams, and technical creators who need secure,
+              local-first 3D generation pipelines that move from concept to deployable assets
+              quickly.
+            </p>
+          </div>
+          <div class="card subtle">
+            <h2>Problem It Solves</h2>
+            <p>
+              Traditional 3D content creation is slow, fragmented, and cloud-dependent. VueXR
+              Studio unifies generation, inspection, and publishing in a single desktop app while
+              preserving privacy and reducing operational cost.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>© 2026 VueXR Studio. All rights reserved.</p>
+        <p>Part of the VueXR ecosystem: Create → Publish → Experience.</p>
+      </div>
+    </footer>
+  </body>
+</html>
