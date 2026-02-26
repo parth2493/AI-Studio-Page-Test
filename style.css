@@ -201,6 +201,56 @@ button:hover {
   gap: 1rem;
 }
 
+.demo-section {
+  border-top: 1px solid var(--line);
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.demo-content .section-title {
+  margin-bottom: 0.65rem;
+}
+
+.demo-copy {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+}
+
+.demo-points {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--muted);
+  display: grid;
+  gap: 0.45rem;
+}
+
+.demo-video {
+  background: linear-gradient(180deg, var(--bg-elev), var(--bg-elev-soft));
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  padding: 0.75rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+  transition: box-shadow 220ms ease, transform 220ms ease;
+}
+
+.demo-video:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.32);
+}
+
+.demo-video iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 0.6rem;
+  display: block;
+}
+
 .card,
 .pillar {
   padding: 1rem;
@@ -299,6 +349,7 @@ button:hover {
 @media (max-width: 960px) {
   .hero-grid,
   .feature-grid,
+  .demo-grid,
   .workflow,
   .pillars,
   .split {
