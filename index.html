@@ -8,6 +8,7 @@
       name="description"
       content="VueXR Studio is a local AI-driven desktop app for generating, previewing, and publishing XR-ready 3D assets with offline-first performance."
     />
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -21,7 +22,7 @@
     <main>
       <section class="hero">
         <div class="container hero-grid">
-          <div>
+          <div data-aos="fade-up">
             <p class="eyebrow">AI-Powered XR Content Creation</p>
             <h1>VueXR Studio</h1>
             <h2>Create <span class="highlight">production-ready</span> 3D assets locally from simple text or image prompts.</h2>
@@ -47,7 +48,7 @@
         <div class="container">
           <h2 class="section-title">Key <span class="highlight">Differentiating</span> Features</h2>
           <div class="feature-grid">
-            <article class="card interactive">
+            <article class="card interactive" data-aos="fade-up">
               <h3>
                 <span class="icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -58,7 +59,7 @@
               </h3>
               <p>Generate 3D meshes locally using modular AI backends through a unified runtime pipeline.</p>
             </article>
-            <article class="card interactive">
+            <article class="card interactive" data-aos="fade-up">
               <h3>
                 <span class="icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -69,7 +70,7 @@
               </h3>
               <p>Use one desktop workspace for prompt input, model selection, history, and live 3D preview.</p>
             </article>
-            <article class="card interactive">
+            <article class="card interactive" data-aos="fade-up">
               <h3>
                 <span class="icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -80,7 +81,7 @@
               </h3>
               <p>Preview, publish to VueXR, or export GLB, FBX, and OBJ from the same secure workflow.</p>
             </article>
-            <article class="card interactive">
+            <article class="card interactive" data-aos="fade-up">
               <h3>
                 <span class="icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -99,7 +100,7 @@
         <div class="container">
           <h2 class="section-title"><span class="highlight">Workflow</span></h2>
           <ol class="workflow">
-            <li class="interactive">
+            <li class="interactive" data-aos="fade-up">
               <h3>
                 <span class="icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"></path><path d="M7 16V8l8-4v8"></path><path d="M7 12h8"></path></svg>
@@ -108,7 +109,7 @@
               </h3>
               <p>Describe the asset in natural language and select an AI model backend.</p>
             </li>
-            <li class="interactive">
+            <li class="interactive" data-aos="fade-up">
               <h3>
                 <span class="icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 0 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 0 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.2a1.7 1.7 0 0 0 1 1.5h.1a1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 0 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.2a1.7 1.7 0 0 0-1.5 1z"></path></svg>
@@ -117,7 +118,7 @@
               </h3>
               <p>Run local GPU-accelerated inference to produce mesh, textures, and metadata.</p>
             </li>
-            <li class="interactive">
+            <li class="interactive" data-aos="fade-up">
               <h3>
                 <span class="icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"></path><circle cx="12" cy="12" r="2.5"></circle></svg>
@@ -126,7 +127,7 @@
               </h3>
               <p>Inspect quality in the built-in 3D viewer and refine before final output.</p>
             </li>
-            <li class="interactive">
+            <li class="interactive" data-aos="fade-up">
               <h3>
                 <span class="icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5-9 5-9-5z"></path><path d="M3 12l9 5 9-5"></path><path d="M3 16l9 5 9-5"></path></svg>
@@ -143,23 +144,23 @@
         <div class="container">
           <h2 class="section-title">Why <span class="highlight">VueXR Studio</span></h2>
           <div class="pillars">
-            <article class="pillar">
+            <article class="pillar" data-aos="fade-up">
               <h3>Offline-First by Design</h3>
               <p>Operate fully without internet and avoid recurring cloud inference cost.</p>
             </article>
-            <article class="pillar">
+            <article class="pillar" data-aos="fade-up">
               <h3>Local AI Inference</h3>
               <p>Keep models and generation workflows under your control for privacy-sensitive use.</p>
             </article>
-            <article class="pillar">
+            <article class="pillar" data-aos="fade-up">
               <h3>GPU Acceleration</h3>
               <p>Designed for CUDA and Metal to deliver fast preview generation on modern laptops.</p>
             </article>
-            <article class="pillar">
+            <article class="pillar" data-aos="fade-up">
               <h3>Flexible Export Formats</h3>
               <p>Export in GLB, FBX, and OBJ with optional compression and texture map support.</p>
             </article>
-            <article class="pillar">
+            <article class="pillar" data-aos="fade-up">
               <h3>Unity-Based 3D Viewer</h3>
               <p>Validate geometry and visual quality in an interactive Unity runtime viewport.</p>
             </article>
@@ -195,5 +196,12 @@
         <p>Part of the VueXR ecosystem: Create → Publish → Experience.</p>
       </div>
     </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init({
+        duration: 700
+      });
+    </script>
   </body>
 </html>
