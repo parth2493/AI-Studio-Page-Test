@@ -434,6 +434,16 @@ button:hover {
   margin-top: 0; /* remove previous margin stacking */
 }
 
+.workflow-panel ul {
+  list-style-type: disc;   /* force solid bullet */
+  padding-left: 1.2rem;
+  margin: 0;
+}
+
+.workflow-panel li {
+  margin-bottom: 0.5rem;
+}
+
 .workflow-image img {
   width: 100%;
   max-width: 520px;

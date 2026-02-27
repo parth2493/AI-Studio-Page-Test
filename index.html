@@ -139,7 +139,12 @@
 					  class="workflow-tab is-active"
 					  data-workflow-tab
 					  data-title="1. Prompt"
-					  data-description="- Describe your idea using text or upload a reference image.&#10;- Add details like style, shape, or purpose.&#10;- VueXR Studio prepares your input for 3D generation."
+					  data-description="
+						<ul>
+						  <li>Describe your idea using text or upload a reference image.</li>
+						  <li>Add details like style, shape, or purpose.</li>
+						  <li>VueXR Studio prepares your input for 3D generation.</li>
+						</ul>"
 					  data-image="assets/workflow/prompt.png"
 					  aria-pressed="true"
 					>
@@ -153,7 +158,12 @@
 					  class="workflow-tab"
 					  data-workflow-tab
 					  data-title="2. Generate"
-					  data-description="- The AI builds your 3D model locally on your machine.&#10;- Converts your idea into structured geometry in seconds.&#10;- Fast, private, and cloud-free processing."
+					  data-description="
+						<ul>
+							<li>The AI builds your 3D model locally on your machine.</li>
+							<li>Converts your idea into structured geometry in seconds.</li>
+							<li>Fast, private, and cloud-free processing.</li>
+						</ul>"
 					  data-image="assets/workflow/generate.png"
 					  aria-pressed="false"
 					>
@@ -167,7 +177,12 @@
 					  class="workflow-tab"
 					  data-workflow-tab
 					  data-title="3. Preview"
-					  data-description="- View your model in the built-in 3D viewer.&#10;- Rotate, zoom, and inspect every detail.&#10;- Refine before moving to final output."
+					  data-description="
+						<ul>
+							<li>View your model in the built-in 3D viewer.</li>
+							<li>Rotate, zoom, and inspect every detail.</li>
+							<li>Refine before moving to final output.</li>
+						</ul>"
 					  data-image="assets/workflow/preview.png"
 					  aria-pressed="false"
 					>
@@ -181,7 +196,12 @@
 					  class="workflow-tab"
 					  data-workflow-tab
 					  data-title="4. Publish"
-					  data-description="- Export locally in GLB, FBX, or OBJ formats.&#10;- Publish directly to VueXR as an AR experience.&#10;- View and interact instantly on your mobile device."
+					  data-description="
+						<ul>
+							<li>Export locally in GLB, FBX, or OBJ formats.</li>
+							<li>Publish directly to VueXR as an AR experience.</li>
+							<li>View and interact instantly on your mobile device.</li>
+						</ul>"
 					  data-image="assets/workflow/publish.png"
 					  aria-pressed="false"
 					>
@@ -203,11 +223,13 @@
 			  <!-- ROW 2 RIGHT: DESCRIPTION -->
 			  <article class="workflow-panel" data-workflow-panel>
 				<h3 data-workflow-title>1. Prompt</h3>
-				<ul data-workflow-description>
-				  <li>Describe your idea using text or upload a reference image.</li>
-				  <li>Add details like style, shape, or purpose.</li>
-				  <li>VueXR Studio prepares your input for 3D generation.</li>
-				</ul>
+				<div data-workflow-description>
+					<ul>
+					  <li>Describe your idea using text or upload a reference image.</li>
+					  <li>Add details like style, shape, or purpose.</li>
+					  <li>VueXR Studio prepares your input for 3D generation.</li>
+					</ul>
+				</div>
 			  </article>
 
 			</div>
@@ -295,8 +317,11 @@
 
 		  setTimeout(() => {
 			workflowTitle.textContent = activeTab.dataset.title;
-			workflowDescription.textContent = activeTab.dataset.description;
 
+			// IMPORTANT CHANGE: use innerHTML for bullet lists
+			workflowDescription.innerHTML = activeTab.dataset.description;
+
+			// Image switch animation
 			workflowImage.style.opacity = "0";
 			setTimeout(() => {
 			  workflowImage.src = activeTab.dataset.image;
@@ -307,9 +332,12 @@
 		  }, 130);
 		};
 
-      workflowTabs.forEach((tab) => {
-        tab.addEventListener('click', () => setWorkflowTab(tab));
-      });
+		// Click handler
+		workflowTabs.forEach((tab) => {
+		  tab.addEventListener('click', () => {
+			setWorkflowTab(tab);
+		  });
+		});
     </script>
   </body>
 </html>
