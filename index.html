@@ -129,42 +129,72 @@
           <h2 class="section-title"><span class="highlight">Workflow</span></h2>
           <ol class="workflow">
             <li class="interactive" data-aos="fade-up">
-              <h3>
+              <button
+                type="button"
+                class="workflow-tab is-active"
+                data-workflow-tab
+                data-title="1. Prompt"
+                data-description="Describe the asset in natural language and select an AI model backend."
+                aria-pressed="true"
+              >
                 <span class="icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"></path><path d="M7 16V8l8-4v8"></path><path d="M7 12h8"></path></svg>
                 </span>
                 1. Prompt
-              </h3>
-              <p>Describe the asset in natural language and select an AI model backend.</p>
+              </button>
             </li>
             <li class="interactive" data-aos="fade-up">
-              <h3>
+              <button
+                type="button"
+                class="workflow-tab"
+                data-workflow-tab
+                data-title="2. Generate"
+                data-description="Run local GPU-accelerated inference to produce mesh, textures, and metadata."
+                aria-pressed="false"
+              >
                 <span class="icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 0 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 0 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.2a1.7 1.7 0 0 0 1 1.5h.1a1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 0 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.2a1.7 1.7 0 0 0-1.5 1z"></path></svg>
                 </span>
                 2. Generate
-              </h3>
-              <p>Run local GPU-accelerated inference to produce mesh, textures, and metadata.</p>
+              </button>
             </li>
             <li class="interactive" data-aos="fade-up">
-              <h3>
+              <button
+                type="button"
+                class="workflow-tab"
+                data-workflow-tab
+                data-title="3. Preview"
+                data-description="Inspect quality in the built-in 3D viewer and refine before final output."
+                aria-pressed="false"
+              >
                 <span class="icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"></path><circle cx="12" cy="12" r="2.5"></circle></svg>
                 </span>
                 3. Preview
-              </h3>
-              <p>Inspect quality in the built-in 3D viewer and refine before final output.</p>
+              </button>
             </li>
             <li class="interactive" data-aos="fade-up">
-              <h3>
+              <button
+                type="button"
+                class="workflow-tab"
+                data-workflow-tab
+                data-title="4. Publish"
+                data-description="Publish to VueXR or save locally with enterprise-friendly export formats."
+                aria-pressed="false"
+              >
                 <span class="icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5-9 5-9-5z"></path><path d="M3 12l9 5 9-5"></path><path d="M3 16l9 5 9-5"></path></svg>
                 </span>
                 4. Publish
-              </h3>
-              <p>Publish to VueXR or save locally with enterprise-friendly export formats.</p>
+              </button>
             </li>
           </ol>
+          <article class="workflow-panel" data-workflow-panel aria-live="polite">
+            <h3 data-workflow-title>1. Prompt</h3>
+            <p data-workflow-description>
+              Describe the asset in natural language and select an AI model backend.
+            </p>
+          </article>
         </div>
       </section>
 
@@ -229,6 +259,31 @@
     <script>
       AOS.init({
         duration: 700
+      });
+
+      const workflowTabs = document.querySelectorAll('[data-workflow-tab]');
+      const workflowPanel = document.querySelector('[data-workflow-panel]');
+      const workflowTitle = document.querySelector('[data-workflow-title]');
+      const workflowDescription = document.querySelector('[data-workflow-description]');
+
+      const setWorkflowTab = (activeTab) => {
+        workflowTabs.forEach((tab) => {
+          const isActive = tab === activeTab;
+          tab.classList.toggle('is-active', isActive);
+          tab.parentElement.classList.toggle('is-active', isActive);
+          tab.setAttribute('aria-pressed', String(isActive));
+        });
+
+        workflowPanel.classList.add('is-fading');
+        setTimeout(() => {
+          workflowTitle.textContent = activeTab.dataset.title;
+          workflowDescription.textContent = activeTab.dataset.description;
+          workflowPanel.classList.remove('is-fading');
+        }, 130);
+      };
+
+      workflowTabs.forEach((tab) => {
+        tab.addEventListener('click', () => setWorkflowTab(tab));
       });
     </script>
   </body>
