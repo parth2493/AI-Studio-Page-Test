@@ -28,7 +28,7 @@
             <h2>Create <span class="highlight">production-ready</span> 3D assets locally from simple text or image prompts.</h2>
             <p class="hero-copy">
               Built for enterprise teams, VueXR Studio turns ideas into publishable XR assets in one
-              secure desktop workflow.
+              secure local-first creation pipeline.
             </p>
           </div>
 
@@ -147,15 +147,6 @@
             </article>
 
             <article class="how-card interactive" data-step="03">
-              <h3>Preview</h3>
-              <ul>
-                <li>Inspect your model in the 3D viewer.</li>
-                <li>Rotate, zoom, and refine details.</li>
-              </ul>
-              <img src="assets/workflow/preview.png" alt="3D preview and refinement view" loading="lazy" />
-            </article>
-
-            <article class="how-card interactive" data-step="04">
               <h3>Publish</h3>
               <ul>
                 <li>Export in GLB, FBX, or OBJ.</li>
@@ -163,123 +154,21 @@
               </ul>
               <img src="assets/workflow/publish.png" alt="Publish and export options in VueXR Studio" loading="lazy" />
             </article>
+			
+			<article class="how-card interactive" data-step="04">
+			  <h3>Watch in AR</h3>
+			  <ul>
+				<li>Open your published model on your mobile device.</li>
+				<li>View and interact with it instantly in real-world AR.</li>
+			  </ul>
+			  <img src="assets/workflow/ar-view.png" alt="Viewing VueXR content in AR on mobile device" loading="lazy" />
+			</article>
+
           </div>
         </div>
       </section>
-
-		<section class="section alt" id="workflow">
-		  <div class="container">
-			<h2 class="section-title"><span class="highlight">Workflow</span></h2>
-
-			<div class="workflow-layout">
-
-			  <!-- ROW 1: TABS -->
-			  <div class="workflow-tabs">
-				<ol class="workflow">
-				  <li class="interactive is-active">
-					<button
-					  type="button"
-					  class="workflow-tab is-active"
-					  data-workflow-tab
-					  data-title="1. Prompt"
-					  data-description="
-						<ul>
-						  <li>Describe your idea using text or upload a reference image.</li>
-						  <li>Add details like style, shape, or purpose.</li>
-						  <li>VueXR Studio prepares your input for 3D generation.</li>
-						</ul>"
-					  data-image="assets/workflow/prompt.png"
-					  aria-pressed="true"
-					>
-					  1. Prompt
-					</button>
-				  </li>
-
-				  <li class="interactive">
-					<button
-					  type="button"
-					  class="workflow-tab"
-					  data-workflow-tab
-					  data-title="2. Generate"
-					  data-description="
-						<ul>
-							<li>The AI builds your 3D model locally on your machine.</li>
-							<li>Converts your idea into structured geometry in seconds.</li>
-							<li>Fast, private, and cloud-free processing.</li>
-						</ul>"
-					  data-image="assets/workflow/generate.png"
-					  aria-pressed="false"
-					>
-					  2. Generate
-					</button>
-				  </li>
-
-				  <li class="interactive">
-					<button
-					  type="button"
-					  class="workflow-tab"
-					  data-workflow-tab
-					  data-title="3. Preview"
-					  data-description="
-						<ul>
-							<li>View your model in the built-in 3D viewer.</li>
-							<li>Rotate, zoom, and inspect every detail.</li>
-							<li>Refine before moving to final output.</li>
-						</ul>"
-					  data-image="assets/workflow/preview.png"
-					  aria-pressed="false"
-					>
-					  3. Preview
-					</button>
-				  </li>
-
-				  <li class="interactive">
-					<button
-					  type="button"
-					  class="workflow-tab"
-					  data-workflow-tab
-					  data-title="4. Publish"
-					  data-description="
-						<ul>
-							<li>Export locally in GLB, FBX, or OBJ formats.</li>
-							<li>Publish directly to VueXR as an AR experience.</li>
-							<li>View and interact instantly on your mobile device.</li>
-						</ul>"
-					  data-image="assets/workflow/publish.png"
-					  aria-pressed="false"
-					>
-					  4. Publish
-					</button>
-				  </li>
-				</ol>
-			  </div>
-
-			  <!-- ROW 2 LEFT: IMAGE -->
-			  <div class="workflow-image">
-				<img
-				  src="assets/workflow/prompt.png"
-				  alt="VueXR Studio Prompt Interface"
-				  data-workflow-image
-				/>
-			  </div>
-
-			  <!-- ROW 2 RIGHT: DESCRIPTION -->
-			  <article class="workflow-panel" data-workflow-panel>
-				<h3 data-workflow-title>1. Prompt</h3>
-				<div data-workflow-description>
-					<ul>
-					  <li>Describe your idea using text or upload a reference image.</li>
-					  <li>Add details like style, shape, or purpose.</li>
-					  <li>VueXR Studio prepares your input for 3D generation.</li>
-					</ul>
-				</div>
-			  </article>
-
-			</div>
-		  </div>
-		</section>
-
-      <section class="section" id="why-vuexr">
+	  
+	  <section class="section" id="why-vuexr">
         <div class="container">
           <h2 class="section-title">Why <span class="highlight">VueXR Studio</span></h2>
           <div class="pillars">
@@ -330,10 +219,16 @@
     </main>
 
     <footer class="site-footer">
-      <div class="container footer-inner">
-        <p>© 2026 VueXR Studio. All rights reserved.</p>
-        <p>Part of the VueXR ecosystem: Create → Publish → Experience.</p>
-      </div>
+		<div class="container footer-inner">
+		  <div class="footer-left">
+			<p>© 2026 VueXR Studio. All rights reserved.</p>
+		  </div>
+
+		  <div class="footer-links">
+			<a href="#">Privacy Policy</a>
+			<a href="#">Terms & Conditions</a>
+		  </div>
+		</div>
     </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -341,46 +236,6 @@
       AOS.init({
         duration: 700
       });
-
-		const workflowTabs = document.querySelectorAll('[data-workflow-tab]');
-		const workflowPanel = document.querySelector('[data-workflow-panel]');
-		const workflowTitle = document.querySelector('[data-workflow-title]');
-		const workflowDescription = document.querySelector('[data-workflow-description]');
-		const workflowImage = document.querySelector('[data-workflow-image]');
-
-		const setWorkflowTab = (activeTab) => {
-		  workflowTabs.forEach((tab) => {
-			const isActive = tab === activeTab;
-			tab.classList.toggle('is-active', isActive);
-			tab.parentElement.classList.toggle('is-active', isActive);
-			tab.setAttribute('aria-pressed', String(isActive));
-		  });
-
-		  workflowPanel.classList.add('is-fading');
-
-		  setTimeout(() => {
-			workflowTitle.textContent = activeTab.dataset.title;
-
-			// IMPORTANT CHANGE: use innerHTML for bullet lists
-			workflowDescription.innerHTML = activeTab.dataset.description;
-
-			// Image switch animation
-			workflowImage.style.opacity = "0";
-			setTimeout(() => {
-			  workflowImage.src = activeTab.dataset.image;
-			  workflowImage.style.opacity = "1";
-			}, 150);
-
-			workflowPanel.classList.remove('is-fading');
-		  }, 130);
-		};
-
-		// Click handler
-		workflowTabs.forEach((tab) => {
-		  tab.addEventListener('click', () => {
-			setWorkflowTab(tab);
-		  });
-		});
     </script>
   </body>
 </html>
