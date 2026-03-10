@@ -29,6 +29,53 @@ a {
   text-decoration: none;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+li {
+  margin: 0;
+  padding: 0;
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+.text-h1 {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.text-h2 {
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.text-h3 {
+  font-size: clamp(1.15rem, 2vw, 1.25rem);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.text-body {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.text-small {
+  font-size: 0.9rem;
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
 .vxr-container {
   width: min(100% - 2rem, var(--max));
   margin-inline: auto;
@@ -108,22 +155,17 @@ a {
   height: 100%;
 }
 
-h1 {
+.vxr-hero .text-h1 {
   margin: 0.5rem 0 0;
-  font-size: clamp(2rem, 4vw, 3.4rem);
-  line-height: 1.15;
 }
 
-.vxr-hero h2 {
+.vxr-hero .text-h2 {
   margin: 0.8rem 0 0;
-  font-size: clamp(1.1rem, 2vw, 1.55rem);
-  font-weight: 600;
   color: #374151;
   max-width: 20ch;
 }
 
 .vxr-hero-copy {
-  color: var(--muted);
   max-width: 64ch;
 }
 
@@ -139,14 +181,8 @@ h1 {
   padding: 1.15rem;
 }
 
-.vxr-signup-card h3 {
+.vxr-signup-card .text-h3 {
   margin: 0;
-  font-size: 1.1rem;
-}
-
-.vxr-signup-card p,
-.vxr-signup-card small {
-  color: var(--muted);
 }
 
 .vxr-signup-card form {
@@ -192,7 +228,6 @@ button:hover {
 
 .vxr-section-title {
   margin: 0 0 1.2rem;
-  font-size: clamp(1.3rem, 2.4vw, 2rem);
 }
 
 .vxr-feature-grid {
@@ -218,13 +253,11 @@ button:hover {
 
 .vxr-demo-copy {
   margin: 0 0 0.75rem;
-  color: var(--muted);
 }
 
 .vxr-demo-points {
   margin: 0;
   padding-left: 1.1rem;
-  color: var(--muted);
   display: grid;
   gap: 0.45rem;
 }
@@ -256,15 +289,14 @@ button:hover {
   padding: 1rem;
 }
 
-.vxr-card h3,
-.vxr-pillar h3 {
+.vxr-card .text-h3,
+.vxr-pillar .text-h3 {
   margin: 0 0 0.45rem;
 }
 
-.vxr-card p,
-.vxr-pillar p {
+.vxr-card .text-body,
+.vxr-pillar .text-body {
   margin: 0;
-  color: var(--muted);
 }
 
 .vxr-interactive {
@@ -358,15 +390,13 @@ button:hover {
   pointer-events: none;
 }
 
-.vxr-how-card h3 {
+.vxr-how-card .text-h3 {
   margin: 0;
-  font-size: 1.4rem;
 }
 
 .vxr-how-card ul {
   margin: 0;
   padding-left: 1.15rem;
-  color: #4b5563;
   display: grid;
   gap: 0.25rem;
 }
@@ -430,9 +460,8 @@ button:hover {
   flex-wrap: wrap;
 }
 
-.vxr-footer-inner p {
+.vxr-footer-inner .text-small {
   margin: 0;
-  color: var(--muted);
 }
 
 .vxr-footer-links {
@@ -475,7 +504,7 @@ button:hover {
     padding-top: 4.2rem;
   }
 
-  .vxr-hero h2 {
+  .vxr-hero .text-h2 {
     max-width: none;
   }
 
