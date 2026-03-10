@@ -1,10 +1,10 @@
 :root {
-  --bg: #0d0d0d;
-  --bg-elev: #161616;
-  --bg-elev-soft: #1d1d1d;
-  --text: #f2f2f2;
-  --muted: #b8b8b8;
-  --line: #2b2b2b;
+  --bg: #ffffff;
+  --bg-elev: #ffffff;
+  --bg-elev-soft: #f6f7f9;
+  --text: #1a1a1a;
+  --muted: #6b7280;
+  --line: #e5e7eb;
   --accent: #ed3237;
   --accent-strong: #ff4a4f;
   --max: 1280px;
@@ -65,7 +65,7 @@ a {
 }
 
 .vxr-nav-cta:hover {
-  background: #251011;
+  background: rgba(237, 50, 55, 0.08);
   transform: scale(1.03);
 }
 
@@ -118,7 +118,7 @@ h1 {
   margin: 0.8rem 0 0;
   font-size: clamp(1.1rem, 2vw, 1.55rem);
   font-weight: 600;
-  color: #e2e2e2;
+  color: #374151;
   max-width: 20ch;
 }
 
@@ -130,7 +130,7 @@ h1 {
 .vxr-signup-card,
 .vxr-card,
 .vxr-pillar {
-  background: linear-gradient(180deg, var(--bg-elev), var(--bg-elev-soft));
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
   border: 1px solid var(--line);
   border-radius: 0.9rem;
 }
@@ -157,9 +157,9 @@ h1 {
 
 input[type='email'] {
   width: 100%;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--line);
   border-radius: 0.65rem;
-  background: #101010;
+  background: #ffffff;
   color: var(--text);
   padding: 0.78rem 0.85rem;
 }
@@ -186,7 +186,7 @@ button:hover {
 }
 
 .vxr-alt {
-  background: #121212;
+  background: #f8fafc;
   border-block: 1px solid var(--line);
 }
 
@@ -230,17 +230,17 @@ button:hover {
 }
 
 .vxr-demo-video {
-  background: linear-gradient(180deg, var(--bg-elev), var(--bg-elev-soft));
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
   border: 1px solid var(--line);
   border-radius: 0.9rem;
   padding: 0.75rem;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
   transition: box-shadow 220ms ease, transform 220ms ease;
 }
 
 .vxr-demo-video:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.32);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
 }
 
 .vxr-demo-video iframe {
@@ -283,9 +283,9 @@ button:hover {
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   background:
-    radial-gradient(circle at 15% 15%, rgba(237, 50, 55, 0.18), transparent 45%),
-    radial-gradient(circle at 85% 85%, rgba(60, 207, 255, 0.12), transparent 42%),
-    linear-gradient(180deg, #0f0f11, #09090a);
+    radial-gradient(circle at 15% 15%, rgba(237, 50, 55, 0.08), transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(60, 207, 255, 0.06), transparent 40%),
+    linear-gradient(180deg, #ffffff, #f8fafc);
 }
 
 .vxr-how-it-works::after {
@@ -293,11 +293,11 @@ button:hover {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.08;
+  opacity: 0.04;
   background-image: repeating-linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.35) 0,
-    rgba(255, 255, 255, 0.35) 1px,
+    rgba(26, 26, 26, 0.12) 0,
+    rgba(26, 26, 26, 0.12) 1px,
     transparent 1px,
     transparent 5px
   );
@@ -322,12 +322,12 @@ button:hover {
   gap: 0.7rem;
   padding: 1.5rem;
   border-radius: 1.5rem;
-  border: 1px solid rgba(237, 50, 55, 0.22);
+  border: 1px solid rgba(237, 50, 55, 0.2);
   overflow: hidden;
   background:
-    linear-gradient(165deg, rgba(59, 14, 16, 0.88), rgba(20, 14, 15, 0.95) 50%, rgba(12, 13, 16, 0.98)),
-    radial-gradient(circle at 95% 8%, rgba(60, 207, 255, 0.16), transparent 35%);
-  box-shadow: 0 20px 36px rgba(0, 0, 0, 0.38);
+    linear-gradient(165deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.98) 50%, rgba(243, 244, 246, 0.98)),
+    radial-gradient(circle at 95% 8%, rgba(60, 207, 255, 0.1), transparent 35%);
+  box-shadow: 0 18px 30px rgba(15, 23, 42, 0.1);
 }
 
 .vxr-how-card::before {
@@ -336,7 +336,7 @@ button:hover {
   inset: -1px;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(120deg, rgba(237, 50, 55, 0.55), rgba(60, 207, 255, 0.4), rgba(237, 50, 55, 0.55));
+  background: linear-gradient(120deg, rgba(237, 50, 55, 0.38), rgba(60, 207, 255, 0.24), rgba(237, 50, 55, 0.38));
   background-size: 170% 170%;
   animation: border-glow 6s ease-in-out infinite;
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -354,7 +354,7 @@ button:hover {
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.03em;
-  color: rgba(255, 255, 255, 0.07);
+  color: rgba(17, 24, 39, 0.08);
   pointer-events: none;
 }
 
@@ -366,7 +366,7 @@ button:hover {
 .vxr-how-card ul {
   margin: 0;
   padding-left: 1.15rem;
-  color: #d4d6da;
+  color: #4b5563;
   display: grid;
   gap: 0.25rem;
 }
@@ -375,20 +375,20 @@ button:hover {
   width: 100%;
   margin-top: auto;
   border-radius: 0.9rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.12);
   transition: transform 220ms ease, box-shadow 220ms ease;
 }
 
 .vxr-how-card:hover {
   transform: translateY(-8px);
-  border-color: rgba(237, 50, 55, 0.5);
-  box-shadow: 0 24px 42px rgba(0, 0, 0, 0.46);
+  border-color: rgba(237, 50, 55, 0.42);
+  box-shadow: 0 20px 36px rgba(15, 23, 42, 0.16);
 }
 
 .vxr-how-card:hover img {
   transform: translateY(-4px);
-  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.42);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.16);
 }
 
 @keyframes border-glow {
@@ -414,10 +414,11 @@ button:hover {
 }
 
 .vxr-subtle {
-  background: #181818;
+  background: #f3f4f6;
 }
 
 .vxr-site-footer {
+  background: #ffffff;
   border-top: 1px solid var(--line);
   padding: 1.4rem 0 2.4rem;
 }
@@ -482,4 +483,3 @@ button:hover {
     grid-template-columns: 1fr;
   }
 }
-
