@@ -562,18 +562,85 @@ button:hover {
   padding: 25px;
 }
 
-/* Add soft gradient for readability */
-/*.vxr-image-overlay::after {
+/* ===== PREMIUM IMAGE SECTION ===== */
+
+.vxr-image-dual-premium {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+/* CARD */
+.vxr-premium-card {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(237, 50, 55, 0.2);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* GLOW BORDER */
+.vxr-premium-card::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.55),
-    rgba(0, 0, 0, 0.15),
-    transparent
-  );
-}*/
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(120deg, #ed3237, #3ccfff, #ed3237);
+  background-size: 200% 200%;
+  animation: vxr-glow 6s ease infinite;
+
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* STEP NUMBER */
+.vxr-premium-card::after {
+  content: attr(data-step);
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.05);
+}
+
+/* IMAGE */
+.vxr-premium-card img {
+  width: 100%;
+  display: block;
+}
+
+/* CONTENT */
+.vxr-premium-content {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  color: #ffffff;
+}
+
+/* TEXT SHADOW */
+.vxr-premium-content h2,
+.vxr-premium-content p {
+  text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+/* HOVER */
+.vxr-premium-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+}
+
+/* ANIMATION */
+@keyframes vxr-glow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
 
 .vxr-image-text h2 {
   margin-bottom: 0.4rem;
@@ -608,5 +675,9 @@ button:hover {
   bottom: 1.2rem;
   left: 1.2rem;
   max-width: 90%;
+  }
+  
+  .vxr-image-dual-premium {
+    grid-template-columns: 1fr;
   }
 }
