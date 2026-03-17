@@ -18,7 +18,6 @@
         <a class="vxr-nav-cta" href="#early-access">Get Early Access</a>
       </div>
     </header>
-
     <main>
       <section class="vxr-hero">
         <div class="vxr-container vxr-hero-grid">
@@ -42,7 +41,6 @@
           </aside>
         </div>
       </section>
-
       <section class="vxr-section vxr-demo-section" id="demo">
         <div class="vxr-container">
           <div class="vxr-demo-center">
@@ -54,17 +52,37 @@
               </p>
             </div>
             <div class="vxr-demo-video" data-aos="fade-up">
-              <iframe
-                src="https://www.youtube.com/embed/aqz-KE-bpKQ"
-                title="VueXR Studio product demo"
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen
-              ></iframe>
+              <video class="vxr-demo-player"
+				  autoplay 
+				  muted 
+				  loop 
+				  playsinline 
+				  controls
+				>
+				  <source src="assets/videos/demo.webm" type="video/webm" />
+				  Your browser does not support the video tag.
+			  </video>
             </div>
           </div>
         </div>
       </section>
+	  <section class="vxr-section vxr-image-to-3d">
+		<div class="vxr-container">
+		  <div class="vxr-image-overlay">
+			<img 
+			  src="assets/images/image-to-3d.png" 
+			  alt="Image to 3D Model Generation"
+			  loading="lazy"
+			/>
+			<div class="vxr-image-text">
+			  <h2 class="text-h2">Image to 3D Model</h2>
+			  <p class="text-body">
+				Turn your 2D images, sketches, or illustrations into stunning 3D models instantly.
+			  </p>
+			</div>
+		  </div>
+		</div>
+	  </section>
 
       <section class="vxr-section" id="features">
         <div class="vxr-container">

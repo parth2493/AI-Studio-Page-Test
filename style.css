@@ -497,11 +497,98 @@ button:hover {
   border: 0;
 }
 
+.vxr-demo-player {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 0.6rem;
+  display: block;
+  object-fit: cover;
+}
+
+/* Image to 3D Section */
+.vxr-image-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.vxr-image-visual {
+  display: flex;
+  justify-content: center;
+}
+
+.vxr-image-visual img {
+  width: 100%;
+  max-width: 720px;
+  border-radius: 1.2rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.vxr-image-visual img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+}
+
+.vxr-image-content {
+  max-width: 480px;
+}
+
+/* Image Overlay Section */
+
+.vxr-image-overlay {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+
+.vxr-image-overlay img {
+  width: 100%;
+  display: block;
+  border-radius: 1.5rem;
+}
+
+/* Text Overlay */
+.vxr-image-text {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  max-width: 420px;
+  color: #ffffff;
+  padding: 25px;
+}
+
+/* Add soft gradient for readability */
+/*.vxr-image-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.55),
+    rgba(0, 0, 0, 0.15),
+    transparent
+  );
+}*/
+
+.vxr-image-text h2 {
+  margin-bottom: 0.4rem;
+}
+
+.vxr-image-text p {
+  opacity: 0.9;
+}
+
 @media (max-width: 960px) {
   .vxr-hero-grid,
   .vxr-feature-grid,
   .vxr-pillars,
-  .vxr-split {
+  .vxr-split,
+  .vxr-image-grid {
     grid-template-columns: 1fr;
   }
 
@@ -515,5 +602,11 @@ button:hover {
 
   .vxr-how-it-works-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .vxr-image-text {
+  bottom: 1.2rem;
+  left: 1.2rem;
+  max-width: 90%;
   }
 }
