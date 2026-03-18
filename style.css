@@ -734,10 +734,9 @@ button:hover {
   --vxr-card-scale: 1;
   position: relative;
   border-radius: 1.5rem;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(237, 50, 55, 0.2);
+  overflow: visible;
+  background: rgba(255, 255, 255, 0);
+  backdrop-filter: blur(15px);
   transform: perspective(1000px) translateY(var(--vxr-card-lift)) rotateX(var(--vxr-card-rotate-x)) rotateY(var(--vxr-card-rotate-y)) scale(var(--vxr-card-scale));
   transform-style: preserve-3d;
   perspective: 1000px;
@@ -750,10 +749,7 @@ button:hover {
   content: "";
   position: absolute;
   inset: -1px;
-  border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(120deg, #ed3237, #3ccfff, #ed3237);
-  background-size: 200% 200%;
   animation: vxr-glow 6s ease infinite;
 
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
