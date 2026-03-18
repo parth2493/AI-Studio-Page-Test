@@ -264,6 +264,30 @@
       AOS.init({
         duration: 700
       });
+
+      const premiumCards = document.querySelectorAll('.vxr-premium-card');
+
+      premiumCards.forEach((card) => {
+        card.addEventListener('mousemove', (event) => {
+          const rect = card.getBoundingClientRect();
+          const offsetX = event.clientX - rect.left;
+          const offsetY = event.clientY - rect.top;
+          const rotateY = ((offsetX / rect.width) - 0.5) * 16;
+          const rotateX = (0.5 - (offsetY / rect.height)) * 16;
+
+          card.style.setProperty('--vxr-card-rotate-x', `${rotateX.toFixed(2)}deg`);
+          card.style.setProperty('--vxr-card-rotate-y', `${rotateY.toFixed(2)}deg`);
+          card.style.setProperty('--vxr-card-lift', '-10px');
+          card.style.setProperty('--vxr-card-scale', '1.02');
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.setProperty('--vxr-card-rotate-x', '0deg');
+          card.style.setProperty('--vxr-card-rotate-y', '0deg');
+          card.style.setProperty('--vxr-card-lift', '0px');
+          card.style.setProperty('--vxr-card-scale', '1');
+        });
+      });
     </script>
   </body>
 </html>
