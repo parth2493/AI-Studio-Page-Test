@@ -340,9 +340,11 @@ button:hover {
 }
 
 .vxr-platform-card {
+  position: relative;
   display: grid;
   gap: 0.6rem;
   padding: 1.2rem;
+  overflow: hidden;
   background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(237, 50, 55, 0.15);
   border-radius: 1rem;
@@ -351,6 +353,19 @@ button:hover {
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
   text-align: center;
+}
+
+.vxr-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--x, 50%) var(--y, 50%),
+    rgba(255, 255, 255, 0.12),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .vxr-platform-image {
@@ -383,6 +398,10 @@ button:hover {
 
 .vxr-platform-card:hover .vxr-platform-image img {
   transform: scale(1.08);
+}
+
+.vxr-platform-card:hover .vxr-light {
+  opacity: 1;
 }
 
 /* Web - Blue Glow */
