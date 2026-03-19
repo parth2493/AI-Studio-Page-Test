@@ -346,9 +346,24 @@ button:hover {
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 
-.vxr-platform-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+.vxr-platform-overlay {
+  opacity: 1;
+  transform: none;
+  background: rgba(255, 255, 255, 0.6);
+  color: #1a1a1a;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.vxr-platform-card:hover .vxr-platform-image img {
+  transform: scale(1.05);
+}
+
+.vxr-platform-card:hover,
+.vxr-premium-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
   border-color: rgba(237, 50, 55, 0.3);
 }
 
