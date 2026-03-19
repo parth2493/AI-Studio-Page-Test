@@ -268,9 +268,6 @@
             <p class="text-body text-muted vxr-models-copy">
               VueXR Studio lets you publish your 3D content across web, iOS, and Android from a single workflow. Your models are optimized for real-time performance and designed to work seamlessly across devices, making it easy to reach users anywhere.
             </p>
-            <p class="text-body text-muted vxr-models-copy">
-              
-            </p>
           </div>
 			<div class="vxr-platform-grid">
 			  <article class="vxr-platform-card vxr-premium-hover" data-aos="fade-up">
@@ -374,16 +371,19 @@
         });
       });
 
-      document.querySelectorAll('.vxr-platform-card').forEach((card) => {
-        card.addEventListener('mousemove', (event) => {
-          const rect = card.getBoundingClientRect();
-          const x = ((event.clientX - rect.left) / rect.width) * 100;
-          const y = ((event.clientY - rect.top) / rect.height) * 100;
+		document.querySelectorAll('.vxr-platform-card').forEach(card => {
+			card.addEventListener('mousemove', e => {
+			const rect = card.getBoundingClientRect();
+			card.style.setProperty('--x', (e.clientX - rect.left) + 'px');
+			card.style.setProperty('--y', (e.clientY - rect.top) + 'px');
+		  });
 
-          card.style.setProperty('--x', `${x}%`);
-          card.style.setProperty('--y', `${y}%`);
-        });
-      });
+			card.addEventListener('mouseleave', () => {
+			const rect = card.getBoundingClientRect();
+			card.style.setProperty('--x', rect.width / 2 + 'px');
+			card.style.setProperty('--y', rect.height / 2 + 'px');
+		  });
+		});
     </script>
   </body>
 </html>
