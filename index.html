@@ -281,6 +281,7 @@
 				  <h3 class="text-h3">Web</h3>
 				  <p class="text-body text-muted">Instantly share and view 3D content directly in the browser. No downloads required.</p>
 				</div>
+				<div class="vxr-light"></div>
 			  </article>
 
 			  <article class="vxr-platform-card vxr-premium-hover" data-aos="fade-up" data-aos-delay="80">
@@ -291,6 +292,7 @@
 				  <h3 class="text-h3">iOS</h3>
 				  <p class="text-body text-muted">Experience immersive AR on iPhone and iPad with smooth performance and native support.</p>
 				</div>
+				<div class="vxr-light"></div>
 			  </article>
 
 			  <article class="vxr-platform-card vxr-premium-hover" data-aos="fade-up" data-aos-delay="160">
@@ -301,6 +303,7 @@
 				  <h3 class="text-h3">Android</h3>
 				  <p class="text-body text-muted">Deploy interactive AR experiences across a wide range of Android devices with ease.</p>
 				</div>
+				<div class="vxr-light"></div>
 			  </article>
 			</div>
         </div>
@@ -368,6 +371,17 @@
           card.style.setProperty('--vxr-card-rotate-y', '0deg');
           card.style.setProperty('--vxr-card-lift', '0px');
           card.style.setProperty('--vxr-card-scale', '1');
+        });
+      });
+
+      document.querySelectorAll('.vxr-platform-card').forEach((card) => {
+        card.addEventListener('mousemove', (event) => {
+          const rect = card.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width) * 100;
+          const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+          card.style.setProperty('--x', `${x}%`);
+          card.style.setProperty('--y', `${y}%`);
         });
       });
     </script>
