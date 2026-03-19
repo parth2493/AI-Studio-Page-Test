@@ -350,6 +350,24 @@ button:hover {
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  text-align: center;
+}
+
+.vxr-platform-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+  background: transparent;
+}
+
+.vxr-platform-image img {
+  width: auto;
+  max-width: 120px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
 }
 
 .vxr-platform-overlay {
