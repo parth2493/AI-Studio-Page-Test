@@ -322,6 +322,31 @@ button:hover {
   gap: 1rem;
 }
 
+.vxr-platform-section {
+  border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+}
+
+.vxr-platform-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.vxr-platform-card {
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 1.2rem;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  display: grid;
+  gap: 0.6rem;
+}
+
+.vxr-platform-card .text-h3 {
+  margin: 0;
+}
+
 
 .vxr-model-card {
   position: relative;
@@ -933,7 +958,8 @@ button:hover {
   .vxr-pillars,
   .vxr-split,
   .vxr-image-grid,
-  .vxr-model-grid {
+  .vxr-model-grid,
+  .vxr-platform-grid {
     grid-template-columns: 1fr;
   }
 
