@@ -134,8 +134,8 @@ li {
   position: absolute;
   display: block;
   border-radius: 999px;
-  filter: blur(22px);
-  opacity: 0.24;
+  filter: blur(28px);
+  opacity: 0.15;
   animation: vxr-hero-float 14s ease-in-out infinite;
   will-change: transform;
 }
@@ -185,7 +185,9 @@ li {
 }
 
 .vxr-highlight {
-  color: var(--accent);
+  background: linear-gradient(90deg, #ed3237, #ff6a6f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .vxr-icon {
@@ -204,17 +206,18 @@ li {
 }
 
 .vxr-hero .text-h1 {
-  margin: 0.5rem 0 0;
+  margin-bottom: 0.6rem;
 }
 
 .vxr-hero .text-h2 {
-  margin: 0.8rem 0 0;
+  margin-bottom: 1rem;
   color: #374151;
-  max-width: 20ch;
+  max-width: 28ch;
 }
 
 .vxr-hero-copy {
-  max-width: 64ch;
+  margin-top: 0.5rem;
+  max-width: 52ch;
 }
 
 .vxr-signup-card,
