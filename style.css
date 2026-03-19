@@ -312,11 +312,6 @@ button:hover {
   gap: 1rem;
 }
 
-.vxr-models-cta {
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
-}
 
 .vxr-model-card {
   position: relative;
@@ -368,18 +363,15 @@ button:hover {
 
 .vxr-model-badge {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
-  z-index: 5;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
   display: inline-flex;
   align-items: center;
-  padding: 0.35rem 0.7rem;
-  border: 1px solid rgba(237, 50, 55, 0.12);
+  padding: 6px 10px;
   border-radius: 999px;
-  background: rgba(237, 50, 55, 0.9);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: #ffffff;
+  background: #ed3237;
+  color: #fff;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -416,15 +408,6 @@ button:hover {
   text-transform: uppercase;
 }
 
-.vxr-model-action {
-  margin-top: 0.35rem;
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--accent);
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 220ms ease, transform 220ms ease;
-}
 
 .vxr-model-card:hover {
   transform: translateY(-8px) rotateX(2deg) rotateY(-2deg) scale(1.02);
@@ -443,10 +426,6 @@ button:hover {
   transform: translateY(-5px) scale(1.06);
 }
 
-.vxr-model-card:hover .vxr-model-action {
-  opacity: 1;
-  transform: translateY(0);
-}
 
 @keyframes vxr-model-rotate {
   0%,
