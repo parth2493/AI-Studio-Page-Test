@@ -370,8 +370,12 @@ button:hover {
   align-items: center;
   padding: 6px 10px;
   border-radius: 999px;
-  background: #ed3237;
-  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.04em;
