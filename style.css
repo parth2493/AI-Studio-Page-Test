@@ -368,6 +368,7 @@ button:hover {
   display: block;
   margin: 0 auto;
   object-fit: contain;
+  transition: transform 0.3s ease, filter 0.3s ease;
 }
 
 .vxr-platform-overlay {
@@ -381,7 +382,22 @@ button:hover {
 }
 
 .vxr-platform-card:hover .vxr-platform-image img {
-  transform: scale(1.05);
+  transform: scale(1.08);
+}
+
+/* Web - Blue Glow */
+.vxr-platform-card:nth-child(1):hover .vxr-platform-image img {
+  filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.5));
+}
+
+/* iOS - White Glow */
+.vxr-platform-card:nth-child(2):hover .vxr-platform-image img {
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.6));
+}
+
+/* Android - Green Glow */
+.vxr-platform-card:nth-child(3):hover .vxr-platform-image img {
+  filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.5));
 }
 
 .vxr-platform-card:hover,
