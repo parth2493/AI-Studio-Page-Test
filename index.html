@@ -438,23 +438,35 @@
       class Particle {
         constructor() {
           const centerX = canvasWidth / 2;
-          const centerY = canvasHeight / 2;
-          const angle = Math.random() * Math.PI * 2;
-          const spread = 0.22 + ((1 - Math.random() ** 1.8) * 0.16);
-          const radius = spread * canvasWidth;
+          const safeWidth = canvasWidth * 0.35;
 
-          this.baseX = centerX + Math.cos(angle) * radius;
-          this.baseY = centerY + Math.sin(angle) * radius;
-          this.x = this.baseX;
-          this.y = this.baseY;
+          let x;
+          let y;
+
+          const rand = Math.random();
+
+          if (rand < 0.55) {
+            if (Math.random() > 0.5) {
+              x = Math.random() * (centerX - safeWidth / 2);
+            } else {
+              x = centerX + safeWidth / 2 + Math.random() * (canvasWidth - centerX - safeWidth / 2);
+            }
+          } else {
+            x = centerX - safeWidth / 2 + Math.random() * safeWidth;
+          }
+
+          y = Math.random() * canvasHeight;
+
+          this.baseX = x;
+          this.baseY = y;
+          this.x = x;
+          this.y = y;
           this.depth = Math.random();
           this.size = (Math.random() * 2 + 1) * (0.5 + this.depth);
           this.speed = 0.003 + (this.depth * 0.004) + (Math.random() * 0.004);
           this.angle = Math.random() * Math.PI * 2;
-          const alpha = 0.3 + this.depth * 0.5;
-          this.color = Math.random() > 0.5
-            ? `rgba(237,50,55,${alpha})`
-            : `rgba(99,102,241,${alpha})`;
+          this.baseAlpha = 0.5 + this.depth * 0.3;
+          this.colorBase = Math.random() > 0.5 ? '237,50,55' : '99,102,241';
         }
 
         update() {
@@ -462,9 +474,14 @@
 
           let orbitX = this.baseX + Math.cos(this.angle) * 10;
           let orbitY = this.baseY + Math.sin(this.angle) * 10;
+          let centerFactor = 1;
 
-          orbitX += mouseOffset.x * 30 * this.depth;
-          orbitY += mouseOffset.y * 30 * this.depth;
+          if (Math.abs(this.baseX - canvasWidth / 2) < canvasWidth * 0.2) {
+            centerFactor = 0.75;
+          }
+
+          orbitX += mouseOffset.x * 30 * this.depth * centerFactor;
+          orbitY += mouseOffset.y * 30 * this.depth * centerFactor;
 
           if (mouse.x !== null && mouse.y !== null) {
             const dx = mouse.x - orbitX;
@@ -476,8 +493,8 @@
               const directionX = dx / distance;
               const directionY = dy / distance;
 
-              orbitX += directionX * force * 25 * this.depth;
-              orbitY += directionY * force * 25 * this.depth;
+              orbitX += directionX * force * 25 * this.depth * centerFactor;
+              orbitY += directionY * force * 25 * this.depth * centerFactor;
             }
           }
 
@@ -489,6 +506,8 @@
           ctx.beginPath();
 
           let sizeBoost = 0;
+          let alphaFactor = 1;
+          let sizeFactor = 1;
 
           if (mouse.x !== null && mouse.y !== null) {
             const dx = mouse.x - this.x;
@@ -500,17 +519,27 @@
             }
           }
 
+          const dxCenter = Math.abs(this.x - canvasWidth / 2);
+
+          if (dxCenter < canvasWidth * 0.2) {
+            alphaFactor = 0.6 + this.depth * 0.3;
+            sizeFactor = 0.75;
+          }
+
+          const alpha = Math.max(0.5, this.baseAlpha * alphaFactor);
+          const color = `rgba(${this.colorBase},${alpha})`;
+
           ctx.arc(
             this.x,
             this.y,
-            this.size + sizeBoost * 1.5,
+            (this.size * sizeFactor) + sizeBoost * 1.5,
             0,
             Math.PI * 2
           );
 
-          ctx.fillStyle = this.color;
+          ctx.fillStyle = color;
           ctx.shadowBlur = sizeBoost * 12;
-          ctx.shadowColor = this.color;
+          ctx.shadowColor = color;
           ctx.fill();
           ctx.shadowBlur = 0;
         }
