@@ -227,7 +227,6 @@ li {
   max-width: 52ch;
 }
 
-.vxr-signup-card,
 .vxr-card,
 .vxr-pillar {
   background: linear-gradient(180deg, #ffffff, #f8fafc);
@@ -235,21 +234,28 @@ li {
   border-radius: 0.9rem;
 }
 
-.vxr-signup-card {
-  margin-top: 1rem;
-  max-width: 420px;
+.vxr-hero-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
   width: 100%;
-  padding: 1.15rem;
+  max-width: 520px;
 }
 
-.vxr-signup-card .text-h3 {
-  margin: 0;
+.vxr-hero-form input {
+  flex: 1;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  background: #ffffff;
 }
 
-.vxr-signup-card form {
-  margin: 0.8rem 0;
-  display: grid;
-  gap: 0.65rem;
+.vxr-hero-form button {
+  white-space: nowrap;
+  padding: 0.85rem 1.2rem;
 }
 
 input[type='email'] {
@@ -1106,4 +1112,14 @@ button:hover {
   .vxr-image-dual-premium {
     grid-template-columns: 1fr;
   }
+}
+@media (max-width: 600px) {
+  .vxr-hero-form {
+    flex-direction: column;
+  }
+
+  .vxr-hero-form button {
+    width: 100%;
+  }
+
 }
