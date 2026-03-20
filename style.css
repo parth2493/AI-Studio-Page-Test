@@ -250,31 +250,30 @@ li {
 
 .vxr-hero-form {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
-  margin: 2rem auto 0 auto;
-  gap: 0.8rem;
+  gap: 0.6rem;
   width: 100%;
-  max-width: 600px;
+  max-width: 520px;
+  margin: 2rem auto 0;
 }
 
 .vxr-hero-form input {
-  width: 100%;
-  max-width: 420px;
-  height: auto;
+  flex: 1;
+  min-width: 0;
   padding: 0.9rem 1.2rem;
   border-radius: 999px;
   border: 1px solid var(--line);
   font-size: 1rem;
   display: block;
-  text-align: center;
   background: #ffffff;
 }
 
 .vxr-hero-form button {
+  flex-shrink: 0;
+  padding: 0.9rem 1.4rem;
   white-space: nowrap;
-  padding: 0.9rem 1.6rem;
   font-size: 1rem;
   border-radius: 999px;
   background: var(--accent);
@@ -1156,32 +1155,15 @@ button:hover {
   .vxr-hero-grid {
     padding: 0 0.5rem;
   }
-
-  .vxr-hero-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-    padding: 0 0.5rem;
-  }
-
-  .vxr-hero-form input {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .vxr-hero-form button {
-    width: 100%;
-    max-width: 100%;
-  }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
   .vxr-hero-form {
     flex-direction: column;
+    gap: 0.8rem;
   }
 
+  .vxr-hero-form input,
   .vxr-hero-form button {
     width: 100%;
   }
