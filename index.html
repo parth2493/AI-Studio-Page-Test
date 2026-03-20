@@ -520,31 +520,32 @@
             const distance = Math.max(Math.sqrt(dx * dx + dy * dy), 0.001);
 
             if (distance < mouse.radius) {
-              const normalized = (mouse.radius - distance) / mouse.radius;
-              const force = Math.pow(normalized, 3);
+              let normalized = (mouse.radius - distance) / mouse.radius;
+              normalized = Math.max(0, normalized);
+
+              let force;
+
+              if (normalized > 0.6) {
+                force = Math.pow(normalized, 1.2);
+              } else {
+                force = Math.pow(normalized, 3);
+              }
+
+              this.vx += (dx / distance) * force * 0.7 * this.depth;
+              this.vy += (dy / distance) * force * 0.7 * this.depth;
+
               const distanceFactor = distance / mouse.radius;
-
-              this.vx += (dx / distance) * force * 0.5 * this.depth;
-              this.vy += (dy / distance) * force * 0.5 * this.depth;
-
-              // far particles slow down more
-              const damping = 1 - Math.pow(distanceFactor, 2);
-
-              this.vx *= 0.92 + damping * 0.05;
-              this.vy *= 0.92 + damping * 0.05;
-
-              const maxSpeedNear = 1.2;
-              const maxSpeedFar = 0.4;
+              const maxSpeedNear = 1.4;
+              const maxSpeedFar = 0.35;
               const maxSpeed =
                 maxSpeedFar + (maxSpeedNear - maxSpeedFar) * (1 - distanceFactor);
 
               this.vx = Math.max(-maxSpeed, Math.min(maxSpeed, this.vx));
               this.vy = Math.max(-maxSpeed, Math.min(maxSpeed, this.vy));
 
-              if (distance > mouse.radius * 0.85) {
-                // almost no influence
-                this.vx *= 0.98;
-                this.vy *= 0.98;
+              if (distance > mouse.radius * 0.75) {
+                this.vx *= 0.94;
+                this.vy *= 0.94;
               }
             }
           }
