@@ -474,22 +474,23 @@
         }
 
         update() {
-          flowTime += 0.002;
+          flowTime += 0.0012;
 
           const centerDistance = Math.abs(this.baseX - canvasWidth / 2);
           const centerFactor = centerDistance < canvasWidth * 0.2 ? 0.35 : 1;
           const parallaxX = mouseOffset.x * 10 * this.depth * centerFactor;
           const parallaxY = mouseOffset.y * 10 * this.depth * centerFactor;
+          const screenScale = Math.min(canvas.width, canvas.height) / 1000;
 
           const angle =
-            Math.sin((this.x + parallaxX + flowTime * 100 + this.noiseOffset) * 0.002) +
-            Math.cos((this.y + parallaxY - flowTime * 120) * 0.002);
+            Math.sin((this.x + flowTime * 60 + this.noiseOffset) * 0.002) *
+            Math.cos((this.y - flowTime * 80) * 0.002);
 
-          const flowX = Math.cos(angle) * 0.4;
-          const flowY = Math.sin(angle) * 0.4;
+          const flowX = Math.cos(angle) * 0.25 * screenScale;
+          const flowY = Math.sin(angle) * 0.25 * screenScale;
 
-          this.vx += flowX * this.depth;
-          this.vy += flowY * this.depth;
+          this.vx += flowX * this.depth * 0.6;
+          this.vy += flowY * this.depth * 0.6;
 
           if (mouse.x !== null && mouse.y !== null) {
             const dx = mouse.x - this.x;
@@ -506,14 +507,18 @@
 
           this.vx += parallaxX * 0.0025;
           this.vy += parallaxY * 0.0025;
-          this.vx *= 0.96;
-          this.vy *= 0.96;
+          const maxSpeed = 1.2 * screenScale;
+
+          this.vx = Math.max(-maxSpeed, Math.min(maxSpeed, this.vx));
+          this.vy = Math.max(-maxSpeed, Math.min(maxSpeed, this.vy));
+          this.vx *= 0.94;
+          this.vy *= 0.94;
 
           this.x += this.vx;
           this.y += this.vy;
 
-          this.x += (this.baseX - this.x) * 0.002;
-          this.y += (this.baseY - this.y) * 0.002;
+          this.x += (this.baseX - this.x) * 0.001;
+          this.y += (this.baseY - this.y) * 0.001;
         }
 
         draw() {
