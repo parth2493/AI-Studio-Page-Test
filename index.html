@@ -483,12 +483,11 @@
           const parallaxY = mouseOffset.y * 10 * this.depth * centerFactor;
           const screenScale = Math.min(canvas.width, canvas.height) / 1000;
 
-          const angle =
-            Math.sin((this.x + flowTime * 60 + this.noiseOffset) * 0.002) *
-            Math.cos((this.y - flowTime * 80) * 0.002);
+          const angleX = Math.sin((this.y + flowTime * 50 + this.noiseOffset) * 0.002);
+          const angleY = Math.cos((this.x - flowTime * 50 + this.noiseOffset) * 0.002);
 
-          const flowX = Math.cos(angle) * 0.25 * screenScale;
-          const flowY = Math.sin(angle) * 0.25 * screenScale;
+          const flowX = angleX * 0.25 * screenScale;
+          const flowY = angleY * 0.25 * screenScale;
 
           this.vx += flowX * this.depth * 0.4;
           this.vy += flowY * this.depth * 0.4;
@@ -509,9 +508,13 @@
           this.vx += parallaxX * 0.0025;
           this.vy += parallaxY * 0.0025;
 
-          // subtle center correction (prevents drift)
-          this.vx += (this.baseX - this.x) * 0.0005;
-          this.vy += (this.baseY - this.y) * 0.0005;
+          // stronger center correction to counter persistent drift
+          this.vx += (this.baseX - this.x) * 0.001;
+          this.vy += (this.baseY - this.y) * 0.001;
+
+          // remove accumulated directional bias
+          this.vx -= this.vx * 0.002;
+          this.vy -= this.vy * 0.002;
 
           const maxSpeed = (isMouseActive ? 1.5 : 0.8) * screenScale;
 
@@ -526,6 +529,8 @@
             // slower, smoother idle motion
             this.vx *= 0.92;
             this.vy *= 0.92;
+            this.vx *= 0.98;
+            this.vy *= 0.98;
           }
 
           this.x += this.vx;
