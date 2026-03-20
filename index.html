@@ -1,389 +1,421 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VueXR Studio | AI-Powered XR Content Creation</title>
-    <meta
-      name="description"
-      content="VueXR Studio is a local AI-driven desktop app for generating, previewing, and publishing XR-ready 3D assets with offline-first performance."
-    />
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <header class="vxr-site-header">
-      <div class="vxr-container vxr-nav">
-        <a class="vxr-brand" href="#">VueXR Studio</a>
-        <a class="vxr-nav-cta" href="#early-access">Get Early Access</a>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VueXR Studio | AI-Powered XR Content Creation</title>
+  <meta name="description"
+    content="VueXR Studio is a local AI-driven desktop app for generating, previewing, and publishing XR-ready 3D assets with offline-first performance." />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="vxr-site-header">
+    <div class="vxr-container vxr-nav">
+      <a class="vxr-brand" href="#">VueXR Studio</a>
+      <a class="vxr-nav-cta" href="#early-access">Get Early Access</a>
+    </div>
+  </header>
+  <main>
+    <section class="vxr-hero">
+      <div class="vxr-hero-bg" aria-hidden="true">
+        <span class="vxr-hero-orb vxr-hero-orb-1"></span>
+        <span class="vxr-hero-orb vxr-hero-orb-2"></span>
+        <span class="vxr-hero-orb vxr-hero-orb-3"></span>
       </div>
-    </header>
-    <main>
-      <section class="vxr-hero">
-        <div class="vxr-hero-bg" aria-hidden="true">
-          <span class="vxr-hero-orb vxr-hero-orb-1"></span>
-          <span class="vxr-hero-orb vxr-hero-orb-2"></span>
-          <span class="vxr-hero-orb vxr-hero-orb-3"></span>
+      <div class="vxr-container vxr-hero-grid">
+        <div data-aos="fade-up">
+          <p class="vxr-eyebrow text-small">AI-Powered XR Content Creation</p>
+          <h1 class="text-h1">
+            Create <span class="vxr-highlight">3D models</span> from text or images
+          </h1>
+          <h2 class="text-h2">
+            Instantly generate, preview, and publish XR-ready assets — all locally.
+          </h2>
+          <p class="vxr-hero-copy text-body text-muted">
+            No complex tools. No cloud dependency. Just describe your idea and get production-ready 3D assets in
+            seconds.
+          </p>
         </div>
-        <div class="vxr-container vxr-hero-grid">
-          <div data-aos="fade-up">
-            <p class="vxr-eyebrow text-small">AI-Powered XR Content Creation</p>
-            <h1 class="text-h1">
-              Create <span class="vxr-highlight">3D models</span> from text or images
-            </h1>
-            <h2 class="text-h2">
-              Instantly generate, preview, and publish XR-ready assets — all locally.
-            </h2>
-            <p class="vxr-hero-copy text-body text-muted">
-              No complex tools. No cloud dependency. Just describe your idea and get production-ready 3D assets in seconds.
+
+        <aside id="early-access" class="vxr-signup-card" aria-label="Email signup">
+          <h3 class="text-h3">Join the Early Access Program</h3>
+          <p class="text-body text-muted">Get product updates, pilot access, and launch timelines.</p>
+          <form>
+            <label for="email" class="vxr-sr-only">Work email</label>
+            <input id="email" name="email" type="email" placeholder="you@company.com" required />
+            <button type="submit">Request Access</button>
+          </form>
+        </aside>
+      </div>
+    </section>
+    <section class="vxr-section vxr-demo-section" id="demo">
+      <div class="vxr-container">
+        <div class="vxr-demo-center">
+          <div class="vxr-demo-content" data-aos="fade-up">
+            <h2 class="vxr-section-title text-h2">See VueXR Studio in Action</h2>
+            <p class="vxr-demo-copy text-body text-muted">
+              Turn a simple prompt into a production-ready 3D model in seconds.
+              Generate locally, preview instantly, and publish immersive XR experiences.
             </p>
           </div>
-
-          <aside id="early-access" class="vxr-signup-card" aria-label="Email signup">
-            <h3 class="text-h3">Join the Early Access Program</h3>
-            <p class="text-body text-muted">Get product updates, pilot access, and launch timelines.</p>
-            <form>
-              <label for="email" class="vxr-sr-only">Work email</label>
-              <input id="email" name="email" type="email" placeholder="you@company.com" required />
-              <button type="submit">Request Access</button>
-            </form>
-          </aside>
+          <div class="vxr-demo-video" data-aos="fade-up">
+            <video class="vxr-demo-player" autoplay muted loop playsinline controls>
+              <source src="assets/videos/demo.webm" type="video/webm" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
         </div>
-      </section>
-      <section class="vxr-section vxr-demo-section" id="demo">
-        <div class="vxr-container">
-          <div class="vxr-demo-center">
-            <div class="vxr-demo-content" data-aos="fade-up">
-              <h2 class="vxr-section-title text-h2">See VueXR Studio in Action</h2>
-              <p class="vxr-demo-copy text-body text-muted">
-                Turn a simple prompt into a production-ready 3D model in seconds.
-                Generate locally, preview instantly, and publish immersive XR experiences.
-              </p>
+      </div>
+    </section>
+
+    <section class="vxr-section vxr-models-section" id="generated-models">
+      <div class="vxr-container">
+        <div class="vxr-models-header" data-aos="fade-up">
+          <p class="vxr-eyebrow text-small">AI-Generated 3D Models</p>
+          <h2 class="vxr-section-title text-h2">Generate high-quality 3D assets instantly from text or images.</h2>
+          <p class="text-body text-muted vxr-models-copy">
+            Each model is generated with precision, optimized for real-time preview, and ready for XR deployment.
+          </p>
+        </div>
+        <div class="vxr-model-grid">
+          <article class="vxr-model-card" data-aos="fade-up" aria-label="Generated robotic headset concept">
+            <div class="vxr-model-badge">AI Generated</div>
+            <div class="vxr-model-media">
+              <img src="assets/images/robotic-headset.png" alt="Generated robotic headset 3D asset" loading="lazy" />
             </div>
-            <div class="vxr-demo-video" data-aos="fade-up">
-              <video class="vxr-demo-player"
-				  autoplay 
-				  muted 
-				  loop 
-				  playsinline 
-				  controls
-				>
-				  <source src="assets/videos/demo.webm" type="video/webm" />
-				  Your browser does not support the video tag.
-			  </video>
+            <div class="vxr-model-content">
+              <div class="vxr-model-tag">Product</div>
+              <h3 class="text-h3">Robotic Headset</h3>
+              <p class="text-body text-muted">High-detail hard surface model with precision materials, ideal for product
+                visualization and futuristic XR experiences.</p>
+            </div>
+          </article>
+          <article class="vxr-model-card" data-aos="fade-up" data-aos-delay="80"
+            aria-label="Generated industrial machine concept">
+            <div class="vxr-model-badge">AI Generated</div>
+            <div class="vxr-model-media">
+              <img src="assets/images/industrial-machine.png" alt="Generated industrial machine 3D asset"
+                loading="lazy" />
+            </div>
+            <div class="vxr-model-content">
+              <div class="vxr-model-tag">Industrial</div>
+              <h3 class="text-h3">Industrial Machine</h3>
+              <p class="text-body text-muted">Complex mechanical asset optimized for rapid iteration, simulation, and
+                real-time XR workflows.</p>
+            </div>
+          </article>
+          <article class="vxr-model-card" data-aos="fade-up" data-aos-delay="160"
+            aria-label="Generated architectural AR scene concept">
+            <div class="vxr-model-badge">AI Generated</div>
+            <div class="vxr-model-media">
+              <img src="assets/images/modern-chair.png" alt="Generated interior furniture 3D asset" loading="lazy" />
+            </div>
+            <div class="vxr-model-content">
+              <div class="vxr-model-tag">Interior</div>
+              <h3 class="text-h3">Modern Chair</h3>
+              <p class="text-body text-muted">Clean, realistic furniture model designed for interior visualization and
+                AR placement experiences.</p>
+            </div>
+          </article>
+          <article class="vxr-model-card" data-aos="fade-up" data-aos-delay="240"
+            aria-label="Generated environment preview concept">
+            <div class="vxr-model-badge">AI Generated</div>
+            <div class="vxr-model-media">
+              <img src="assets/images/ar-vr.png" alt="Generated low-poly 3D AR/VR asset" loading="lazy" />
+            </div>
+            <div class="vxr-model-content">
+              <div class="vxr-model-tag">AR/VR</div>
+              <h3 class="text-h3">AR/VR</h3>
+              <p class="text-body text-muted">Lightweight, optimized prop designed for real-time rendering in AR, VR,
+                and game environments.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="vxr-section" id="features">
+      <div class="vxr-container">
+        <h2 class="vxr-section-title text-h2">Key <span class="vxr-highlight">Differentiating</span> Features</h2>
+        <div class="vxr-feature-grid">
+          <article class="vxr-card vxr-interactive" data-aos="fade-up">
+            <h3 class="text-h3">
+              <span class="vxr-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M9 3h6"></path>
+                  <path d="M10 3v3"></path>
+                  <path d="M14 3v3"></path>
+                  <path d="M8 9h8"></path>
+                  <path d="M8 13h8"></path>
+                  <path d="M9 21h6"></path>
+                  <path d="M6 7h12v10a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4V7z"></path>
+                </svg>
+              </span>
+              Prompt-to-3D with Local AI Models
+            </h3>
+            <p class="text-body text-muted">Generate 3D meshes locally using modular AI backends through a unified
+              runtime pipeline.</p>
+          </article>
+          <article class="vxr-card vxr-interactive" data-aos="fade-up">
+            <h3 class="text-h3">
+              <span class="vxr-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="14" rx="2"></rect>
+                  <path d="M8 20h8"></path>
+                  <path d="M10 16h4"></path>
+                </svg>
+              </span>
+              Integrated Unity 3D Workspace
+            </h3>
+            <p class="text-body text-muted">Use one desktop workspace for prompt input, model selection, history, and
+              live 3D preview.</p>
+          </article>
+          <article class="vxr-card vxr-interactive" data-aos="fade-up">
+            <h3 class="text-h3">
+              <span class="vxr-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M12 3v12"></path>
+                  <path d="m7 10 5 5 5-5"></path>
+                  <rect x="4" y="17" width="16" height="4" rx="1"></rect>
+                </svg>
+              </span>
+              One-Click Publish and Export
+            </h3>
+            <p class="text-body text-muted">Preview, publish to VueXR, or export GLB, FBX, and OBJ from the same secure
+              workflow.</p>
+          </article>
+          <article class="vxr-card vxr-interactive" data-aos="fade-up">
+            <h3 class="text-h3">
+              <span class="vxr-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <rect x="2.5" y="5" width="8.5" height="14" rx="1.5"></rect>
+                  <rect x="13" y="7" width="8.5" height="10" rx="1.5"></rect>
+                </svg>
+              </span>
+              Cross-Platform Consistency
+            </h3>
+            <p class="text-body text-muted">Deliver the same experience and output flow across desktop environments
+              without cloud dependency.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="vxr-section vxr-how-it-works" id="how-it-works">
+      <div class="vxr-container">
+        <h2 class="vxr-section-title text-h2">How <span class="vxr-highlight">It Works</span></h2>
+        <div class="vxr-image-dual-premium">
+          <!-- Card 1 -->
+          <div class="vxr-premium-card" data-step="01">
+            <div class="vxr-image-layer">
+              <img src="assets/images/image-to-3d.png" alt="Image to 3D Model" loading="lazy" />
+            </div>
+            <div class="vxr-premium-content">
+              <h2 class="text-h2">Image to 3D Model</h2>
+              <p class="text-body">Turn your 2D images into stunning 3D models instantly.</p>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="vxr-premium-card" data-step="02">
+            <div class="vxr-image-layer">
+              <img src="assets/images/upload-to-vuexr.png" alt="Upload to VueXR" loading="lazy" />
+            </div>
+            <div class="vxr-premium-content">
+              <h2 class="text-h2">Upload to VueXR</h2>
+              <p class="text-body">Publish your models and experience them in AR instantly.</p>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="vxr-premium-card" data-step="03">
+            <div class="vxr-image-layer">
+              <img src="assets/images/vuexr-ar.png" alt="View in AR" loading="lazy" />
+            </div>
+            <div class="vxr-premium-content">
+              <h2 class="text-h2">View in AR</h2>
+              <p class="text-body">Experience your models in real-world AR instantly.</p>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section class="vxr-section vxr-models-section" id="generated-models">
-        <div class="vxr-container">
-          <div class="vxr-models-header" data-aos="fade-up">
-            <p class="vxr-eyebrow text-small">AI-Generated 3D Models</p>
-            <h2 class="vxr-section-title text-h2">Generate high-quality 3D assets instantly from text or images.</h2>
-            <p class="text-body text-muted vxr-models-copy">
-              Each model is generated with precision, optimized for real-time preview, and ready for XR deployment.
-            </p>
-          </div>
-          <div class="vxr-model-grid">
-            <article class="vxr-model-card" data-aos="fade-up" aria-label="Generated robotic headset concept">
-              <div class="vxr-model-badge">AI Generated</div>
-              <div class="vxr-model-media">
-                <img src="assets/images/robotic-headset.png" alt="Generated robotic headset 3D asset" loading="lazy" />
-              </div>
-              <div class="vxr-model-content">
-                <div class="vxr-model-tag">Product</div>
-                <h3 class="text-h3">Robotic Headset</h3>
-                <p class="text-body text-muted">High-detail hard surface model with precision materials, ideal for product visualization and futuristic XR experiences.</p>
-              </div>
-            </article>
-            <article class="vxr-model-card" data-aos="fade-up" data-aos-delay="80" aria-label="Generated industrial machine concept">
-              <div class="vxr-model-badge">AI Generated</div>
-              <div class="vxr-model-media">
-                <img src="assets/images/industrial-machine.png" alt="Generated industrial machine 3D asset" loading="lazy" />
-              </div>
-              <div class="vxr-model-content">
-                <div class="vxr-model-tag">Industrial</div>
-                <h3 class="text-h3">Industrial Machine</h3>
-                <p class="text-body text-muted">Complex mechanical asset optimized for rapid iteration, simulation, and real-time XR workflows.</p>
-              </div>
-            </article>
-            <article class="vxr-model-card" data-aos="fade-up" data-aos-delay="160" aria-label="Generated architectural AR scene concept">
-              <div class="vxr-model-badge">AI Generated</div>
-              <div class="vxr-model-media">
-                <img src="assets/images/modern-chair.png" alt="Generated interior furniture 3D asset" loading="lazy" />
-              </div>
-              <div class="vxr-model-content">
-                <div class="vxr-model-tag">Interior</div>
-                <h3 class="text-h3">Modern Chair</h3>
-                <p class="text-body text-muted">Clean, realistic furniture model designed for interior visualization and AR placement experiences.</p>
-              </div>
-            </article>
-            <article class="vxr-model-card" data-aos="fade-up" data-aos-delay="240" aria-label="Generated environment preview concept">
-              <div class="vxr-model-badge">AI Generated</div>
-              <div class="vxr-model-media">
-                <img src="assets/images/ar-vr.png" alt="Generated low-poly 3D AR/VR asset" loading="lazy" />
-              </div>
-              <div class="vxr-model-content">
-                <div class="vxr-model-tag">AR/VR</div>
-                <h3 class="text-h3">AR/VR</h3>
-                <p class="text-body text-muted">Lightweight, optimized prop designed for real-time rendering in AR, VR, and game environments.</p>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="vxr-section" id="features">
-        <div class="vxr-container">
-          <h2 class="vxr-section-title text-h2">Key <span class="vxr-highlight">Differentiating</span> Features</h2>
-          <div class="vxr-feature-grid">
-            <article class="vxr-card vxr-interactive" data-aos="fade-up">
-              <h3 class="text-h3">
-                <span class="vxr-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 3h6"></path><path d="M10 3v3"></path><path d="M14 3v3"></path><path d="M8 9h8"></path><path d="M8 13h8"></path><path d="M9 21h6"></path><path d="M6 7h12v10a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4V7z"></path>
-                  </svg>
-                </span>
-                Prompt-to-3D with Local AI Models
-              </h3>
-              <p class="text-body text-muted">Generate 3D meshes locally using modular AI backends through a unified runtime pipeline.</p>
-            </article>
-            <article class="vxr-card vxr-interactive" data-aos="fade-up">
-              <h3 class="text-h3">
-                <span class="vxr-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4" width="18" height="14" rx="2"></rect><path d="M8 20h8"></path><path d="M10 16h4"></path>
-                  </svg>
-                </span>
-                Integrated Unity 3D Workspace
-              </h3>
-              <p class="text-body text-muted">Use one desktop workspace for prompt input, model selection, history, and live 3D preview.</p>
-            </article>
-            <article class="vxr-card vxr-interactive" data-aos="fade-up">
-              <h3 class="text-h3">
-                <span class="vxr-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><rect x="4" y="17" width="16" height="4" rx="1"></rect>
-                  </svg>
-                </span>
-                One-Click Publish and Export
-              </h3>
-              <p class="text-body text-muted">Preview, publish to VueXR, or export GLB, FBX, and OBJ from the same secure workflow.</p>
-            </article>
-            <article class="vxr-card vxr-interactive" data-aos="fade-up">
-              <h3 class="text-h3">
-                <span class="vxr-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2.5" y="5" width="8.5" height="14" rx="1.5"></rect><rect x="13" y="7" width="8.5" height="10" rx="1.5"></rect>
-                  </svg>
-                </span>
-                Cross-Platform Consistency
-              </h3>
-              <p class="text-body text-muted">Deliver the same experience and output flow across desktop environments without cloud dependency.</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="vxr-section vxr-how-it-works" id="how-it-works">
-        <div class="vxr-container">
-          <h2 class="vxr-section-title text-h2">How <span class="vxr-highlight">It Works</span></h2>
-			  <div class="vxr-image-dual-premium">
-				  <!-- Card 1 -->
-				  <div class="vxr-premium-card" data-step="01">
-					<div class="vxr-image-layer">
-					  <img src="assets/images/image-to-3d.png" alt="Image to 3D Model" loading="lazy" />
-					</div>
-					<div class="vxr-premium-content">
-					  <h2 class="text-h2">Image to 3D Model</h2>
-					  <p class="text-body">Turn your 2D images into stunning 3D models instantly.</p>
-					</div>
-				  </div>
-
-				  <!-- Card 2 -->
-				  <div class="vxr-premium-card" data-step="02">
-					<div class="vxr-image-layer">
-					  <img src="assets/images/upload-to-vuexr.png" alt="Upload to VueXR" loading="lazy" />
-					</div>
-					<div class="vxr-premium-content">
-					  <h2 class="text-h2">Upload to VueXR</h2>
-					  <p class="text-body">Publish your models and experience them in AR instantly.</p>
-					</div>
-				  </div>
-
-				  <!-- Card 3 -->
-				  <div class="vxr-premium-card" data-step="03">
-					<div class="vxr-image-layer">
-					  <img src="assets/images/vuexr-ar.png" alt="View in AR" loading="lazy" />
-					</div>
-					<div class="vxr-premium-content">
-					  <h2 class="text-h2">View in AR</h2>
-					  <p class="text-body">Experience your models in real-world AR instantly.</p>
-					</div>
-				  </div>
-			  </div>
-        </div>
-      </section>
-	  
-	  <section class="vxr-section" id="why-vuexr">
-        <div class="vxr-container">
-          <h2 class="vxr-section-title text-h2">Why <span class="vxr-highlight">VueXR Studio</span></h2>
-          <div class="vxr-pillars">
-            <article class="vxr-pillar" data-aos="fade-up">
-              <h3 class="text-h3">Offline-First by Design</h3>
-              <p class="text-body text-muted">Operate fully without internet and avoid recurring cloud inference cost.</p>
-            </article>
-            <article class="vxr-pillar" data-aos="fade-up">
-              <h3 class="text-h3">Local AI Inference</h3>
-              <p class="text-body text-muted">Keep models and generation workflows under your control for privacy-sensitive use.</p>
-            </article>
-            <article class="vxr-pillar" data-aos="fade-up">
-              <h3 class="text-h3">GPU Acceleration</h3>
-              <p class="text-body text-muted">Designed for CUDA and Metal to deliver fast preview generation on modern laptops.</p>
-            </article>
-            <article class="vxr-pillar" data-aos="fade-up">
-              <h3 class="text-h3">Flexible Export Formats</h3>
-              <p class="text-body text-muted">Export in GLB, FBX, and OBJ with optional compression and texture map support.</p>
-            </article>
-            <article class="vxr-pillar" data-aos="fade-up">
-              <h3 class="text-h3">Unity-Based 3D Viewer</h3>
-              <p class="text-body text-muted">Validate geometry and visual quality in an interactive Unity runtime viewport.</p>
-            </article>
-            <article class="vxr-pillar" data-aos="fade-up">
-              <h3 class="text-h3">No-Code AR Experience</h3>
-              <p class="text-body text-muted">
-                Create and publish immersive AR content without writing a single line of code.
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="vxr-section vxr-platform-section" id="platform-publishing">
-        <div class="vxr-container">
-          <div class="vxr-models-header" data-aos="fade-up">
-            <p class="vxr-eyebrow text-small">Multi-Platform Publishing</p>
-            <h2 class="vxr-section-title text-h2">Publish once. Experience everywhere.</h2>
-            <p class="text-body text-muted vxr-models-copy">
-              VueXR Studio lets you publish your 3D content across web, iOS, and Android from a single workflow. Your models are optimized for real-time performance and designed to work seamlessly across devices, making it easy to reach users anywhere.
-            </p>
-          </div>
-			<div class="vxr-platform-grid">
-			  <article class="vxr-platform-card vxr-premium-hover" data-aos="fade-up">
-				<div class="vxr-platform-image">
-				  <img src="assets/images/platform-web.png" alt="VueXR Web Viewer" loading="lazy" />
-				</div>
-				<div class="vxr-platform-content">
-				  <h3 class="text-h3">Web</h3>
-				  <p class="text-body text-muted">Instantly share and view 3D content directly in the browser. No downloads required.</p>
-				</div>
-				<div class="vxr-light"></div>
-			  </article>
-
-			  <article class="vxr-platform-card vxr-premium-hover" data-aos="fade-up" data-aos-delay="80">
-				<div class="vxr-platform-image">
-				  <img src="assets/images/platform-ios.png" alt="VueXR iOS AR Experience" loading="lazy" />
-				</div>
-				<div class="vxr-platform-content">
-				  <h3 class="text-h3">iOS</h3>
-				  <p class="text-body text-muted">Experience immersive AR on iPhone and iPad with smooth performance and native support.</p>
-				</div>
-				<div class="vxr-light"></div>
-			  </article>
-
-			  <article class="vxr-platform-card vxr-premium-hover" data-aos="fade-up" data-aos-delay="160">
-				<div class="vxr-platform-image">
-				  <img src="assets/images/platform-android.png" alt="VueXR Android ARCore" loading="lazy" />
-				</div>
-				<div class="vxr-platform-content">
-				  <h3 class="text-h3">Android</h3>
-				  <p class="text-body text-muted">Deploy interactive AR experiences across a wide range of Android devices with ease.</p>
-				</div>
-				<div class="vxr-light"></div>
-			  </article>
-			</div>
-        </div>
-      </section>
-
-      <section class="vxr-section vxr-alt" id="audience">
-        <div class="vxr-container vxr-split">
-          <div class="vxr-card vxr-subtle">
-            <h2 class="text-h2">Who It’s For</h2>
+    <section class="vxr-section" id="why-vuexr">
+      <div class="vxr-container">
+        <h2 class="vxr-section-title text-h2">Why <span class="vxr-highlight">VueXR Studio</span></h2>
+        <div class="vxr-pillars">
+          <article class="vxr-pillar" data-aos="fade-up">
+            <h3 class="text-h3">Offline-First by Design</h3>
+            <p class="text-body text-muted">Operate fully without internet and avoid recurring cloud inference cost.</p>
+          </article>
+          <article class="vxr-pillar" data-aos="fade-up">
+            <h3 class="text-h3">Local AI Inference</h3>
+            <p class="text-body text-muted">Keep models and generation workflows under your control for
+              privacy-sensitive use.</p>
+          </article>
+          <article class="vxr-pillar" data-aos="fade-up">
+            <h3 class="text-h3">GPU Acceleration</h3>
+            <p class="text-body text-muted">Designed for CUDA and Metal to deliver fast preview generation on modern
+              laptops.</p>
+          </article>
+          <article class="vxr-pillar" data-aos="fade-up">
+            <h3 class="text-h3">Flexible Export Formats</h3>
+            <p class="text-body text-muted">Export in GLB, FBX, and OBJ with optional compression and texture map
+              support.</p>
+          </article>
+          <article class="vxr-pillar" data-aos="fade-up">
+            <h3 class="text-h3">Unity-Based 3D Viewer</h3>
+            <p class="text-body text-muted">Validate geometry and visual quality in an interactive Unity runtime
+              viewport.</p>
+          </article>
+          <article class="vxr-pillar" data-aos="fade-up">
+            <h3 class="text-h3">No-Code AR Experience</h3>
             <p class="text-body text-muted">
-              XR studios, enterprise innovation teams, and technical creators who need secure,
-              local-first 3D generation pipelines that move from concept to deployable assets
-              quickly.
+              Create and publish immersive AR content without writing a single line of code.
             </p>
-          </div>
-          <div class="vxr-card vxr-subtle">
-            <h2 class="text-h2">Problem It Solves</h2>
-            <p class="text-body text-muted">
-              Traditional 3D content creation is slow, fragmented, and cloud-dependent. VueXR
-              Studio unifies generation, inspection, and publishing in a single desktop app while
-              preserving privacy and reducing operational cost.
-            </p>
-          </div>
+          </article>
         </div>
-      </section>
-    </main>
+      </div>
+    </section>
 
-    <footer class="vxr-site-footer">
-		<div class="vxr-container vxr-footer-inner">
-		  <div class="vxr-footer-left">
-			<p class="text-small text-muted">© 2026 VueXR Studio. All rights reserved.</p>
-		  </div>
+    <section class="vxr-section vxr-platform-section" id="platform-publishing">
+      <div class="vxr-container">
+        <div class="vxr-models-header" data-aos="fade-up">
+          <p class="vxr-eyebrow text-small">Multi-Platform Publishing</p>
+          <h2 class="vxr-section-title text-h2">Publish once. Experience everywhere.</h2>
+          <p class="text-body text-muted vxr-models-copy">
+            VueXR Studio lets you publish your 3D content across web, iOS, and Android from a single workflow. Your
+            models are optimized for real-time performance and designed to work seamlessly across devices, making it
+            easy to reach users anywhere.
+          </p>
+        </div>
+        <div class="vxr-platform-grid">
+          <article class="vxr-platform-card vxr-premium-hover" data-aos="fade-up">
+            <div class="vxr-platform-image">
+              <img src="assets/images/platform-web.png" alt="VueXR Web Viewer" loading="lazy" />
+            </div>
+            <div class="vxr-platform-content">
+              <h3 class="text-h3">Web</h3>
+              <p class="text-body text-muted">Instantly share and view 3D content directly in the browser. No downloads
+                required.</p>
+            </div>
+            <div class="vxr-light"></div>
+          </article>
 
-		  <div class="vxr-footer-links">
-			<a href="#" class="text-small text-muted">Privacy Policy</a>
-			<a href="#" class="text-small text-muted">Terms & Conditions</a>
-		  </div>
-		</div>
-    </footer>
+          <article class="vxr-platform-card vxr-premium-hover" data-aos="fade-up" data-aos-delay="80">
+            <div class="vxr-platform-image">
+              <img src="assets/images/platform-ios.png" alt="VueXR iOS AR Experience" loading="lazy" />
+            </div>
+            <div class="vxr-platform-content">
+              <h3 class="text-h3">iOS</h3>
+              <p class="text-body text-muted">Experience immersive AR on iPhone and iPad with smooth performance and
+                native support.</p>
+            </div>
+            <div class="vxr-light"></div>
+          </article>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-      AOS.init({
-        duration: 700
+          <article class="vxr-platform-card vxr-premium-hover" data-aos="fade-up" data-aos-delay="160">
+            <div class="vxr-platform-image">
+              <img src="assets/images/platform-android.png" alt="VueXR Android ARCore" loading="lazy" />
+            </div>
+            <div class="vxr-platform-content">
+              <h3 class="text-h3">Android</h3>
+              <p class="text-body text-muted">Deploy interactive AR experiences across a wide range of Android devices
+                with ease.</p>
+            </div>
+            <div class="vxr-light"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="vxr-section vxr-alt" id="audience">
+      <div class="vxr-container vxr-split">
+        <div class="vxr-card vxr-subtle">
+          <h2 class="text-h2">Who It’s For</h2>
+          <p class="text-body text-muted">
+            XR studios, enterprise innovation teams, and technical creators who need secure,
+            local-first 3D generation pipelines that move from concept to deployable assets
+            quickly.
+          </p>
+        </div>
+        <div class="vxr-card vxr-subtle">
+          <h2 class="text-h2">Problem It Solves</h2>
+          <p class="text-body text-muted">
+            Traditional 3D content creation is slow, fragmented, and cloud-dependent. VueXR
+            Studio unifies generation, inspection, and publishing in a single desktop app while
+            preserving privacy and reducing operational cost.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="vxr-site-footer">
+    <div class="vxr-container vxr-footer-inner">
+      <div class="vxr-footer-left">
+        <p class="text-small text-muted">© 2026 VueXR Studio. All rights reserved.</p>
+      </div>
+
+      <div class="vxr-footer-links">
+        <a href="#" class="text-small text-muted">Privacy Policy</a>
+        <a href="#" class="text-small text-muted">Terms & Conditions</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      duration: 700
+    });
+
+    const premiumCards = document.querySelectorAll('.vxr-premium-card');
+
+    premiumCards.forEach((card) => {
+      card.addEventListener('mousemove', (event) => {
+        const rect = card.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
+        const rotateY = ((offsetX / rect.width) - 0.5) * 16;
+        const rotateX = (0.5 - (offsetY / rect.height)) * 16;
+
+        card.style.setProperty('--vxr-card-rotate-x', `${rotateX.toFixed(2)}deg`);
+        card.style.setProperty('--vxr-card-rotate-y', `${rotateY.toFixed(2)}deg`);
+        card.style.setProperty('--vxr-card-lift', '-10px');
+        card.style.setProperty('--vxr-card-scale', '1.02');
       });
 
-      const premiumCards = document.querySelectorAll('.vxr-premium-card');
+      card.addEventListener('mouseleave', () => {
+        card.style.setProperty('--vxr-card-rotate-x', '0deg');
+        card.style.setProperty('--vxr-card-rotate-y', '0deg');
+        card.style.setProperty('--vxr-card-lift', '0px');
+        card.style.setProperty('--vxr-card-scale', '1');
+      });
+    });
 
-      premiumCards.forEach((card) => {
-        card.addEventListener('mousemove', (event) => {
-          const rect = card.getBoundingClientRect();
-          const offsetX = event.clientX - rect.left;
-          const offsetY = event.clientY - rect.top;
-          const rotateY = ((offsetX / rect.width) - 0.5) * 16;
-          const rotateX = (0.5 - (offsetY / rect.height)) * 16;
-
-          card.style.setProperty('--vxr-card-rotate-x', `${rotateX.toFixed(2)}deg`);
-          card.style.setProperty('--vxr-card-rotate-y', `${rotateY.toFixed(2)}deg`);
-          card.style.setProperty('--vxr-card-lift', '-10px');
-          card.style.setProperty('--vxr-card-scale', '1.02');
-        });
-
-        card.addEventListener('mouseleave', () => {
-          card.style.setProperty('--vxr-card-rotate-x', '0deg');
-          card.style.setProperty('--vxr-card-rotate-y', '0deg');
-          card.style.setProperty('--vxr-card-lift', '0px');
-          card.style.setProperty('--vxr-card-scale', '1');
-        });
+    document.querySelectorAll('.vxr-platform-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--x', (e.clientX - rect.left) + 'px');
+        card.style.setProperty('--y', (e.clientY - rect.top) + 'px');
       });
 
-		document.querySelectorAll('.vxr-platform-card').forEach(card => {
-			card.addEventListener('mousemove', e => {
-			const rect = card.getBoundingClientRect();
-			card.style.setProperty('--x', (e.clientX - rect.left) + 'px');
-			card.style.setProperty('--y', (e.clientY - rect.top) + 'px');
-		  });
+      card.addEventListener('mouseleave', () => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--x', rect.width / 2 + 'px');
+        card.style.setProperty('--y', rect.height / 2 + 'px');
+      });
+    });
+  </script>
+</body>
 
-			card.addEventListener('mouseleave', () => {
-			const rect = card.getBoundingClientRect();
-			card.style.setProperty('--x', rect.width / 2 + 'px');
-			card.style.setProperty('--y', rect.height / 2 + 'px');
-		  });
-		});
-    </script>
-  </body>
 </html>
