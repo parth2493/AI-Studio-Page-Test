@@ -81,10 +81,11 @@ li {
 }
 
 .vxr-hero .text-h1 {
-  font-size: clamp(2.5rem, 6.5vw, 6.5rem) !important;
+  font-size: clamp(2.8rem, 7vw, 7rem);
   line-height: 1.05;
-  letter-spacing: -0.02em;
-  max-width: 1000px;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  max-width: 900px;
 }
 
 .vxr-hero .text-h2 {
@@ -193,12 +194,12 @@ li {
   align-items: center;
   justify-content: center;
   text-align: center;
-  gap: 1.5rem;
+  gap: 2rem;
   width: 100%;
 }
 
 .vxr-eyebrow {
-  margin: 0;
+  margin: 0 0 0.5rem;
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.11em;
@@ -230,7 +231,6 @@ li {
 
 .vxr-hero .text-h1 {
   margin-bottom: 0.6rem;
-  max-width: 700px;
 }
 
 .vxr-hero .text-h2 {
@@ -255,25 +255,45 @@ li {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 1.5rem auto 0 auto;
-  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin: 2rem auto 0 auto;
+  gap: 0.8rem;
   width: 100%;
-  max-width: 520px;
+  max-width: 600px;
 }
 
 .vxr-hero-form input {
-  flex: 1;
+  flex: 1 1 260px;
   text-align: center;
   border: 1px solid var(--line);
-  border-radius: 0.7rem;
-  padding: 0.85rem 1rem;
-  font-size: 0.95rem;
+  border-radius: 0.8rem;
+  padding: 1rem 1.2rem;
+  font-size: 1rem;
   background: #ffffff;
 }
 
 .vxr-hero-form button {
   white-space: nowrap;
-  padding: 0.85rem 1.2rem;
+  padding: 1rem 1.4rem;
+  font-size: 1rem;
+  border-radius: 0.8rem;
+}
+
+.vxr-secondary-btn {
+  flex-basis: 100%;
+  width: fit-content;
+  margin-inline: auto;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--text);
+  padding: 1rem 1.4rem;
+  border-radius: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.vxr-secondary-btn:hover {
+  background: #f3f4f6;
 }
 
 input[type='email'] {
@@ -1155,6 +1175,10 @@ button:hover {
     padding: 2rem 1.2rem;
   }
 
+  .vxr-hero .text-h1 {
+    font-size: clamp(2.2rem, 9vw, 3.2rem);
+  }
+
   .vxr-hero-grid {
     padding: 0 0.5rem;
   }
@@ -1162,6 +1186,8 @@ button:hover {
   .vxr-hero-form {
     width: 100%;
     padding: 0 0.5rem;
+    flex-direction: column;
+    gap: 0.8rem;
   }
 
   .vxr-hero-form input {
@@ -1169,10 +1195,9 @@ button:hover {
     font-size: 1rem;
   }
 
-  .vxr-hero-form button {
+  .vxr-hero-form button,
+  .vxr-secondary-btn {
     width: 100%;
-    padding: 1rem;
-    font-size: 1rem;
   }
 }
 
