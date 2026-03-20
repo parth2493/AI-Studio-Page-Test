@@ -173,10 +173,11 @@ li {
 .vxr-hero-grid {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 1.2rem;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
 }
 
 .vxr-eyebrow {
@@ -186,6 +187,7 @@ li {
   letter-spacing: 0.11em;
   font-size: 0.78rem;
   font-weight: 600;
+  text-align: center;
 }
 
 .vxr-highlight {
@@ -211,6 +213,7 @@ li {
 
 .vxr-hero .text-h1 {
   margin-bottom: 0.6rem;
+  max-width: 700px;
 }
 
 .vxr-hero .text-h2 {
@@ -233,6 +236,9 @@ li {
 }
 
 .vxr-signup-card {
+  margin-top: 1rem;
+  max-width: 420px;
+  width: 100%;
   padding: 1.15rem;
 }
 
