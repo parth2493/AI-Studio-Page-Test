@@ -238,14 +238,15 @@ li {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 1.5rem auto 0 auto;
   gap: 0.6rem;
-  margin-top: 1.5rem;
   width: 100%;
   max-width: 520px;
 }
 
 .vxr-hero-form input {
   flex: 1;
+  text-align: center;
   border: 1px solid var(--line);
   border-radius: 0.7rem;
   padding: 0.85rem 1rem;
