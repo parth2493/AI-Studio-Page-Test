@@ -412,6 +412,7 @@
       radius: 140
     };
     let mouseOffset = { x: 0, y: 0 };
+    let mouseOffsetTarget = { x: 0, y: 0 };
 
     if (canvas && ctx) {
       let animationFrameId = null;
@@ -439,7 +440,8 @@
           const centerX = canvasWidth / 2;
           const centerY = canvasHeight / 2;
           const angle = Math.random() * Math.PI * 2;
-          const radius = Math.random() * (canvasWidth * 0.4);
+          const spread = 0.22 + ((1 - Math.random() ** 1.8) * 0.16);
+          const radius = spread * canvasWidth;
 
           this.baseX = centerX + Math.cos(angle) * radius;
           this.baseY = centerY + Math.sin(angle) * radius;
@@ -529,32 +531,37 @@
 
       window.addEventListener('mousemove', (event) => {
         updateMousePosition(event.clientX, event.clientY);
-        mouseOffset.x = (event.clientX / window.innerWidth - 0.5) * 2;
-        mouseOffset.y = (event.clientY / window.innerHeight - 0.5) * 2;
+        mouseOffsetTarget.x = (event.clientX / window.innerWidth - 0.5) * 2;
+        mouseOffsetTarget.y = (event.clientY / window.innerHeight - 0.5) * 2;
       }, { passive: true });
 
       window.addEventListener('touchmove', (event) => {
         if (event.touches[0]) {
           const touch = event.touches[0];
           updateMousePosition(touch.clientX, touch.clientY);
-          mouseOffset.x = (touch.clientX / window.innerWidth - 0.5) * 2;
-          mouseOffset.y = (touch.clientY / window.innerHeight - 0.5) * 2;
+          mouseOffsetTarget.x = (touch.clientX / window.innerWidth - 0.5) * 2;
+          mouseOffsetTarget.y = (touch.clientY / window.innerHeight - 0.5) * 2;
         }
       }, { passive: true });
 
       window.addEventListener('mouseleave', () => {
         mouse.x = null;
         mouse.y = null;
-        mouseOffset.x = 0;
-        mouseOffset.y = 0;
+        mouseOffsetTarget.x = 0;
+        mouseOffsetTarget.y = 0;
       });
 
       canvas.addEventListener('pointerleave', () => {
         mouse.x = null;
         mouse.y = null;
+        mouseOffsetTarget.x = 0;
+        mouseOffsetTarget.y = 0;
       });
 
       function animate() {
+        mouseOffset.x += (mouseOffsetTarget.x - mouseOffset.x) * 0.08;
+        mouseOffset.y += (mouseOffsetTarget.y - mouseOffset.y) * 0.08;
+
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
         particles.forEach((particle) => {
