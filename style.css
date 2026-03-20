@@ -158,48 +158,6 @@ li {
   z-index: 1;
 }
 
-.vxr-hero-bg {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.vxr-hero-orb {
-  position: absolute;
-  display: block;
-  border-radius: 999px;
-  filter: blur(28px);
-  opacity: 0.15;
-  animation: vxr-hero-float 14s ease-in-out infinite;
-  will-change: transform;
-}
-
-.vxr-hero-orb-1 {
-  top: 5%;
-  left: -4%;
-  width: 17rem;
-  height: 17rem;
-  background: radial-gradient(circle at 30% 30%, rgba(237, 50, 55, 0.9), rgba(237, 50, 55, 0));
-}
-
-.vxr-hero-orb-2 {
-  top: 18%;
-  right: 10%;
-  width: 13rem;
-  height: 13rem;
-  background: radial-gradient(circle at 40% 40%, rgba(99, 102, 241, 0.9), rgba(99, 102, 241, 0));
-  animation-delay: -4s;
-}
-
-.vxr-hero-orb-3 {
-  right: 28%;
-  bottom: -8%;
-  width: 15rem;
-  height: 15rem;
-  background: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.9), rgba(56, 189, 248, 0));
-  animation-delay: -8s;
-}
 
 .vxr-hero-grid {
   position: relative;
