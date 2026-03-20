@@ -415,6 +415,7 @@
     };
     let mouseOffset = { x: 0, y: 0 };
     let mouseOffsetTarget = { x: 0, y: 0 };
+    let pulse = 0;
 
     if (canvas && ctx) {
       let animationFrameId = null;
@@ -468,14 +469,29 @@
           this.noiseOffset = Math.random() * 1000;
           this.depth = Math.random();
           this.size = (Math.random() * 2 + 1) * (0.5 + this.depth);
+          this.life = Math.random() * 100;
+          this.lifeSpeed = 0.3 + Math.random() * 0.4;
+          this.flickerOffset = Math.random() * Math.PI * 2;
           const alpha = 0.2 + this.depth * 0.7;
           this.color = Math.random() > 0.5
             ? `rgba(237,50,55,${alpha})`
             : `rgba(99,102,241,${alpha})`;
+          this.lifeAlpha = alpha;
+          this.flicker = 0;
         }
 
         update() {
           flowTime += isMouseActive ? 0.002 : 0.001;
+          this.life += this.lifeSpeed;
+          this.flickerOffset += 0.05;
+
+          const lifeAlpha = Math.sin(this.life * 0.02) * 0.5 + 0.5;
+          const flicker =
+            Math.sin(this.flickerOffset) * 0.1 +
+            Math.sin(this.flickerOffset * 2.3) * 0.05;
+
+          this.lifeAlpha = lifeAlpha;
+          this.flicker = flicker;
 
           const centerDistance = Math.abs(this.baseX - canvasWidth / 2);
           const centerFactor = centerDistance < canvasWidth * 0.2 ? 0.35 : 1;
@@ -488,9 +504,15 @@
 
           const flowX = angleX * 0.25 * screenScale;
           const flowY = angleY * 0.25 * screenScale;
+          const centerX = canvasWidth / 2;
+          const centerY = canvasHeight / 2;
+          const dxCenter = centerX - this.x;
+          const dyCenter = centerY - this.y;
 
-          this.vx += flowX * this.depth * 0.4;
-          this.vy += flowY * this.depth * 0.4;
+          this.vx += flowX * this.depth * 0.4 * (0.6 + this.depth);
+          this.vy += flowY * this.depth * 0.4 * (0.6 + this.depth);
+          this.vx += dxCenter * 0.00005;
+          this.vy += dyCenter * 0.00005;
 
           if (mouse.x !== null && mouse.y !== null) {
             const dx = mouse.x - this.x;
@@ -541,8 +563,6 @@
         }
 
         draw() {
-          ctx.beginPath();
-
           let sizeBoost = 0;
           let sizeFactor = 1;
 
@@ -560,9 +580,13 @@
             sizeFactor = 0.8;
           }
 
-          const blur = (1 - this.depth) * 8;
+          let finalAlpha = this.lifeAlpha * (0.3 + this.depth * 0.7);
+          finalAlpha += this.flicker;
+          finalAlpha = Math.max(0.1, Math.min(1, finalAlpha));
 
-          ctx.shadowBlur = blur;
+          ctx.beginPath();
+          ctx.globalAlpha = 0.95 + Math.sin(pulse) * 0.05;
+          ctx.shadowBlur = Math.max(0, (1 - this.depth) * 10 + this.flicker * 10);
           ctx.shadowColor = this.color;
           ctx.arc(
             this.x,
@@ -572,8 +596,10 @@
             Math.PI * 2
           );
 
-          ctx.fillStyle = this.color;
+          const color = this.color.replace(/[\d.]+\)$/, `${finalAlpha})`);
+          ctx.fillStyle = color;
           ctx.fill();
+          ctx.globalAlpha = 1;
           ctx.shadowBlur = 0;
         }
       }
@@ -629,6 +655,7 @@
       });
 
       function animate() {
+        pulse += 0.01;
         mouseOffset.x += (mouseOffsetTarget.x - mouseOffset.x) * 0.08;
         mouseOffset.y += (mouseOffsetTarget.y - mouseOffset.y) * 0.08;
 
