@@ -21,11 +21,6 @@
   <main>
     <section class="vxr-hero">
       <canvas id="vxr-particles-canvas" aria-hidden="true"></canvas>
-      <div class="vxr-hero-bg" aria-hidden="true">
-        <span class="vxr-hero-orb vxr-hero-orb-1"></span>
-        <span class="vxr-hero-orb vxr-hero-orb-2"></span>
-        <span class="vxr-hero-orb vxr-hero-orb-3"></span>
-      </div>
       <div class="vxr-container vxr-hero-grid">
         <div data-aos="fade-up">
           <p class="vxr-eyebrow text-small">AI-Powered XR Content Creation</p>
@@ -408,46 +403,50 @@
 
     const canvas = document.getElementById('vxr-particles-canvas');
     const ctx = canvas?.getContext('2d');
+
     let particles = [];
     const PARTICLE_COUNT = 180;
 
     if (canvas && ctx) {
-      const resize = () => {
+      let animationFrameId = null;
+
+      function resize() {
         const hero = canvas.closest('.vxr-hero');
         const bounds = hero ? hero.getBoundingClientRect() : { width: window.innerWidth, height: window.innerHeight };
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
         canvas.width = Math.max(1, Math.floor(bounds.width * dpr));
         canvas.height = Math.max(1, Math.floor(bounds.height * dpr));
+        canvas.style.width = `${Math.max(1, Math.floor(bounds.width))}px`;
+        canvas.style.height = `${Math.max(1, Math.floor(bounds.height))}px`;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
         init();
-      };
+      }
 
       class Particle {
         constructor() {
-          const width = canvas.width / (Math.min(window.devicePixelRatio || 1, 2));
-          const height = canvas.height / (Math.min(window.devicePixelRatio || 1, 2));
-          const centerX = width / 2;
-          const centerY = height / 2;
+          const centerX = canvas.width / (2 * Math.min(window.devicePixelRatio || 1, 2));
+          const centerY = canvas.height / (2 * Math.min(window.devicePixelRatio || 1, 2));
           const angle = Math.random() * Math.PI * 2;
-          const radius = Math.random() * (width * 0.38);
+          const radius = Math.random() * ((canvas.width / Math.min(window.devicePixelRatio || 1, 2)) * 0.4);
 
           this.x = centerX + Math.cos(angle) * radius;
           this.y = centerY + Math.sin(angle) * radius;
           this.baseX = this.x;
           this.baseY = this.y;
-          this.size = Math.random() * 1.8 + 0.4;
-          this.speed = Math.random() * 0.012 + 0.004;
-          this.orbit = Math.random() * 6 + 3;
+          this.size = Math.random() * 2 + 0.5;
+          this.speed = Math.random() * 0.003 + 0.0015;
           this.angle = Math.random() * Math.PI * 2;
           this.color = Math.random() > 0.5
-            ? 'rgba(237, 50, 55, 0.35)'
-            : 'rgba(99, 102, 241, 0.3)';
+            ? 'rgba(237,50,55,0.2)'
+            : 'rgba(99,102,241,0.2)';
         }
 
         update() {
           this.angle += this.speed;
-          this.x = this.baseX + Math.cos(this.angle) * this.orbit;
-          this.y = this.baseY + Math.sin(this.angle) * this.orbit;
+          this.x = this.baseX + Math.cos(this.angle) * 8;
+          this.y = this.baseY + Math.sin(this.angle) * 8;
         }
 
         draw() {
@@ -466,8 +465,9 @@
       }
 
       function animate() {
-        const width = canvas.width / (Math.min(window.devicePixelRatio || 1, 2));
-        const height = canvas.height / (Math.min(window.devicePixelRatio || 1, 2));
+        const width = canvas.width / Math.min(window.devicePixelRatio || 1, 2);
+        const height = canvas.height / Math.min(window.devicePixelRatio || 1, 2);
+
         ctx.clearRect(0, 0, width, height);
 
         particles.forEach((particle) => {
@@ -475,12 +475,18 @@
           particle.draw();
         });
 
-        window.requestAnimationFrame(animate);
+        animationFrameId = window.requestAnimationFrame(animate);
       }
 
       resize();
       window.addEventListener('resize', resize);
       animate();
+
+      window.addEventListener('beforeunload', () => {
+        if (animationFrameId) {
+          window.cancelAnimationFrame(animationFrameId);
+        }
+      });
     }
   </script>
 </body>
