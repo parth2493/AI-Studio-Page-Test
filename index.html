@@ -523,30 +523,16 @@
               let normalized = (mouse.radius - distance) / mouse.radius;
               normalized = Math.max(0, normalized);
 
-              let force;
+              let force = normalized * normalized;
 
-              if (normalized > 0.6) {
-                force = Math.pow(normalized, 1.2);
-              } else {
-                force = Math.pow(normalized, 3);
-              }
+              this.vx += (dx / distance) * force * 1.2 * this.depth;
+              this.vy += (dy / distance) * force * 1.2 * this.depth;
 
-              this.vx += (dx / distance) * force * 0.7 * this.depth;
-              this.vy += (dy / distance) * force * 0.7 * this.depth;
+              let distanceFactor = distance / mouse.radius;
+              let influence = 1 - Math.pow(distanceFactor, 2);
 
-              const distanceFactor = distance / mouse.radius;
-              const maxSpeedNear = 1.4;
-              const maxSpeedFar = 0.35;
-              const maxSpeed =
-                maxSpeedFar + (maxSpeedNear - maxSpeedFar) * (1 - distanceFactor);
-
-              this.vx = Math.max(-maxSpeed, Math.min(maxSpeed, this.vx));
-              this.vy = Math.max(-maxSpeed, Math.min(maxSpeed, this.vy));
-
-              if (distance > mouse.radius * 0.75) {
-                this.vx *= 0.94;
-                this.vy *= 0.94;
-              }
+              this.vx *= 0.95 + influence * 0.03;
+              this.vy *= 0.95 + influence * 0.03;
             }
           }
 
@@ -561,13 +547,12 @@
           this.vx -= this.vx * 0.002;
           this.vy -= this.vy * 0.002;
 
-          const maxSpeed = (isMouseActive ? 1.5 : 0.8) * screenScale;
+          const maxSpeed = 1.5;
 
           this.vx = Math.max(-maxSpeed, Math.min(maxSpeed, this.vx));
           this.vy = Math.max(-maxSpeed, Math.min(maxSpeed, this.vy));
 
           if (isMouseActive) {
-            // keep current feel during interaction
             this.vx *= 0.96;
             this.vy *= 0.96;
           } else {
