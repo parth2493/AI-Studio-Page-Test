@@ -194,7 +194,7 @@ li {
   align-items: center;
   justify-content: center;
   text-align: center;
-  gap: 2rem;
+  gap: 1.5rem;
   width: 100%;
 }
 
@@ -266,43 +266,34 @@ li {
   flex: 1 1 260px;
   text-align: center;
   border: 1px solid var(--line);
-  border-radius: 0.8rem;
-  padding: 1rem 1.2rem;
+  border-radius: 999px;
+  padding: 0.9rem 1.2rem;
   font-size: 1rem;
   background: #ffffff;
 }
 
 .vxr-hero-form button {
   white-space: nowrap;
-  padding: 1rem 1.4rem;
+  padding: 0.9rem 1.6rem;
   font-size: 1rem;
-  border-radius: 0.8rem;
-}
-
-.vxr-secondary-btn {
-  flex-basis: 100%;
-  width: fit-content;
-  margin-inline: auto;
-  background: transparent;
-  border: 1px solid var(--line);
-  color: var(--text);
-  padding: 1rem 1.4rem;
-  border-radius: 0.8rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: white;
+  border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
-.vxr-secondary-btn:hover {
-  background: #f3f4f6;
+.vxr-hero-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(237, 50, 55, 0.25);
 }
 
 input[type='email'] {
   width: 100%;
   border: 1px solid var(--line);
-  border-radius: 0.65rem;
   background: #ffffff;
   color: var(--text);
-  padding: 0.78rem 0.85rem;
 }
 
 button {
@@ -1118,13 +1109,6 @@ button:hover {
 }
 
 
-@media (max-width: 768px) {
-  .vxr-hero {
-    min-height: 90vh;
-    padding: 3rem 0;
-  }
-}
-
 @media (max-width: 960px) {
 
   .vxr-hero-grid,
@@ -1159,16 +1143,6 @@ button:hover {
     grid-template-columns: 1fr;
   }
 }
-@media (max-width: 600px) {
-  .vxr-hero-form {
-    flex-direction: column;
-  }
-
-  .vxr-hero-form button {
-    width: 100%;
-  }
-
-}
 
 @media (max-width: 768px) {
   .vxr-hero {
@@ -1176,7 +1150,7 @@ button:hover {
   }
 
   .vxr-hero .text-h1 {
-    font-size: clamp(2.2rem, 9vw, 3.2rem);
+    font-size: clamp(2.2rem, 9vw, 3rem);
   }
 
   .vxr-hero-grid {
@@ -1184,19 +1158,24 @@ button:hover {
   }
 
   .vxr-hero-form {
+    flex-direction: column;
     width: 100%;
     padding: 0 0.5rem;
-    flex-direction: column;
     gap: 0.8rem;
   }
 
-  .vxr-hero-form input {
-    padding: 1rem;
-    font-size: 1rem;
+  .vxr-hero-form input,
+  .vxr-hero-form button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .vxr-hero-form {
+    flex-direction: column;
   }
 
-  .vxr-hero-form button,
-  .vxr-secondary-btn {
+  .vxr-hero-form button {
     width: 100%;
   }
 }
