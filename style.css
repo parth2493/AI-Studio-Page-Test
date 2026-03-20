@@ -80,6 +80,17 @@ li {
   color: var(--muted);
 }
 
+.vxr-hero .text-h1 {
+  font-size: clamp(2.5rem, 6.5vw, 6.5rem) !important;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  max-width: 1000px;
+}
+
+.vxr-hero .text-h2 {
+  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+}
+
 .vxr-container {
   width: min(100% - 2rem, var(--max));
   margin-inline: auto;
@@ -1137,4 +1148,36 @@ button:hover {
     width: 100%;
   }
 
+}
+
+@media (max-width: 768px) {
+  .vxr-hero {
+    padding: 2rem 1.2rem;
+  }
+
+  .vxr-hero-grid {
+    padding: 0 0.5rem;
+  }
+
+  .vxr-hero-form {
+    width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  .vxr-hero-form input {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
+  .vxr-hero-form button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .vxr-hero .text-h1 {
+    font-size: 7rem !important;
+  }
 }
