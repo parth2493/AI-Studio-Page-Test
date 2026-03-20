@@ -86,6 +86,7 @@ li {
   letter-spacing: -0.03em;
   font-weight: 700;
   max-width: 900px;
+  margin-bottom: 0.6rem;
 }
 
 .vxr-hero .text-h2 {
@@ -227,10 +228,6 @@ li {
 .vxr-icon svg {
   width: 100%;
   height: 100%;
-}
-
-.vxr-hero .text-h1 {
-  margin-bottom: 0.6rem;
 }
 
 .vxr-hero .text-h2 {
@@ -1192,6 +1189,6 @@ button:hover {
 
 @media (min-width: 1400px) {
   .vxr-hero .text-h1 {
-    font-size: 7rem !important;
+    font-size: 6rem !important;
   }
 }
