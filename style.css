@@ -122,7 +122,11 @@ li {
 
 .vxr-hero {
   position: relative;
-  padding: 5rem 0 3.5rem;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
   overflow: hidden;
   isolation: isolate;
 }
@@ -176,8 +180,10 @@ li {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
   gap: 1.5rem;
+  width: 100%;
 }
 
 .vxr-eyebrow {
@@ -1078,6 +1084,14 @@ button:hover {
 
 .vxr-image-text p {
   opacity: 0.9;
+}
+
+
+@media (max-width: 768px) {
+  .vxr-hero {
+    min-height: 90vh;
+    padding: 3rem 0;
+  }
 }
 
 @media (max-width: 960px) {
