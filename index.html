@@ -405,6 +405,7 @@
     const ctx = canvas?.getContext('2d');
 
     let particles = [];
+    let ripples = [];
     const PARTICLE_COUNT = 420;
     let flowTime = 0;
     let isMouseActive = false;
@@ -536,6 +537,22 @@
             }
           }
 
+          ripples.forEach((ripple) => {
+            const dx = this.x - ripple.x;
+            const dy = this.y - ripple.y;
+            const distance = Math.max(Math.sqrt(dx * dx + dy * dy), 0.001);
+            const diff = Math.abs(distance - ripple.radius);
+
+            if (diff < 25) {
+              const force = (1 - diff / 25) * ripple.life;
+              const dirX = dx / distance;
+              const dirY = dy / distance;
+
+              this.vx += dirX * force * 0.45 * this.depth;
+              this.vy += dirY * force * 0.45 * this.depth;
+            }
+          });
+
           this.vx += parallaxX * 0.0025;
           this.vy += parallaxY * 0.0025;
 
@@ -614,6 +631,7 @@
 
       function init() {
         particles = [];
+        ripples = [];
         for (let i = 0; i < PARTICLE_COUNT; i += 1) {
           particles.push(new Particle());
         }
@@ -637,6 +655,19 @@
         updateMousePosition(event.clientX, event.clientY);
         mouseOffsetTarget.x = (event.clientX / window.innerWidth - 0.5) * 2;
         mouseOffsetTarget.y = (event.clientY / window.innerHeight - 0.5) * 2;
+
+        ripples.push({
+          x: mouse.x,
+          y: mouse.y,
+          radius: 0,
+          maxRadius: 180,
+          speed: 4,
+          life: 1
+        });
+
+        if (ripples.length > 5) {
+          ripples.shift();
+        }
       }, { passive: true });
 
       window.addEventListener('touchmove', (event) => {
@@ -667,7 +698,21 @@
         mouseOffset.x += (mouseOffsetTarget.x - mouseOffset.x) * 0.08;
         mouseOffset.y += (mouseOffsetTarget.y - mouseOffset.y) * 0.08;
 
+        ripples.forEach((ripple) => {
+          ripple.radius = Math.min(ripple.radius + ripple.speed, ripple.maxRadius);
+          ripple.life *= 0.96;
+        });
+        ripples = ripples.filter((ripple) => ripple.life > 0.05 && ripple.radius < ripple.maxRadius);
+
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        ripples.forEach((ripple) => {
+          ctx.beginPath();
+          ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(255,255,255,${ripple.life * 0.05})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        });
 
         particles.forEach((particle) => {
           particle.update();
