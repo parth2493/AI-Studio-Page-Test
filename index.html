@@ -404,6 +404,28 @@
       });
     });
 
+    const heroEmailInput = document.getElementById('email');
+
+    if (heroEmailInput) {
+      const centerFocusedInput = () => {
+        const rect = heroEmailInput.getBoundingClientRect();
+        const viewportHeight = window.visualViewport?.height || window.innerHeight;
+        const offset = Math.max(0, rect.top + window.scrollY - ((viewportHeight - rect.height) / 2));
+
+        window.requestAnimationFrame(() => {
+          window.scrollTo({ top: offset, behavior: 'smooth' });
+        });
+      };
+
+      heroEmailInput.addEventListener('focus', centerFocusedInput, { passive: true });
+
+      window.visualViewport?.addEventListener('resize', () => {
+        if (document.activeElement === heroEmailInput) {
+          centerFocusedInput();
+        }
+      });
+    }
+
     const canvas = document.getElementById('vxr-particles-canvas');
     const ctx = canvas?.getContext('2d');
     const xrReadyText = document.querySelector('[data-xr-ready]');
