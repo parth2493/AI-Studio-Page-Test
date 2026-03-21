@@ -512,77 +512,64 @@
           const dxCenter = centerX - this.x;
           const dyCenter = centerY - this.y;
 
-          this.vx += flowX * this.depth * 0.4 * (0.6 + this.depth);
-          this.vy += flowY * this.depth * 0.4 * (0.6 + this.depth);
-          this.vx += dxCenter * 0.00005;
-          this.vy += dyCenter * 0.00005;
+          const existingFlowX =
+            flowX * this.depth * 0.4 * (0.6 + this.depth) +
+            dxCenter * 0.00005 +
+            parallaxX * 0.0025 +
+            (this.baseX - this.x) * 0.001;
+          const existingFlowY =
+            flowY * this.depth * 0.4 * (0.6 + this.depth) +
+            dyCenter * 0.00005 +
+            parallaxY * 0.0025 +
+            (this.baseY - this.y) * 0.001;
+
+          let magneticForce = 0;
+          let dirX = 0;
+          let dirY = 0;
 
           if (mouse.x !== null && mouse.y !== null) {
             const dx = mouse.x - this.x;
             const dy = mouse.y - this.y;
-            const distance = Math.max(Math.sqrt(dx * dx + dy * dy), 0.001);
+            const distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance < mouse.radius) {
-              let normalized = (mouse.radius - distance) / mouse.radius;
-              normalized = Math.max(0, normalized);
+            const normalized = distance / mouse.radius;
+            magneticForce = Math.exp(-normalized * normalized * 4);
 
-              let force = normalized * normalized;
-
-              this.vx += (dx / distance) * force * 1.2 * this.depth;
-              this.vy += (dy / distance) * force * 1.2 * this.depth;
-
-              let distanceFactor = distance / mouse.radius;
-              let influence = 1 - Math.pow(distanceFactor, 2);
-
-              this.vx *= 0.95 + influence * 0.03;
-              this.vy *= 0.95 + influence * 0.03;
-            }
+            dirX = dx / (distance || 1);
+            dirY = dy / (distance || 1);
           }
+
+          const targetVX =
+            existingFlowX +
+            dirX * magneticForce * 1.4 * this.depth;
+          const targetVY =
+            existingFlowY +
+            dirY * magneticForce * 1.4 * this.depth;
+
+          this.vx += (targetVX - this.vx) * 0.08;
+          this.vy += (targetVY - this.vy) * 0.08;
 
           ripples.forEach((r) => {
             const dx = this.x - r.x;
             const dy = this.y - r.y;
-            const distance = Math.max(Math.sqrt(dx * dx + dy * dy), 0.001);
+            const distance = Math.sqrt(dx * dx + dy * dy);
             const edge = Math.abs(distance - r.radius);
 
             if (edge < 40) {
               const falloff = 1 - edge / 40;
-              const force = falloff * r.life * r.strength;
-              const dirX = dx / distance;
-              const dirY = dy / distance;
-              const depthFactor = 0.5 + this.depth;
 
-              this.vx += dirX * force * 0.9 * depthFactor;
-              this.vy += dirY * force * 0.9 * depthFactor;
+              this.vx += this.vx * falloff * 0.15;
+              this.vy += this.vy * falloff * 0.15;
             }
           });
 
-          this.vx += parallaxX * 0.0025;
-          this.vy += parallaxY * 0.0025;
+          this.vx *= 0.96;
+          this.vy *= 0.96;
 
-          // stronger center correction to counter persistent drift
-          this.vx += (this.baseX - this.x) * 0.001;
-          this.vy += (this.baseY - this.y) * 0.001;
-
-          // remove accumulated directional bias
-          this.vx -= this.vx * 0.002;
-          this.vy -= this.vy * 0.002;
-
-          const maxSpeed = 1.5;
+          const maxSpeed = 1.4;
 
           this.vx = Math.max(-maxSpeed, Math.min(maxSpeed, this.vx));
           this.vy = Math.max(-maxSpeed, Math.min(maxSpeed, this.vy));
-
-          if (isMouseActive) {
-            this.vx *= 0.96;
-            this.vy *= 0.96;
-          } else {
-            // slower, smoother idle motion
-            this.vx *= 0.92;
-            this.vy *= 0.92;
-            this.vx *= 0.98;
-            this.vy *= 0.98;
-          }
 
           this.x += this.vx;
           this.y += this.vy;
@@ -666,15 +653,16 @@
         mouseOffsetTarget.x = (event.clientX / window.innerWidth - 0.5) * 2;
         mouseOffsetTarget.y = (event.clientY / window.innerHeight - 0.5) * 2;
 
-        ripples.push({
-          x: mouse.x,
-          y: mouse.y,
-          radius: 0,
-          maxRadius: 220,
-          speed: 3 + mouseSpeed * 0.1,
-          life: 1,
-          strength: Math.min(mouseSpeed / 20, 1)
-        });
+        if (mouseSpeed > 8 && Math.random() < 0.3) {
+          ripples.push({
+            x: mouse.x,
+            y: mouse.y,
+            radius: 0,
+            maxRadius: 220,
+            speed: 3,
+            life: 1
+          });
+        }
 
         if (ripples.length > 5) {
           ripples.shift();
