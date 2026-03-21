@@ -7,6 +7,9 @@
   --line: #e5e7eb;
   --accent: #ed3237;
   --accent-strong: #ff4a4f;
+  --accent-pressed: #d92b30;
+  --hero-safe-top: max(1rem, env(safe-area-inset-top));
+  --hero-safe-bottom: max(1rem, env(safe-area-inset-bottom));
   --max: 1280px;
 }
 
@@ -18,14 +21,19 @@ html,
 body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
   background: var(--bg);
   color: var(--text);
   font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   scroll-behavior: smooth;
+  overscroll-behavior-x: none;
 }
 
 a {
@@ -120,6 +128,7 @@ li {
   position: sticky;
   top: 0;
   z-index: 20;
+  padding-top: env(safe-area-inset-top);
   backdrop-filter: blur(10px);
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   border-bottom: 1px solid var(--line);
@@ -157,9 +166,10 @@ li {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 0;
+  padding: calc(2rem + var(--hero-safe-top)) 0 calc(2rem + var(--hero-safe-bottom));
   overflow: hidden;
   isolation: isolate;
+  overscroll-behavior-y: contain;
 }
 
 #vxr-particles-canvas {
@@ -187,6 +197,7 @@ li {
   text-align: center;
   gap: 1.5rem;
   width: 100%;
+  padding-inline: max(1rem, env(safe-area-inset-left)) max(1rem, env(safe-area-inset-right));
 }
 
 .vxr-hero-grid > div {
@@ -274,12 +285,16 @@ li {
   border-radius: 999px;
   border: 1px solid rgba(26, 26, 26, 0.12);
   font-size: 1rem;
+  line-height: 1.5;
   display: block;
   background: #ffffff;
   color: var(--text);
   cursor: text;
+  -webkit-appearance: none;
+  appearance: none;
+  touch-action: manipulation;
   box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  transition: transform 120ms ease-out, border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .vxr-hero-form input::placeholder {
@@ -294,8 +309,12 @@ li {
 .vxr-hero-form input:focus-visible {
   outline: none;
   border-color: var(--accent);
-  background: #fffdfd;
-  box-shadow: 0 0 0 4px rgba(237, 50, 55, 0.12), 0 8px 20px rgba(15, 23, 42, 0.08);
+  background: #fff8f8;
+  box-shadow: 0 0 0 4px rgba(237, 50, 55, 0.14), 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.vxr-hero-form input:active {
+  transform: scale(0.98);
 }
 
 .vxr-hero-form button {
@@ -305,17 +324,26 @@ li {
   padding: 0.9rem 1.4rem;
   white-space: nowrap;
   font-size: 1rem;
+  line-height: 1.2;
   border-radius: 999px;
   background: var(--accent);
   color: white;
   border: none;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  touch-action: manipulation;
+  box-shadow: 0 10px 22px rgba(237, 50, 55, 0.2);
+  transition: transform 120ms ease-out, box-shadow 120ms ease-out, background-color 120ms ease-out;
 }
 
 .vxr-hero-form button:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 26px rgba(237, 50, 55, 0.2);
+}
+
+.vxr-hero-form button:active {
+  transform: scale(0.98);
+  background: var(--accent-pressed);
+  box-shadow: 0 6px 14px rgba(237, 50, 55, 0.16);
 }
 
 input[type='email'] {
@@ -331,6 +359,7 @@ button {
   font-weight: 700;
   padding: 0.78rem 0.9rem;
   cursor: pointer;
+  touch-action: manipulation;
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease,
@@ -928,6 +957,20 @@ button:hover {
   object-fit: cover;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* Image to 3D Section */
 .vxr-image-grid {
   display: grid;
@@ -1149,7 +1192,7 @@ button:hover {
   }
 
   .vxr-hero {
-    padding: 3rem 0;
+    padding: calc(3rem + var(--hero-safe-top)) 0 calc(3rem + var(--hero-safe-bottom));
   }
 
   .vxr-hero .text-h2 {
@@ -1172,14 +1215,18 @@ button:hover {
 }
 
 @media (max-width: 768px) {
+  .vxr-site-header {
+    padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
+  }
+
   .vxr-hero {
     min-height: 100svh;
-    padding: 2rem 0;
+    padding: calc(1.5rem + var(--hero-safe-top)) 0 calc(1.5rem + var(--hero-safe-bottom));
   }
 
   .vxr-hero .text-h1 {
     font-size: clamp(2.25rem, 8.5vw, 2.9rem) !important;
-    line-height: 1.08;
+    line-height: 1.14;
     max-width: 12ch;
     margin: 0;
   }
@@ -1189,7 +1236,7 @@ button:hover {
   }
 
   .vxr-hero-grid {
-    padding: 0 1rem;
+    padding-inline: max(1rem, env(safe-area-inset-left)) max(1rem, env(safe-area-inset-right));
   }
 
   .vxr-hero-grid > div {
@@ -1216,16 +1263,30 @@ button:hover {
 
   .vxr-hero-form input {
     padding: 1rem 1.1rem;
+    font-size: 1rem;
   }
 
   .vxr-hero-form button {
     padding: 1rem 1.25rem;
   }
+
+  .vxr-section {
+    padding: 3.5rem 0;
+  }
+
+  .vxr-model-card,
+  .vxr-platform-card,
+  .vxr-demo-video,
+  .vxr-premium-card,
+  .vxr-interactive {
+    animation: none;
+    transition-duration: 160ms;
+  }
 }
 
 @media (max-width: 480px) {
   .vxr-hero {
-    padding: 1.5rem 0;
+    padding: calc(1.25rem + var(--hero-safe-top)) 0 calc(1.25rem + var(--hero-safe-bottom));
   }
 
   .vxr-container.vxr-hero-grid {
