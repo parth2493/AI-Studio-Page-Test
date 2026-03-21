@@ -85,12 +85,17 @@ li {
   line-height: 1.03;
   letter-spacing: -0.04em;
   font-weight: 700;
-  max-width: 11ch;
+  max-width: 17ch;
   margin: 0 auto 0.75rem;
   position: relative;
   z-index: 2;
   transition: text-shadow 0.3s ease;
   text-align: center;
+}
+
+.vxr-hero .text-h1 .vxr-headline-line {
+  display: block;
+  white-space: nowrap;
 }
 
 
@@ -1162,7 +1167,7 @@ button:hover {
 
   .vxr-hero .text-h1 {
     font-size: 2.5rem !important;
-    max-width: 100%;
+    max-width: min(100%, 17ch);
   }
 
   .vxr-hero-grid {
