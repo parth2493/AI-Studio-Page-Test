@@ -432,6 +432,7 @@
       rect: null,
       centerX: 0,
       centerY: 0,
+      radius: 145,
       baseAlpha: 0.12,
       baseBlur: 6
     };
@@ -446,9 +447,10 @@
           return;
         }
 
+        const canvasRect = canvas.getBoundingClientRect();
         xrReadyGlow.rect = xrReadyText.getBoundingClientRect();
-        xrReadyGlow.centerX = xrReadyGlow.rect.left + xrReadyGlow.rect.width / 2;
-        xrReadyGlow.centerY = xrReadyGlow.rect.top + xrReadyGlow.rect.height / 2;
+        xrReadyGlow.centerX = xrReadyGlow.rect.left - canvasRect.left + xrReadyGlow.rect.width / 2;
+        xrReadyGlow.centerY = xrReadyGlow.rect.top - canvasRect.top + xrReadyGlow.rect.height / 2;
       }
 
       function resize() {
@@ -581,6 +583,25 @@
             flowY +
             dirY * magneticForce * magneticStrength * this.depth;
 
+          if (xrReadyGlow.rect) {
+            const textCenterX = xrReadyGlow.centerX;
+            const textCenterY = xrReadyGlow.centerY;
+            const dx = this.x - textCenterX;
+            const dy = this.y - textCenterY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < xrReadyGlow.radius) {
+              const normalized = 1 - distance / xrReadyGlow.radius;
+              const force = normalized * normalized;
+              const pushX = dx / (distance || 1);
+              const pushY = dy / (distance || 1);
+              const textForce = Math.min(0.4, force * 0.4) * this.depth;
+
+              this.vx += pushX * textForce;
+              this.vy += pushY * textForce;
+            }
+          }
+
           let responsiveness =
             (0.08 + this.depth * 0.08) *
             (0.7 + slowFactor * 0.3);
@@ -640,6 +661,18 @@
 
           let finalAlpha = this.lifeAlpha * (0.3 + this.depth * 0.7);
           finalAlpha += this.flicker;
+
+          if (xrReadyGlow.rect) {
+            const dx = this.x - xrReadyGlow.centerX;
+            const dy = this.y - xrReadyGlow.centerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < xrReadyGlow.radius * 0.7) {
+              const fade = 1 - distance / (xrReadyGlow.radius * 0.7);
+              finalAlpha *= 1 - fade * 0.16;
+            }
+          }
+
           finalAlpha = Math.max(0.1, Math.min(1, finalAlpha));
 
           let renderX = this.x + cameraOffset.x * this.depth;
@@ -880,8 +913,8 @@
           }
 
           if (mouse.x !== null && mouse.y !== null && xrReadyGlow.rect) {
-            const dx = lastMouse.x - xrReadyGlow.centerX;
-            const dy = lastMouse.y - xrReadyGlow.centerY;
+            const dx = mouse.x - xrReadyGlow.centerX;
+            const dy = mouse.y - xrReadyGlow.centerY;
             const distance = Math.sqrt((dx * dx) + (dy * dy));
             const normalizedDistance = Math.min(1, distance / xrReadyGlow.maxDistance);
             xrReadyGlow.target = Math.max(0, 1 - normalizedDistance);
