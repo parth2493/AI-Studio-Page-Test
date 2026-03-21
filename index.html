@@ -416,6 +416,7 @@
     };
     let mouseOffset = { x: 0, y: 0 };
     let mouseOffsetTarget = { x: 0, y: 0 };
+    let cameraOffset = { x: 0, y: 0 };
     let lastMouse = { x: 0, y: 0 };
     let mouseSpeed = 0;
     let pulse = 0;
@@ -524,9 +525,10 @@
           flowY *= 0.8;
 
           let magneticForce = 0;
-          let coreBoost = 1;
           let dirX = 0;
           let dirY = 0;
+          let slowFactor = Math.max(0, 1 - mouseSpeed / 10);
+          let fastFactor = Math.min(1, mouseSpeed / 12);
 
           if (mouse.x !== null && mouse.y !== null) {
             let dx = mouse.x - this.x;
@@ -537,21 +539,25 @@
             normalized = Math.min(1, normalized);
 
             magneticForce = Math.exp(-normalized * normalized * 3);
-            coreBoost = 1 + (1 - normalized) * 1.5;
 
             dirX = dx / (distance || 1);
             dirY = dy / (distance || 1);
           }
 
+          const rippleInfluence = 0.75 + fastFactor * 0.7;
+          let magneticStrength = 1.8 * slowFactor;
+
           let targetVX =
             flowX +
-            dirX * magneticForce * 1.8 * coreBoost * this.depth;
+            dirX * magneticForce * magneticStrength * this.depth;
 
           let targetVY =
             flowY +
-            dirY * magneticForce * 1.8 * coreBoost * this.depth;
+            dirY * magneticForce * magneticStrength * this.depth;
 
-          let responsiveness = 0.08 + this.depth * 0.08;
+          let responsiveness =
+            (0.08 + this.depth * 0.08) *
+            (0.7 + slowFactor * 0.3);
 
           this.vx += (targetVX - this.vx) * responsiveness;
           this.vy += (targetVY - this.vy) * responsiveness;
@@ -566,7 +572,7 @@
             if (edge < 40) {
               let falloff = 1 - edge / 40;
 
-              let rippleBoost = 0.25 + this.depth * 0.25;
+              let rippleBoost = (0.25 + this.depth * 0.25) * rippleInfluence;
 
               this.vx += this.vx * falloff * rippleBoost;
               this.vy += this.vy * falloff * rippleBoost;
@@ -610,13 +616,16 @@
           finalAlpha += this.flicker;
           finalAlpha = Math.max(0.1, Math.min(1, finalAlpha));
 
+          let renderX = this.x + cameraOffset.x * this.depth;
+          let renderY = this.y + cameraOffset.y * this.depth;
+
           ctx.beginPath();
           ctx.globalAlpha = 0.95 + Math.sin(pulse) * 0.05;
           ctx.shadowBlur = Math.max(0, (1 - this.depth) * 10 + this.flicker * 10);
           ctx.shadowColor = this.color;
           ctx.arc(
-            this.x,
-            this.y,
+            renderX,
+            renderY,
             (this.size * sizeFactor) + sizeBoost,
             0,
             Math.PI * 2
@@ -663,13 +672,13 @@
         mouseOffsetTarget.x = (event.clientX / window.innerWidth - 0.5) * 2;
         mouseOffsetTarget.y = (event.clientY / window.innerHeight - 0.5) * 2;
 
-        if (mouseSpeed > 8 && Math.random() < 0.3) {
+        if (mouseSpeed > 10 && Math.random() < 0.4) {
           ripples.push({
             x: mouse.x,
             y: mouse.y,
             radius: 0,
-            maxRadius: 220,
-            speed: 3,
+            maxRadius: 240,
+            speed: 4,
             life: 1
           });
         }
@@ -706,6 +715,12 @@
         pulse += 0.01;
         mouseOffset.x += (mouseOffsetTarget.x - mouseOffset.x) * 0.08;
         mouseOffset.y += (mouseOffsetTarget.y - mouseOffset.y) * 0.08;
+
+        const cameraTargetX = mouse.x !== null ? (mouse.x / canvasWidth - 0.5) * 20 : 0;
+        const cameraTargetY = mouse.y !== null ? (mouse.y / canvasHeight - 0.5) * 20 : 0;
+
+        cameraOffset.x += (cameraTargetX - cameraOffset.x) * 0.03;
+        cameraOffset.y += (cameraTargetY - cameraOffset.y) * 0.03;
 
         ripples.forEach((r) => {
           r.radius += r.speed;
