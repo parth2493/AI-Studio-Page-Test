@@ -7,6 +7,9 @@
   <title>VueXR Studio | AI-Powered XR Content Creation</title>
   <meta name="description"
     content="VueXR Studio is a local AI-driven desktop app for generating, previewing, and publishing XR-ready 3D assets with offline-first performance." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -23,10 +26,10 @@
       <canvas id="vxr-particles-canvas" aria-hidden="true"></canvas>
       <div class="vxr-container vxr-hero-grid">
         <div data-aos="fade-up">
-          <p class="vxr-eyebrow text-small">AI-Powered XR Content Creation</p>
+          <p class="vxr-eyebrow text-small"><span class="vxr-eyebrow-vue">Vue</span><span class="vxr-eyebrow-xr">XR Studio</span></p>
           <h1 class="text-h1">
-            Create <span class="vxr-highlight">3D models</span><br/>
-            from text or images
+            Turn your ideas into XR-ready<br />
+            3D models — in seconds
           </h1>
           <form id="early-access" class="vxr-hero-form" aria-label="Email signup">
             <label for="email" class="vxr-sr-only">Work email</label>

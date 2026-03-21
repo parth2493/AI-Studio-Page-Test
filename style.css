@@ -81,16 +81,18 @@ li {
 }
 
 .vxr-hero .text-h1 {
-  font-size: 6rem !important;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+  font-size: clamp(3.8rem, 7vw, 6rem) !important;
+  line-height: 1.03;
+  letter-spacing: -0.04em;
   font-weight: 700;
-  max-width: 900px;
-  margin-bottom: 0.6rem;
+  max-width: 11ch;
+  margin: 0 auto 0.75rem;
   position: relative;
   z-index: 2;
   transition: text-shadow 0.3s ease;
+  text-align: center;
 }
+
 
 .vxr-hero:hover .text-h1 {
   text-shadow:
@@ -181,13 +183,21 @@ li {
 }
 
 .vxr-eyebrow {
-  margin: 0 0 0.5rem;
-  color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: 0.11em;
-  font-size: 0.78rem;
+  margin: 0 0 0.75rem;
+  text-transform: none;
+  letter-spacing: 0.08em;
+  font-size: 0.95rem;
+  font-family: 'Roboto', Inter, Segoe UI, sans-serif;
   font-weight: 600;
   text-align: center;
+}
+
+.vxr-eyebrow-vue {
+  color: #1a1a1a;
+}
+
+.vxr-eyebrow-xr {
+  color: var(--accent);
 }
 
 .vxr-highlight {
@@ -232,7 +242,7 @@ li {
 .vxr-hero-form {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   gap: 0.6rem;
   width: 100%;
@@ -243,16 +253,39 @@ li {
 .vxr-hero-form input {
   flex: 1;
   min-width: 0;
+  min-height: 3.5rem;
   padding: 0.9rem 1.2rem;
   border-radius: 999px;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(26, 26, 26, 0.12);
   font-size: 1rem;
   display: block;
   background: #ffffff;
+  color: var(--text);
+  cursor: text;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.vxr-hero-form input::placeholder {
+  color: rgba(107, 114, 128, 0.72);
+}
+
+.vxr-hero-form input:hover {
+  border-color: rgba(237, 50, 55, 0.45);
+}
+
+.vxr-hero-form input:focus,
+.vxr-hero-form input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  background: #fffdfd;
+  box-shadow: 0 0 0 4px rgba(237, 50, 55, 0.12), 0 8px 20px rgba(15, 23, 42, 0.08);
 }
 
 .vxr-hero-form button {
   flex-shrink: 0;
+  min-height: 3.5rem;
+  align-self: stretch;
   padding: 0.9rem 1.4rem;
   white-space: nowrap;
   font-size: 1rem;
@@ -261,18 +294,16 @@ li {
   color: white;
   border: none;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .vxr-hero-form button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(237, 50, 55, 0.25);
+  box-shadow: 0 12px 26px rgba(237, 50, 55, 0.2);
 }
 
 input[type='email'] {
   width: 100%;
-  border: 1px solid var(--line);
-  background: #ffffff;
   color: var(--text);
 }
 
@@ -1131,6 +1162,7 @@ button:hover {
 
   .vxr-hero .text-h1 {
     font-size: 2.5rem !important;
+    max-width: 100%;
   }
 
   .vxr-hero-grid {
