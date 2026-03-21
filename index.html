@@ -736,24 +736,26 @@
         mouse.y = clientY - rect.top;
       }
 
-      window.addEventListener('mousemove', (event) => {
+      const passiveListener = { passive: true };
+
+      function handlePointerMove(clientX, clientY) {
         isMouseActive = true;
         clearTimeout(window.mouseTimeout);
         window.mouseTimeout = setTimeout(() => {
           isMouseActive = false;
         }, 120);
 
-        const dx = event.clientX - lastMouse.x;
-        const dy = event.clientY - lastMouse.y;
+        const dx = clientX - lastMouse.x;
+        const dy = clientY - lastMouse.y;
 
         mouseSpeed = Math.sqrt(dx * dx + dy * dy);
 
-        lastMouse.x = event.clientX;
-        lastMouse.y = event.clientY;
+        lastMouse.x = clientX;
+        lastMouse.y = clientY;
 
-        updateMousePosition(event.clientX, event.clientY);
-        mouseOffsetTarget.x = (event.clientX / window.innerWidth - 0.5) * 2;
-        mouseOffsetTarget.y = (event.clientY / window.innerHeight - 0.5) * 2;
+        updateMousePosition(clientX, clientY);
+        mouseOffsetTarget.x = (clientX / window.innerWidth - 0.5) * 2;
+        mouseOffsetTarget.y = (clientY / window.innerHeight - 0.5) * 2;
 
         if (mouseSpeed > 10 && Math.random() < 0.4) {
           ripples.push({
@@ -769,16 +771,25 @@
         if (ripples.length > 5) {
           ripples.shift();
         }
-      }, { passive: true });
+      }
+
+      window.addEventListener('mousemove', (event) => {
+        handlePointerMove(event.clientX, event.clientY);
+      }, passiveListener);
+
+      window.addEventListener('touchstart', (event) => {
+        if (event.touches[0]) {
+          const touch = event.touches[0];
+          handlePointerMove(touch.clientX, touch.clientY);
+        }
+      }, passiveListener);
 
       window.addEventListener('touchmove', (event) => {
         if (event.touches[0]) {
           const touch = event.touches[0];
-          updateMousePosition(touch.clientX, touch.clientY);
-          mouseOffsetTarget.x = (touch.clientX / window.innerWidth - 0.5) * 2;
-          mouseOffsetTarget.y = (touch.clientY / window.innerHeight - 0.5) * 2;
+          handlePointerMove(touch.clientX, touch.clientY);
         }
-      }, { passive: true });
+      }, passiveListener);
 
       window.addEventListener('mouseleave', () => {
         mouse.x = null;
