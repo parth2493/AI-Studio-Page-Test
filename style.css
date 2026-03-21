@@ -98,14 +98,25 @@ li {
   white-space: nowrap;
 }
 
+@keyframes vxr-breathing-glow {
+  0%,
+  100% {
+    text-shadow: 0 0 4px rgba(237, 50, 55, 0.08), 0 0 10px rgba(237, 50, 55, 0.04);
+  }
+  50% {
+    text-shadow: 0 0 8px rgba(237, 50, 55, 0.16), 0 0 16px rgba(237, 50, 55, 0.08);
+  }
+}
+
 .vxr-headline-accent {
   color: var(--accent);
   font-weight: 800;
-  transition: text-shadow 0.3s ease, color 0.3s ease;
+  animation: vxr-breathing-glow 4s ease-in-out infinite;
+  transition: text-shadow 0.35s ease, color 0.35s ease;
 }
 
 .vxr-hero:hover .vxr-headline-accent {
-  text-shadow: 0 0 14px rgba(237, 50, 55, 0.18);
+  text-shadow: 0 0 10px rgba(237, 50, 55, 0.2), 0 0 18px rgba(237, 50, 55, 0.1);
 }
 
 .vxr-hero .text-h2 {
