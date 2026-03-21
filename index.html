@@ -420,6 +420,7 @@
     let lastMouse = { x: 0, y: 0 };
     let mouseSpeed = 0;
     let pulse = 0;
+    let bgShift = 0;
 
     if (canvas && ctx) {
       let animationFrameId = null;
@@ -619,9 +620,11 @@
           let renderX = this.x + cameraOffset.x * this.depth;
           let renderY = this.y + cameraOffset.y * this.depth;
 
+          const haze = (1 - this.depth) * 0.5;
+
           ctx.beginPath();
-          ctx.globalAlpha = 0.95 + Math.sin(pulse) * 0.05;
-          ctx.shadowBlur = Math.max(0, (1 - this.depth) * 10 + this.flicker * 10);
+          ctx.globalAlpha = Math.max(0.12, (0.8 - haze) * (0.95 + Math.sin(pulse) * 0.05));
+          ctx.shadowBlur = Math.max(0, (1 - this.depth) * 12 + this.flicker * 8);
           ctx.shadowColor = this.color;
           ctx.arc(
             renderX,
@@ -730,6 +733,45 @@
 
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
+        bgShift += 0.002;
+
+        const bgGradient = ctx.createLinearGradient(
+          0,
+          0,
+          canvasWidth,
+          canvasHeight
+        );
+
+        bgGradient.addColorStop(
+          0,
+          `rgba(237,50,55,${0.03 + Math.sin(bgShift) * 0.01})`
+        );
+
+        bgGradient.addColorStop(
+          1,
+          `rgba(99,102,241,${0.03 + Math.cos(bgShift) * 0.01})`
+        );
+
+        ctx.fillStyle = bgGradient;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        if (mouse.x !== null && mouse.y !== null) {
+          const glowGradient = ctx.createRadialGradient(
+            mouse.x,
+            mouse.y,
+            0,
+            mouse.x,
+            mouse.y,
+            180
+          );
+
+          glowGradient.addColorStop(0, 'rgba(255,255,255,0.08)');
+          glowGradient.addColorStop(1, 'rgba(255,255,255,0)');
+
+          ctx.fillStyle = glowGradient;
+          ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        }
+
         ripples.forEach((r) => {
           const gradient = ctx.createRadialGradient(
             r.x, r.y, r.radius * 0.6,
@@ -756,6 +798,21 @@
           particle.update();
           particle.draw();
         });
+
+        const vignette = ctx.createRadialGradient(
+          canvasWidth / 2,
+          canvasHeight / 2,
+          canvasWidth * 0.3,
+          canvasWidth / 2,
+          canvasHeight / 2,
+          canvasWidth * 0.7
+        );
+
+        vignette.addColorStop(0, 'rgba(0,0,0,0)');
+        vignette.addColorStop(1, 'rgba(0,0,0,0.15)');
+
+        ctx.fillStyle = vignette;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
         animationFrameId = window.requestAnimationFrame(animate);
       }
