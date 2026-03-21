@@ -504,62 +504,72 @@
 
           const angleX = Math.sin((this.y + flowTime * 50 + this.noiseOffset) * 0.002);
           const angleY = Math.cos((this.x - flowTime * 50 + this.noiseOffset) * 0.002);
-
-          const flowX = angleX * 0.25 * screenScale;
-          const flowY = angleY * 0.25 * screenScale;
           const centerX = canvasWidth / 2;
           const centerY = canvasHeight / 2;
           const dxCenter = centerX - this.x;
           const dyCenter = centerY - this.y;
 
-          const existingFlowX =
-            flowX * this.depth * 0.4 * (0.6 + this.depth) +
+          let flowX =
+            angleX * 0.25 * screenScale * this.depth * 0.4 * (0.6 + this.depth) +
             dxCenter * 0.00005 +
             parallaxX * 0.0025 +
             (this.baseX - this.x) * 0.001;
-          const existingFlowY =
-            flowY * this.depth * 0.4 * (0.6 + this.depth) +
+          let flowY =
+            angleY * 0.25 * screenScale * this.depth * 0.4 * (0.6 + this.depth) +
             dyCenter * 0.00005 +
             parallaxY * 0.0025 +
             (this.baseY - this.y) * 0.001;
 
+          flowX *= 0.8;
+          flowY *= 0.8;
+
           let magneticForce = 0;
+          let coreBoost = 1;
           let dirX = 0;
           let dirY = 0;
 
           if (mouse.x !== null && mouse.y !== null) {
-            const dx = mouse.x - this.x;
-            const dy = mouse.y - this.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
 
-            const normalized = distance / mouse.radius;
-            magneticForce = Math.exp(-normalized * normalized * 4);
+            let normalized = distance / mouse.radius;
+            normalized = Math.min(1, normalized);
+
+            magneticForce = Math.exp(-normalized * normalized * 3);
+            coreBoost = 1 + (1 - normalized) * 1.5;
 
             dirX = dx / (distance || 1);
             dirY = dy / (distance || 1);
           }
 
-          const targetVX =
-            existingFlowX +
-            dirX * magneticForce * 1.4 * this.depth;
-          const targetVY =
-            existingFlowY +
-            dirY * magneticForce * 1.4 * this.depth;
+          let targetVX =
+            flowX +
+            dirX * magneticForce * 1.8 * coreBoost * this.depth;
 
-          this.vx += (targetVX - this.vx) * 0.08;
-          this.vy += (targetVY - this.vy) * 0.08;
+          let targetVY =
+            flowY +
+            dirY * magneticForce * 1.8 * coreBoost * this.depth;
 
-          ripples.forEach((r) => {
-            const dx = this.x - r.x;
-            const dy = this.y - r.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            const edge = Math.abs(distance - r.radius);
+          let responsiveness = 0.08 + this.depth * 0.08;
+
+          this.vx += (targetVX - this.vx) * responsiveness;
+          this.vy += (targetVY - this.vy) * responsiveness;
+
+          ripples.forEach(r => {
+            let dx = this.x - r.x;
+            let dy = this.y - r.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+
+            let edge = Math.abs(distance - r.radius);
 
             if (edge < 40) {
-              const falloff = 1 - edge / 40;
+              let falloff = 1 - edge / 40;
 
-              this.vx += this.vx * falloff * 0.15;
-              this.vy += this.vy * falloff * 0.15;
+              let rippleBoost = 0.25 + this.depth * 0.25;
+
+              this.vx += this.vx * falloff * rippleBoost;
+              this.vy += this.vy * falloff * rippleBoost;
             }
           });
 
