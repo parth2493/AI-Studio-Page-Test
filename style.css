@@ -102,6 +102,7 @@ li {
   color: var(--accent);
   font-weight: 800;
   display: inline-block;
+  white-space: nowrap;
   text-shadow: 0 0 6px rgba(237, 50, 55, 0.12), 0 0 14px rgba(237, 50, 55, 0.05);
   will-change: text-shadow;
 }
@@ -188,8 +189,17 @@ li {
   width: 100%;
 }
 
+.vxr-hero-grid > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  width: 100%;
+}
+
 .vxr-eyebrow {
-  margin: 0 0 0.75rem;
+  margin: 0;
   text-transform: none;
   letter-spacing: 0.08em;
   font-size: 0.95rem;
@@ -253,7 +263,7 @@ li {
   gap: 0.6rem;
   width: 100%;
   max-width: 520px;
-  margin: 2rem auto 0;
+  margin: 0 auto;
 }
 
 .vxr-hero-form input {
@@ -1163,28 +1173,72 @@ button:hover {
 
 @media (max-width: 768px) {
   .vxr-hero {
-    padding: 2rem 1.2rem;
+    min-height: 100svh;
+    padding: 2rem 0;
   }
 
   .vxr-hero .text-h1 {
-    font-size: 2.5rem !important;
-    max-width: min(100%, 17ch);
+    font-size: clamp(2.25rem, 8.5vw, 2.9rem) !important;
+    line-height: 1.08;
+    max-width: 12ch;
+    margin: 0;
+  }
+
+  .vxr-hero .text-h1 .vxr-headline-line {
+    white-space: normal;
   }
 
   .vxr-hero-grid {
-    padding: 0 0.5rem;
+    padding: 0 1rem;
   }
-}
 
-@media (max-width: 480px) {
+  .vxr-hero-grid > div {
+    gap: 1rem;
+    max-width: 100%;
+  }
+
+  .vxr-eyebrow {
+    font-size: 0.85rem;
+  }
+
   .vxr-hero-form {
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.9rem;
+    max-width: 100%;
   }
 
   .vxr-hero-form input,
   .vxr-hero-form button {
     width: 100%;
+    min-height: 3.75rem;
+    border-radius: 1rem;
+  }
+
+  .vxr-hero-form input {
+    padding: 1rem 1.1rem;
+  }
+
+  .vxr-hero-form button {
+    padding: 1rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .vxr-hero {
+    padding: 1.5rem 0;
+  }
+
+  .vxr-container.vxr-hero-grid {
+    width: min(100% - 2rem, var(--max));
+  }
+
+  .vxr-hero .text-h1 {
+    font-size: clamp(2.1rem, 9vw, 2.5rem) !important;
+    max-width: 11.5ch;
+  }
+
+  .vxr-hero-grid > div {
+    gap: 0.9rem;
   }
 }
 
