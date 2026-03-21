@@ -24,6 +24,7 @@ body {
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
+  overflow-y: auto;
   background: var(--bg);
   color: var(--text);
   font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
@@ -167,9 +168,9 @@ li {
   align-items: center;
   justify-content: center;
   padding: calc(2rem + var(--hero-safe-top)) 0 calc(2rem + var(--hero-safe-bottom));
-  overflow: hidden;
+  overflow: clip;
   isolation: isolate;
-  overscroll-behavior-y: contain;
+  touch-action: auto;
 }
 
 #vxr-particles-canvas {
