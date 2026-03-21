@@ -403,6 +403,7 @@
 
     const canvas = document.getElementById('vxr-particles-canvas');
     const ctx = canvas?.getContext('2d');
+    const heroTitle = document.querySelector('.vxr-hero .text-h1');
 
     let particles = [];
     let ripples = [];
@@ -755,7 +756,25 @@
         ctx.fillStyle = bgGradient;
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
+        const brightness = 0.95 + Math.min(0.05, mouseSpeed * 0.002);
+        ctx.globalAlpha = brightness;
+
         if (mouse.x !== null && mouse.y !== null) {
+          const beamGradient = ctx.createRadialGradient(
+            mouse.x,
+            mouse.y,
+            0,
+            mouse.x,
+            mouse.y,
+            260
+          );
+
+          beamGradient.addColorStop(0, 'rgba(255,255,255,0.06)');
+          beamGradient.addColorStop(1, 'rgba(255,255,255,0)');
+
+          ctx.fillStyle = beamGradient;
+          ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
           const glowGradient = ctx.createRadialGradient(
             mouse.x,
             mouse.y,
@@ -765,12 +784,29 @@
             180
           );
 
-          glowGradient.addColorStop(0, 'rgba(255,255,255,0.08)');
+          glowGradient.addColorStop(0, 'rgba(255,255,255,0.05)');
           glowGradient.addColorStop(1, 'rgba(255,255,255,0)');
 
           ctx.fillStyle = glowGradient;
           ctx.fillRect(0, 0, canvasWidth, canvasHeight);
         }
+
+        const focusGradient = ctx.createRadialGradient(
+          canvasWidth / 2,
+          canvasHeight / 2,
+          0,
+          canvasWidth / 2,
+          canvasHeight / 2,
+          canvasWidth * 0.4
+        );
+
+        focusGradient.addColorStop(0, 'rgba(255,255,255,0.03)');
+        focusGradient.addColorStop(1, 'rgba(255,255,255,0)');
+
+        ctx.fillStyle = focusGradient;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        ctx.globalAlpha = 1;
 
         ripples.forEach((r) => {
           const gradient = ctx.createRadialGradient(
@@ -813,6 +849,16 @@
 
         ctx.fillStyle = vignette;
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        if (heroTitle) {
+          const glow = mouse.x !== null && mouse.y !== null
+            ? Math.min(0.16, mouseSpeed * 0.01)
+            : 0;
+
+          heroTitle.style.textShadow = glow > 0
+            ? `0 0 ${10 + glow * 18}px rgba(255,255,255,${0.08 + glow}), 0 0 ${24 + glow * 24}px rgba(237,50,55,${0.06 + glow * 0.45})`
+            : '';
+        }
 
         animationFrameId = window.requestAnimationFrame(animate);
       }
