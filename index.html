@@ -416,6 +416,8 @@
     };
     let mouseOffset = { x: 0, y: 0 };
     let mouseOffsetTarget = { x: 0, y: 0 };
+    let lastMouse = { x: 0, y: 0 };
+    let mouseSpeed = 0;
     let pulse = 0;
 
     if (canvas && ctx) {
@@ -537,19 +539,21 @@
             }
           }
 
-          ripples.forEach((ripple) => {
-            const dx = this.x - ripple.x;
-            const dy = this.y - ripple.y;
+          ripples.forEach((r) => {
+            const dx = this.x - r.x;
+            const dy = this.y - r.y;
             const distance = Math.max(Math.sqrt(dx * dx + dy * dy), 0.001);
-            const diff = Math.abs(distance - ripple.radius);
+            const edge = Math.abs(distance - r.radius);
 
-            if (diff < 25) {
-              const force = (1 - diff / 25) * ripple.life;
+            if (edge < 40) {
+              const falloff = 1 - edge / 40;
+              const force = falloff * r.life * r.strength;
               const dirX = dx / distance;
               const dirY = dy / distance;
+              const depthFactor = 0.5 + this.depth;
 
-              this.vx += dirX * force * 0.45 * this.depth;
-              this.vy += dirY * force * 0.45 * this.depth;
+              this.vx += dirX * force * 0.9 * depthFactor;
+              this.vy += dirY * force * 0.9 * depthFactor;
             }
           });
 
@@ -643,15 +647,21 @@
         mouse.y = clientY - rect.top;
       }
 
-      window.addEventListener('mousemove', () => {
+      window.addEventListener('mousemove', (event) => {
         isMouseActive = true;
         clearTimeout(window.mouseTimeout);
         window.mouseTimeout = setTimeout(() => {
           isMouseActive = false;
         }, 120);
-      });
 
-      window.addEventListener('mousemove', (event) => {
+        const dx = event.clientX - lastMouse.x;
+        const dy = event.clientY - lastMouse.y;
+
+        mouseSpeed = Math.sqrt(dx * dx + dy * dy);
+
+        lastMouse.x = event.clientX;
+        lastMouse.y = event.clientY;
+
         updateMousePosition(event.clientX, event.clientY);
         mouseOffsetTarget.x = (event.clientX / window.innerWidth - 0.5) * 2;
         mouseOffsetTarget.y = (event.clientY / window.innerHeight - 0.5) * 2;
@@ -660,9 +670,10 @@
           x: mouse.x,
           y: mouse.y,
           radius: 0,
-          maxRadius: 180,
-          speed: 4,
-          life: 1
+          maxRadius: 220,
+          speed: 3 + mouseSpeed * 0.1,
+          life: 1,
+          strength: Math.min(mouseSpeed / 20, 1)
         });
 
         if (ripples.length > 5) {
@@ -698,20 +709,34 @@
         mouseOffset.x += (mouseOffsetTarget.x - mouseOffset.x) * 0.08;
         mouseOffset.y += (mouseOffsetTarget.y - mouseOffset.y) * 0.08;
 
-        ripples.forEach((ripple) => {
-          ripple.radius = Math.min(ripple.radius + ripple.speed, ripple.maxRadius);
-          ripple.life *= 0.96;
+        ripples.forEach((r) => {
+          r.radius += r.speed;
+          r.life *= 0.95;
         });
-        ripples = ripples.filter((ripple) => ripple.life > 0.05 && ripple.radius < ripple.maxRadius);
+        ripples = ripples.filter((r) => r.life > 0.05 && r.radius < r.maxRadius);
 
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        ripples.forEach((ripple) => {
+        ripples.forEach((r) => {
+          const gradient = ctx.createRadialGradient(
+            r.x, r.y, r.radius * 0.6,
+            r.x, r.y, r.radius
+          );
+
+          gradient.addColorStop(0, 'rgba(255,255,255,0)');
+          gradient.addColorStop(0.7, `rgba(255,255,255,${r.life * 0.08})`);
+          gradient.addColorStop(1, 'rgba(255,255,255,0)');
+
           ctx.beginPath();
-          ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(255,255,255,${ripple.life * 0.05})`;
-          ctx.lineWidth = 1;
+          ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = 8;
           ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, r.radius * 0.7, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${r.life * 0.02})`;
+          ctx.fill();
         });
 
         particles.forEach((particle) => {
