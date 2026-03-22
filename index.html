@@ -439,7 +439,9 @@
     let ripples = [];
     const PARTICLE_COUNT = 420;
     let particleIntensity = 1;
+    let particleIntensityTarget = 1;
     let heroDimProgress = 0;
+    let heroDimTarget = 0;
     let flowTime = 0;
     let isMouseActive = false;
     let mouse = {
@@ -476,81 +478,115 @@
 
     if (demoSection && demoPanel) {
       const maxScrollFactor = 1.35;
-      let demoMetrics = { start: 0, range: 1 };
-      let activeFrame = null;
-      let currentProgress = 0;
-      let targetProgress = 0;
-
+      const minDemoScale = 0.8;
+      const maxDemoScale = 1;
+      const demoLerp = 0.08;
       const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
       const easeOutCubic = (value) => 1 - Math.pow(1 - value, 3);
+      const mix = (start, end, amount) => start + (end - start) * amount;
+
+      let demoMetrics = { start: 0, height: 1 };
+      let targetProgress = 0;
+      let currentProgress = 0;
+      let targetScale = minDemoScale;
+      let currentScale = minDemoScale;
+      let targetTranslateY = 36;
+      let currentTranslateY = 36;
+      let demoAnimationFrame = null;
+
+      demoPanel.style.willChange = 'transform';
+      demoPanel.style.transformOrigin = 'center center';
+      demoPanel.style.backfaceVisibility = 'hidden';
+      demoSection.style.setProperty('--vxr-demo-progress', '1');
+      demoSection.style.setProperty('--vxr-demo-scale', maxDemoScale.toFixed(4));
+      demoSection.style.setProperty('--vxr-demo-blur', '0px');
 
       const updateDemoMetrics = () => {
         const viewportHeight = window.innerHeight || 1;
         demoSection.style.setProperty('--vxr-scroll-range', `${Math.round(viewportHeight * maxScrollFactor)}px`);
         const rect = demoSection.getBoundingClientRect();
-        demoMetrics.start = rect.top + window.scrollY - viewportHeight * 0.18;
-        demoMetrics.range = viewportHeight * maxScrollFactor;
+        demoMetrics.start = rect.top + window.scrollY;
+        demoMetrics.height = Math.max(rect.height - viewportHeight * 0.18, viewportHeight * 0.9);
       };
 
-      const renderDemoProgress = () => {
-        currentProgress += (targetProgress - currentProgress) * 0.14;
+      const updateDemoTargets = () => {
+        const scrollY = window.scrollY || window.pageYOffset;
+        const normalizedProgress = clamp((scrollY - demoMetrics.start) / demoMetrics.height, 0, 1);
+        targetProgress = easeOutCubic(normalizedProgress);
+        targetScale = mix(minDemoScale, maxDemoScale, targetProgress);
+        targetTranslateY = mix(36, 0, targetProgress);
+      };
 
-        if (Math.abs(targetProgress - currentProgress) < 0.0015) {
+      const applyDemoState = () => {
+        const dimProgress = clamp(targetProgress * 0.88, 0, 0.88);
+        const nextParticleIntensity = clamp(1 - targetProgress * 0.45, 0.55, 1);
+        const hintOpacity = clamp(1 - targetProgress * 7, 0, 1);
+
+        demoPanel.style.transform = `translate3d(0, ${currentTranslateY.toFixed(3)}px, 0) scale(${currentScale.toFixed(4)})`;
+        demoSection.style.setProperty('--vxr-demo-dim', dimProgress.toFixed(4));
+        demoSection.style.setProperty('--vxr-hint-opacity', hintOpacity.toFixed(4));
+        heroDimTarget = dimProgress;
+        particleIntensityTarget = nextParticleIntensity;
+        document.documentElement.style.setProperty('--vxr-hero-dim-progress', dimProgress.toFixed(4));
+        document.documentElement.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
+      };
+
+      const animateDemo = () => {
+        currentProgress += (targetProgress - currentProgress) * demoLerp;
+        currentScale += (targetScale - currentScale) * demoLerp;
+        currentTranslateY += (targetTranslateY - currentTranslateY) * demoLerp;
+
+        if (Math.abs(targetProgress - currentProgress) < 0.0005) {
           currentProgress = targetProgress;
         }
 
-        const easedProgress = easeOutCubic(currentProgress);
-        const settleWindow = clamp((currentProgress - 0.82) / 0.18, 0, 1);
-        const settleStrength = 1 - Math.pow(1 - settleWindow, 2);
-        const bounce = Math.sin(settleStrength * Math.PI) * 0.012;
-        const finalScale = 0.68 + easedProgress * 0.34 + bounce;
-        const dimProgress = clamp(easedProgress * 0.92, 0, 0.92);
-        const nextParticleIntensity = clamp(1 - easedProgress * 0.7, 0.28, 1);
-        const hintOpacity = clamp(1 - currentProgress * 8, 0, 1);
-        const blurStrength = easedProgress * 0.8;
-
-        demoSection.style.setProperty('--vxr-demo-progress', easedProgress.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-scale', finalScale.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-dim', dimProgress.toFixed(4));
-        demoSection.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
-        demoSection.style.setProperty('--vxr-hint-opacity', hintOpacity.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-blur', `${blurStrength.toFixed(3)}px`);
-        document.documentElement.style.setProperty('--vxr-hero-dim-progress', dimProgress.toFixed(4));
-        document.documentElement.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
-
-        if (Math.abs(targetProgress - currentProgress) >= 0.0015) {
-          activeFrame = window.requestAnimationFrame(renderDemoProgress);
-        } else {
-          activeFrame = null;
+        if (Math.abs(targetScale - currentScale) < 0.0005) {
+          currentScale = targetScale;
         }
+
+        if (Math.abs(targetTranslateY - currentTranslateY) < 0.01) {
+          currentTranslateY = targetTranslateY;
+        }
+
+        applyDemoState();
+        demoAnimationFrame = window.requestAnimationFrame(animateDemo);
       };
 
-      const queueDemoProgress = () => {
-        const scrollY = window.scrollY || window.pageYOffset;
-        targetProgress = clamp((scrollY - demoMetrics.start) / demoMetrics.range, 0, 1);
-
-        if (!activeFrame) {
-          activeFrame = window.requestAnimationFrame(renderDemoProgress);
-        }
+      const handleDemoScroll = () => {
+        updateDemoTargets();
       };
 
       const refreshDemoScene = () => {
         updateDemoMetrics();
-        queueDemoProgress();
+        updateDemoTargets();
       };
 
       if (prefersReducedMotion.matches) {
-        demoSection.style.setProperty('--vxr-demo-progress', '1');
-        demoSection.style.setProperty('--vxr-demo-scale', '1');
+        targetProgress = 1;
+        currentProgress = 1;
+        targetScale = maxDemoScale;
+        currentScale = maxDemoScale;
+        targetTranslateY = 0;
+        currentTranslateY = 0;
         demoSection.style.setProperty('--vxr-demo-dim', '0.82');
-        demoSection.style.setProperty('--vxr-particle-intensity', '0.35');
+        demoSection.style.setProperty('--vxr-hint-opacity', '0');
+        demoPanel.style.transform = 'translate3d(0, 0, 0) scale(1)';
+        heroDimTarget = 0.82;
+        particleIntensityTarget = 0.55;
         document.documentElement.style.setProperty('--vxr-hero-dim-progress', '0.82');
-        document.documentElement.style.setProperty('--vxr-particle-intensity', '0.35');
+        document.documentElement.style.setProperty('--vxr-particle-intensity', '0.55');
       } else {
         refreshDemoScene();
-        window.addEventListener('scroll', queueDemoProgress, { passive: true });
+        applyDemoState();
+        demoAnimationFrame = window.requestAnimationFrame(animateDemo);
+        window.addEventListener('scroll', handleDemoScroll, { passive: true });
         window.addEventListener('resize', refreshDemoScene, { passive: true });
         prefersReducedMotion.addEventListener('change', refreshDemoScene);
+        window.addEventListener('beforeunload', () => {
+          if (demoAnimationFrame) {
+            window.cancelAnimationFrame(demoAnimationFrame);
+          }
+        });
       }
     }
 
@@ -921,8 +957,8 @@
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
         bgShift += 0.002;
-        particleIntensity = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vxr-particle-intensity')) || 1;
-        heroDimProgress = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vxr-hero-dim-progress')) || 0;
+        particleIntensity += (particleIntensityTarget - particleIntensity) * 0.08;
+        heroDimProgress += (heroDimTarget - heroDimProgress) * 0.08;
 
         const bgGradient = ctx.createLinearGradient(
           0,
@@ -1018,8 +1054,13 @@
           ctx.fill();
         });
 
-        particles.forEach((particle) => {
-          particle.update();
+        const particleStride = particleIntensity < 0.72 ? 2 : 1;
+
+        particles.forEach((particle, index) => {
+          if (particleStride === 1 || index % particleStride === 0) {
+            particle.update();
+          }
+
           particle.draw();
         });
 
