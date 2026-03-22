@@ -439,7 +439,9 @@
     let ripples = [];
     const PARTICLE_COUNT = 420;
     let particleIntensity = 1;
+    let particleIntensityTarget = 1;
     let heroDimProgress = 0;
+    let heroDimTarget = 0;
     let flowTime = 0;
     let isMouseActive = false;
     let mouse = {
@@ -544,9 +546,9 @@
         demoSection.style.setProperty('--vxr-demo-progress', currentProgress.toFixed(4));
         demoSection.style.setProperty('--vxr-demo-scale', currentScale.toFixed(4));
         demoSection.style.setProperty('--vxr-demo-dim', dimProgress.toFixed(4));
-        demoSection.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
         demoSection.style.setProperty('--vxr-hint-opacity', hintOpacity.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-blur', `${blurStrength.toFixed(3)}px`);
+        heroDimTarget = dimProgress;
+        particleIntensityTarget = nextParticleIntensity;
         document.documentElement.style.setProperty('--vxr-hero-dim-progress', dimProgress.toFixed(4));
         document.documentElement.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
         demoPanel.style.transform = `translate3d(0, ${translateY.toFixed(2)}px, 0) scale(${currentScale.toFixed(4)})`;
@@ -574,6 +576,13 @@
           rafRunning = true;
           rafAnimationId = window.requestAnimationFrame(animateDemo);
         }
+
+        applyDemoState();
+        demoAnimationFrame = window.requestAnimationFrame(animateDemo);
+      };
+
+      const handleDemoScroll = () => {
+        updateDemoTargets();
       };
 
       const queueDemoProgress = () => {
@@ -583,12 +592,16 @@
 
       const refreshDemoScene = () => {
         updateDemoMetrics();
-        queueDemoProgress();
+        updateDemoTargets();
       };
 
       if (prefersReducedMotion.matches) {
-        demoSection.style.setProperty('--vxr-demo-progress', '1');
-        demoSection.style.setProperty('--vxr-demo-scale', '1');
+        targetProgress = 1;
+        currentProgress = 1;
+        targetScale = maxDemoScale;
+        currentScale = maxDemoScale;
+        targetTranslateY = 0;
+        currentTranslateY = 0;
         demoSection.style.setProperty('--vxr-demo-dim', '0.82');
         demoSection.style.setProperty('--vxr-particle-intensity', '0.6');
         document.documentElement.style.setProperty('--vxr-hero-dim-progress', '0.82');
@@ -599,9 +612,16 @@
         demoPanel.style.backfaceVisibility = 'hidden';
         demoPanel.style.transform = `translateZ(0) scale(${minDemoScale})`;
         refreshDemoScene();
-        window.addEventListener('scroll', queueDemoProgress, { passive: true });
+        applyDemoState();
+        demoAnimationFrame = window.requestAnimationFrame(animateDemo);
+        window.addEventListener('scroll', handleDemoScroll, { passive: true });
         window.addEventListener('resize', refreshDemoScene, { passive: true });
         prefersReducedMotion.addEventListener('change', refreshDemoScene);
+        window.addEventListener('beforeunload', () => {
+          if (demoAnimationFrame) {
+            window.cancelAnimationFrame(demoAnimationFrame);
+          }
+        });
       }
     }
 
