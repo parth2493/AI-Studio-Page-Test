@@ -24,6 +24,7 @@
   <main>
     <section class="vxr-hero">
       <canvas id="vxr-particles-canvas" aria-hidden="true"></canvas>
+      <div class="vxr-hero-dim" aria-hidden="true"></div>
       <div class="vxr-container vxr-hero-grid">
         <div data-aos="fade-up">
           <p class="vxr-eyebrow text-small"><span class="vxr-eyebrow-vue">Vue</span><span class="vxr-eyebrow-xr">XR Studio</span></p>
@@ -429,10 +430,16 @@
     const canvas = document.getElementById('vxr-particles-canvas');
     const ctx = canvas?.getContext('2d');
     const xrReadyText = document.querySelector('[data-xr-ready]');
+    const heroSection = document.querySelector('.vxr-hero');
+    const demoSection = document.querySelector('.vxr-demo-section');
+    const demoPanel = document.querySelector('.vxr-demo-video');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     let particles = [];
     let ripples = [];
     const PARTICLE_COUNT = 420;
+    let particleIntensity = 1;
+    let heroDimProgress = 0;
     let flowTime = 0;
     let isMouseActive = false;
     let mouse = {
@@ -458,6 +465,94 @@
       baseAlpha: 0.12,
       baseBlur: 6
     };
+
+    if (heroSection) {
+      const scrollHint = document.createElement('div');
+      scrollHint.className = 'vxr-scroll-hint';
+      scrollHint.setAttribute('aria-hidden', 'true');
+      scrollHint.innerHTML = '<span>Scroll to explore</span>';
+      heroSection.appendChild(scrollHint);
+    }
+
+    if (demoSection && demoPanel) {
+      const maxScrollFactor = 1.35;
+      let demoMetrics = { start: 0, range: 1 };
+      let activeFrame = null;
+      let currentProgress = 0;
+      let targetProgress = 0;
+
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+      const easeOutCubic = (value) => 1 - Math.pow(1 - value, 3);
+
+      const updateDemoMetrics = () => {
+        const viewportHeight = window.innerHeight || 1;
+        demoSection.style.setProperty('--vxr-scroll-range', `${Math.round(viewportHeight * maxScrollFactor)}px`);
+        const rect = demoSection.getBoundingClientRect();
+        demoMetrics.start = rect.top + window.scrollY - viewportHeight * 0.18;
+        demoMetrics.range = viewportHeight * maxScrollFactor;
+      };
+
+      const renderDemoProgress = () => {
+        currentProgress += (targetProgress - currentProgress) * 0.14;
+
+        if (Math.abs(targetProgress - currentProgress) < 0.0015) {
+          currentProgress = targetProgress;
+        }
+
+        const easedProgress = easeOutCubic(currentProgress);
+        const settleWindow = clamp((currentProgress - 0.82) / 0.18, 0, 1);
+        const settleStrength = 1 - Math.pow(1 - settleWindow, 2);
+        const bounce = Math.sin(settleStrength * Math.PI) * 0.012;
+        const finalScale = 0.68 + easedProgress * 0.34 + bounce;
+        const dimProgress = clamp(easedProgress * 0.92, 0, 0.92);
+        const nextParticleIntensity = clamp(1 - easedProgress * 0.7, 0.28, 1);
+        const hintOpacity = clamp(1 - currentProgress * 8, 0, 1);
+        const blurStrength = easedProgress * 0.8;
+
+        demoSection.style.setProperty('--vxr-demo-progress', easedProgress.toFixed(4));
+        demoSection.style.setProperty('--vxr-demo-scale', finalScale.toFixed(4));
+        demoSection.style.setProperty('--vxr-demo-dim', dimProgress.toFixed(4));
+        demoSection.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
+        demoSection.style.setProperty('--vxr-hint-opacity', hintOpacity.toFixed(4));
+        demoSection.style.setProperty('--vxr-demo-blur', `${blurStrength.toFixed(3)}px`);
+        document.documentElement.style.setProperty('--vxr-hero-dim-progress', dimProgress.toFixed(4));
+        document.documentElement.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
+
+        if (Math.abs(targetProgress - currentProgress) >= 0.0015) {
+          activeFrame = window.requestAnimationFrame(renderDemoProgress);
+        } else {
+          activeFrame = null;
+        }
+      };
+
+      const queueDemoProgress = () => {
+        const scrollY = window.scrollY || window.pageYOffset;
+        targetProgress = clamp((scrollY - demoMetrics.start) / demoMetrics.range, 0, 1);
+
+        if (!activeFrame) {
+          activeFrame = window.requestAnimationFrame(renderDemoProgress);
+        }
+      };
+
+      const refreshDemoScene = () => {
+        updateDemoMetrics();
+        queueDemoProgress();
+      };
+
+      if (prefersReducedMotion.matches) {
+        demoSection.style.setProperty('--vxr-demo-progress', '1');
+        demoSection.style.setProperty('--vxr-demo-scale', '1');
+        demoSection.style.setProperty('--vxr-demo-dim', '0.82');
+        demoSection.style.setProperty('--vxr-particle-intensity', '0.35');
+        document.documentElement.style.setProperty('--vxr-hero-dim-progress', '0.82');
+        document.documentElement.style.setProperty('--vxr-particle-intensity', '0.35');
+      } else {
+        refreshDemoScene();
+        window.addEventListener('scroll', queueDemoProgress, { passive: true });
+        window.addEventListener('resize', refreshDemoScene, { passive: true });
+        prefersReducedMotion.addEventListener('change', refreshDemoScene);
+      }
+    }
 
     if (canvas && ctx) {
       let animationFrameId = null;
@@ -723,9 +818,10 @@
       }
 
       function init() {
+        particleIntensity = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vxr-particle-intensity')) || 1;
         particles = [];
         ripples = [];
-        for (let i = 0; i < PARTICLE_COUNT; i += 1) {
+        for (let i = 0; i < Math.max(140, Math.round(PARTICLE_COUNT * particleIntensity)); i += 1) {
           particles.push(new Particle());
         }
       }
@@ -825,6 +921,8 @@
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
         bgShift += 0.002;
+        particleIntensity = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vxr-particle-intensity')) || 1;
+        heroDimProgress = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vxr-hero-dim-progress')) || 0;
 
         const bgGradient = ctx.createLinearGradient(
           0,
@@ -835,18 +933,18 @@
 
         bgGradient.addColorStop(
           0,
-          `rgba(237,50,55,${0.03 + Math.sin(bgShift) * 0.01})`
+          `rgba(237,50,55,${(0.02 + Math.sin(bgShift) * 0.008) * particleIntensity})`
         );
 
         bgGradient.addColorStop(
           1,
-          `rgba(99,102,241,${0.03 + Math.cos(bgShift) * 0.01})`
+          `rgba(99,102,241,${(0.02 + Math.cos(bgShift) * 0.008) * particleIntensity})`
         );
 
         ctx.fillStyle = bgGradient;
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-        const brightness = 0.95 + Math.min(0.05, mouseSpeed * 0.002);
+        const brightness = 0.88 + Math.min(0.04, mouseSpeed * 0.0015) - heroDimProgress * 0.22;
         ctx.globalAlpha = brightness;
 
         if (mouse.x !== null && mouse.y !== null) {
@@ -859,7 +957,7 @@
             260
           );
 
-          beamGradient.addColorStop(0, 'rgba(255,255,255,0.06)');
+          beamGradient.addColorStop(0, `rgba(255,255,255,${0.06 * particleIntensity})`);
           beamGradient.addColorStop(1, 'rgba(255,255,255,0)');
 
           ctx.fillStyle = beamGradient;
@@ -874,7 +972,7 @@
             180
           );
 
-          glowGradient.addColorStop(0, 'rgba(255,255,255,0.05)');
+          glowGradient.addColorStop(0, `rgba(255,255,255,${0.05 * particleIntensity})`);
           glowGradient.addColorStop(1, 'rgba(255,255,255,0)');
 
           ctx.fillStyle = glowGradient;
@@ -890,7 +988,7 @@
           canvasWidth * 0.4
         );
 
-        focusGradient.addColorStop(0, 'rgba(255,255,255,0.03)');
+        focusGradient.addColorStop(0, `rgba(255,255,255,${0.03 * particleIntensity})`);
         focusGradient.addColorStop(1, 'rgba(255,255,255,0)');
 
         ctx.fillStyle = focusGradient;
@@ -905,7 +1003,7 @@
           );
 
           gradient.addColorStop(0, 'rgba(255,255,255,0)');
-          gradient.addColorStop(0.7, `rgba(255,255,255,${r.life * 0.08})`);
+          gradient.addColorStop(0.7, `rgba(255,255,255,${r.life * 0.08 * particleIntensity})`);
           gradient.addColorStop(1, 'rgba(255,255,255,0)');
 
           ctx.beginPath();
@@ -916,7 +1014,7 @@
 
           ctx.beginPath();
           ctx.arc(r.x, r.y, r.radius * 0.7, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255,255,255,${r.life * 0.02})`;
+          ctx.fillStyle = `rgba(255,255,255,${r.life * 0.02 * particleIntensity})`;
           ctx.fill();
         });
 
@@ -935,7 +1033,7 @@
         );
 
         vignette.addColorStop(0, 'rgba(0,0,0,0)');
-        vignette.addColorStop(1, 'rgba(0,0,0,0.15)');
+        vignette.addColorStop(1, `rgba(0,0,0,${0.15 + heroDimProgress * 0.16})`);
 
         ctx.fillStyle = vignette;
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
