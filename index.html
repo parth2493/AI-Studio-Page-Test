@@ -495,8 +495,6 @@
       let targetShadowProgress = 0;
       let currentWidth = 0;
       let targetWidth = 0;
-      let currentHeight = 0;
-      let targetHeight = 0;
       let currentRadius = 22;
       let targetRadius = 22;
       let currentOverlayProgress = 0;
@@ -537,7 +535,6 @@
       };
 
       const updateDemoTargets = () => {
-        const viewportHeight = window.innerHeight || 1;
         const rawProgress = clamp((lastKnownScrollY - demoMetrics.start) / demoMetrics.height, 0, 1);
         const easedProgress = easeOutQuart(rawProgress);
 
@@ -548,7 +545,6 @@
           targetRotateX = mapRange(easedProgress, 0, 1, -2, 0);
           targetShadowProgress = mapRange(easedProgress, 0, 1, 0.2, 0.6);
           targetWidth = demoMetrics.baseWidth;
-          targetHeight = demoMetrics.baseWidth * 9 / 16;
           targetRadius = mapRange(easedProgress, 0, 1, 20, 16);
           targetOverlayProgress = mapRange(easedProgress, 0, 1, 0.08, 0.24);
           targetContentOpacity = mapRange(easedProgress, 0, 1, 1, 0.84);
@@ -559,7 +555,6 @@
         const cinematicProgress = easeInOutCubic(easedProgress);
         const preLockProgress = clamp(cinematicProgress / demoLockThreshold, 0, 1);
         const widthProgress = easeInOutCubic(preLockProgress);
-        const heightProgress = easeInOutCubic(clamp((cinematicProgress - 0.12) / (demoLockThreshold - 0.12), 0, 1));
         const focusProgress = clamp(cinematicProgress / demoLockThreshold, 0, 1);
         const lockedProgress = cinematicProgress >= demoLockThreshold;
 
@@ -568,8 +563,7 @@
         targetTranslateY = lockedProgress ? 0 : mapRange(focusProgress, 0, 1, 60, 0);
         targetRotateX = lockedProgress ? 0 : mapRange(focusProgress, 0, 1, -4.5, 0);
         targetWidth = mapRange(widthProgress, 0, 1, demoMetrics.baseWidth, demoMetrics.viewportWidth);
-        targetHeight = mapRange(heightProgress, 0, 1, demoMetrics.baseWidth * 9 / 16, viewportHeight * 0.94);
-        targetRadius = lockedProgress ? 0 : mapRange(focusProgress, 0, 1, 22, 0);
+        targetRadius = lockedProgress ? 16 : mapRange(focusProgress, 0, 1, 22, 16);
         targetOverlayProgress = lockedProgress ? 1 : mapRange(focusProgress, 0, 1, 0.04, 1);
         targetContentOpacity = lockedProgress ? 0.08 : mapRange(focusProgress, 0, 1, 1, 0.08);
         targetGlow = lockedProgress ? 0.04 : mapRange(focusProgress, 0, 1, 0.24, 0.04);
@@ -588,7 +582,6 @@
         currentRotateX += (targetRotateX - currentRotateX) * settleBlend;
         currentShadowProgress += (targetShadowProgress - currentShadowProgress) * settleBlend;
         currentWidth += (targetWidth - currentWidth) * settleBlend;
-        currentHeight += (targetHeight - currentHeight) * settleBlend;
         currentRadius += (targetRadius - currentRadius) * settleBlend;
         currentOverlayProgress += (targetOverlayProgress - currentOverlayProgress) * settleBlend;
         currentContentOpacity += (targetContentOpacity - currentContentOpacity) * settleBlend;
@@ -600,7 +593,6 @@
         if (Math.abs(targetRotateX - currentRotateX) < 0.02) currentRotateX = targetRotateX;
         if (Math.abs(targetShadowProgress - currentShadowProgress) < 0.0008) currentShadowProgress = targetShadowProgress;
         if (Math.abs(targetWidth - currentWidth) < 0.2) currentWidth = targetWidth;
-        if (Math.abs(targetHeight - currentHeight) < 0.2) currentHeight = targetHeight;
         if (Math.abs(targetRadius - currentRadius) < 0.2) currentRadius = targetRadius;
         if (Math.abs(targetOverlayProgress - currentOverlayProgress) < 0.0008) currentOverlayProgress = targetOverlayProgress;
         if (Math.abs(targetContentOpacity - currentContentOpacity) < 0.0008) currentContentOpacity = targetContentOpacity;
@@ -613,20 +605,19 @@
           currentRotateX = 0;
           currentShadowProgress = 0.06;
           currentWidth = demoMetrics.viewportWidth;
-          currentHeight = (window.innerHeight || 1) * 0.94;
-          currentRadius = 0;
+          currentRadius = 16;
           currentOverlayProgress = 1;
           currentContentOpacity = 0.08;
           currentGlow = 0.04;
         }
 
-        const focusProgress = isMobileDemo ? currentProgress : clamp(currentProgress / demoLockThreshold, 0, 1);
+        const particleFadeProgress = currentProgress > 0.7 ? clamp((currentProgress - 0.7) / 0.3, 0, 1) : 0;
         const dimProgress = isMobileDemo
-          ? clamp(0.12 + currentProgress * 0.18, 0, 0.3)
-          : clamp(0.06 + focusProgress * 0.56, 0, 0.62);
+          ? clamp(0.12 + particleFadeProgress * 0.18, 0.12, 0.3)
+          : clamp(0.06 + particleFadeProgress * 0.56, 0.06, 0.62);
         const nextParticleIntensity = isMobileDemo
-          ? clamp(1 - currentProgress * 0.22, 0.78, 1)
-          : clamp(1 - focusProgress * 0.7, 0.3, 1);
+          ? clamp(1 - particleFadeProgress * 0.22, 0.78, 1)
+          : clamp(1 - particleFadeProgress * 0.7, 0.3, 1);
         const hintOpacity = clamp(1 - currentProgress * 7, 0, 1);
 
         demoSection.style.setProperty('--vxr-demo-progress', currentProgress.toFixed(4));
@@ -637,7 +628,6 @@
         demoSection.style.setProperty('--vxr-demo-glow-opacity', currentGlow.toFixed(4));
         demoSection.style.setProperty('--vxr-demo-radius', `${currentRadius.toFixed(2)}px`);
         demoSection.style.setProperty('--vxr-demo-width', `${currentWidth.toFixed(2)}px`);
-        demoSection.style.setProperty('--vxr-demo-height', `${currentHeight.toFixed(2)}px`);
         demoSection.style.setProperty('--vxr-hint-opacity', hintOpacity.toFixed(4));
         heroDimTarget = dimProgress;
         particleIntensityTarget = nextParticleIntensity;
@@ -662,7 +652,6 @@
 
         if (!currentWidth) {
           currentWidth = targetWidth || demoMetrics.baseWidth;
-          currentHeight = targetHeight || demoMetrics.baseWidth * 9 / 16;
         }
       };
 
@@ -688,8 +677,7 @@
           targetShadowProgress = 0.08;
           currentShadowProgress = 0.08;
           currentWidth = isMobileDemo ? demoMetrics.baseWidth : demoMetrics.viewportWidth;
-          currentHeight = isMobileDemo ? demoMetrics.baseWidth * 9 / 16 : (window.innerHeight || 1) * 0.94;
-          currentRadius = isMobileDemo ? 16 : 0;
+          currentRadius = isMobileDemo ? 16 : 16;
           currentOverlayProgress = isMobileDemo ? 0.24 : 1;
           currentContentOpacity = isMobileDemo ? 0.84 : 0.12;
           currentGlow = isMobileDemo ? 0.14 : 0.08;
@@ -700,12 +688,11 @@
           demoSection.style.setProperty('--vxr-demo-glow-opacity', isMobileDemo ? '0.14' : '0.08');
           demoSection.style.setProperty('--vxr-demo-radius', `${currentRadius.toFixed(2)}px`);
           demoSection.style.setProperty('--vxr-demo-width', `${currentWidth.toFixed(2)}px`);
-          demoSection.style.setProperty('--vxr-demo-height', `${currentHeight.toFixed(2)}px`);
           demoSection.style.setProperty('--vxr-hint-opacity', '0');
-          document.documentElement.style.setProperty('--vxr-hero-dim-progress', isMobileDemo ? '0.24' : '0.9');
-          document.documentElement.style.setProperty('--vxr-particle-intensity', isMobileDemo ? '0.88' : '0.2');
-          heroDimTarget = isMobileDemo ? 0.24 : 0.9;
-          particleIntensityTarget = isMobileDemo ? 0.88 : 0.2;
+          document.documentElement.style.setProperty('--vxr-hero-dim-progress', isMobileDemo ? '0.24' : '0.62');
+          document.documentElement.style.setProperty('--vxr-particle-intensity', isMobileDemo ? '0.88' : '0.3');
+          heroDimTarget = isMobileDemo ? 0.24 : 0.62;
+          particleIntensityTarget = isMobileDemo ? 0.88 : 0.3;
           demoPanel.style.transform = 'perspective(1800px) translate3d(0, 0, 0) rotateX(0deg) scale(1)';
           demoPanel.classList.add('vxr-demo-focus-mode', 'vxr-demo-lock-mode');
           return;
@@ -720,7 +707,7 @@
         }
       };
 
-      demoPanel.style.willChange = 'transform, width, height, border-radius, box-shadow';
+      demoPanel.style.willChange = 'transform, border-radius, box-shadow';
       demoPanel.style.transformOrigin = 'center center';
       demoPanel.style.backfaceVisibility = 'hidden';
       demoPanel.style.transform = `perspective(1800px) translate3d(0, 60px, 0) rotateX(-4.5deg) scale(${minDemoScale})`;
