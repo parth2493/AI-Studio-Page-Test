@@ -446,7 +446,6 @@ button:hover {
   --vxr-demo-dim: 0;
   --vxr-particle-intensity: 1;
   --vxr-demo-width: min(68vw, 960px);
-  --vxr-demo-height: auto;
   --vxr-demo-radius: 1.4rem;
   --vxr-demo-overlay-opacity: 0;
   --vxr-demo-content-opacity: 1;
@@ -795,7 +794,7 @@ button:hover {
 .vxr-demo-video {
   position: relative;
   width: min(100%, var(--vxr-demo-width));
-  height: var(--vxr-demo-height);
+  aspect-ratio: 16 / 9;
   max-width: none;
   padding: clamp(0.35rem, calc(0.85rem - var(--vxr-demo-progress) * 0.5rem), 0.85rem);
   background: linear-gradient(180deg, rgba(255, 255, 255, calc(0.96 - var(--vxr-demo-progress) * 0.4)), rgba(248, 250, 252, calc(0.92 - var(--vxr-demo-progress) * 0.34)));
@@ -803,11 +802,12 @@ button:hover {
   border-radius: var(--vxr-demo-radius);
   transform-origin: center center;
   transform-style: preserve-3d;
+  overflow: hidden;
   box-shadow:
     0 calc(26px + var(--vxr-demo-shadow-progress) * 28px) calc(60px + var(--vxr-demo-shadow-progress) * 18px) rgba(15, 23, 42, calc(0.18 + var(--vxr-demo-glow-opacity) * 0.22)),
     0 calc(8px + var(--vxr-demo-shadow-progress) * 12px) calc(22px + var(--vxr-demo-shadow-progress) * 10px) rgba(15, 23, 42, calc(0.08 + var(--vxr-demo-shadow-progress) * 0.1)),
     0 0 0 1px rgba(255, 255, 255, calc(0.52 - var(--vxr-demo-progress) * 0.42));
-  will-change: transform, width, height, border-radius, box-shadow;
+  will-change: transform, border-radius, box-shadow;
   backface-visibility: hidden;
   isolation: isolate;
 }
@@ -854,7 +854,7 @@ button:hover {
 
 .vxr-demo-video iframe {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: 100%;
   border: 0;
   border-radius: calc(var(--vxr-demo-radius) * 0.42 + 0.35rem);
   display: block;
@@ -1075,8 +1075,6 @@ button:hover {
 .vxr-demo-player {
   width: 100%;
   height: 100%;
-  min-height: min(56.25vw, 12rem);
-  aspect-ratio: 16 / 9;
   border-radius: calc(var(--vxr-demo-radius) * 0.42 + 0.35rem);
   display: block;
   object-fit: cover;
