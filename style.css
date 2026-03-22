@@ -835,6 +835,23 @@ button:hover {
   z-index: 2;
 }
 
+
+.vxr-demo-video.vxr-demo-focus-mode::before {
+  opacity: calc(0.08 + var(--vxr-demo-glow-opacity) * 0.6);
+  transform: scale(calc(0.96 + var(--vxr-demo-progress) * 0.04));
+}
+
+.vxr-demo-video.vxr-demo-focus-mode::after {
+  opacity: calc(0.48 - var(--vxr-demo-progress) * 0.32);
+}
+
+.vxr-demo-video.vxr-demo-lock-mode {
+  box-shadow:
+    0 calc(18px + var(--vxr-demo-shadow-progress) * 12px) calc(42px + var(--vxr-demo-shadow-progress) * 8px) rgba(15, 23, 42, calc(0.16 + var(--vxr-demo-glow-opacity) * 0.14)),
+    0 calc(6px + var(--vxr-demo-shadow-progress) * 8px) calc(16px + var(--vxr-demo-shadow-progress) * 8px) rgba(15, 23, 42, calc(0.08 + var(--vxr-demo-shadow-progress) * 0.06)),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
 .vxr-demo-video iframe {
   width: 100%;
   aspect-ratio: 16 / 9;
