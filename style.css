@@ -442,10 +442,8 @@ button:hover {
 
 .vxr-demo-section {
   --vxr-demo-progress: 0;
-  --vxr-demo-scale: 0.68;
   --vxr-demo-dim: 0;
   --vxr-particle-intensity: 1;
-  --vxr-demo-blur: 0px;
   padding: 0;
   position: relative;
   min-height: max(120vh, var(--vxr-scroll-range, 135vh));
@@ -772,24 +770,18 @@ button:hover {
 
 .vxr-demo-video {
   position: relative;
-  width: min(100%, calc(60vw + var(--vxr-demo-progress) * 36vw));
+  width: min(100%, 96vw);
   max-width: none;
-  padding: clamp(0.65rem, calc(1rem - var(--vxr-demo-progress) * 0.32rem), 1rem);
+  padding: 0.85rem;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.92));
   border: 1px solid color-mix(in srgb, var(--line) 78%, rgba(255, 255, 255, 0.8));
-  border-radius: clamp(1rem, calc(1rem + (1 - var(--vxr-demo-progress)) * 1.5rem), 2.5rem);
-  transform: translate3d(0, calc((1 - var(--vxr-demo-progress)) * 48px), 0) scale(var(--vxr-demo-scale));
+  border-radius: 1.4rem;
   transform-origin: center center;
   box-shadow:
     0 calc(18px + var(--vxr-demo-progress) * 44px) calc(48px + var(--vxr-demo-progress) * 40px) rgba(15, 23, 42, calc(0.14 + var(--vxr-demo-progress) * 0.14)),
     0 0 0 1px rgba(255, 255, 255, calc(0.55 - var(--vxr-demo-progress) * 0.18));
-  will-change: transform, box-shadow, border-radius, width, padding, filter;
+  will-change: transform;
   backface-visibility: hidden;
-  filter: saturate(calc(0.92 + var(--vxr-demo-progress) * 0.12)) blur(var(--vxr-demo-blur));
-}
-
-.vxr-demo-video:hover {
-  transform: translate3d(0, calc((1 - var(--vxr-demo-progress)) * 48px), 0) scale(calc(var(--vxr-demo-scale) + 0.01));
 }
 
 .vxr-demo-video::before {
