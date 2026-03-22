@@ -180,8 +180,9 @@ li {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 50% 35%, rgba(255, 255, 255, calc(0.04 + var(--vxr-hero-dim-progress, 0) * 0.14)), transparent 55%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(15, 23, 42, calc(var(--vxr-hero-dim-progress, 0) * 0.16)));
+    radial-gradient(circle at 50% 35%, rgba(255, 255, 255, calc(0.04 + var(--vxr-hero-dim-progress, 0) * 0.08)), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, calc(var(--vxr-hero-dim-progress, 0) * 0.04)), rgba(15, 23, 42, calc(var(--vxr-hero-dim-progress, 0) * 0.32)));
+  opacity: calc(0.8 + var(--vxr-hero-dim-progress, 0) * 0.22);
   transition: opacity 220ms ease;
 }
 
@@ -777,8 +778,10 @@ button:hover {
   border: 1px solid color-mix(in srgb, var(--line) 78%, rgba(255, 255, 255, 0.8));
   border-radius: 1.4rem;
   transform-origin: center center;
+  transform-style: preserve-3d;
   box-shadow:
-    0 calc(18px + var(--vxr-demo-progress) * 44px) calc(48px + var(--vxr-demo-progress) * 40px) rgba(15, 23, 42, calc(0.14 + var(--vxr-demo-progress) * 0.14)),
+    0 calc(30px - var(--vxr-demo-progress) * 12px) calc(58px - var(--vxr-demo-progress) * 18px) rgba(15, 23, 42, calc(0.16 + var(--vxr-demo-progress) * 0.22)),
+    0 calc(8px + var(--vxr-demo-progress) * 8px) calc(20px + var(--vxr-demo-progress) * 8px) rgba(15, 23, 42, calc(0.08 + var(--vxr-demo-progress) * 0.16)),
     0 0 0 1px rgba(255, 255, 255, calc(0.55 - var(--vxr-demo-progress) * 0.18));
   will-change: transform;
   backface-visibility: hidden;
@@ -794,7 +797,6 @@ button:hover {
   background: radial-gradient(circle at center, rgba(237, 50, 55, calc(0.08 + var(--vxr-demo-progress) * 0.12)), transparent 58%);
   opacity: calc(0.25 + var(--vxr-demo-progress) * 0.45);
   transform: scale(calc(0.92 + var(--vxr-demo-progress) * 0.1));
-  filter: blur(28px);
 }
 
 .vxr-demo-video iframe {

@@ -477,13 +477,19 @@
     }
 
     if (demoSection && demoPanel) {
-      const minDemoScale = 0.8;
+      const minDemoScale = 0.835;
       const maxDemoScale = 1;
       let demoMetrics = { start: 0, height: 1 };
       let currentScale = minDemoScale;
       let targetScale = minDemoScale;
       let currentProgress = 0;
       let targetProgress = 0;
+      let currentTranslateY = 52;
+      let targetTranslateY = 52;
+      let currentRotateX = -3.5;
+      let targetRotateX = -3.5;
+      let currentShadowProgress = 0;
+      let targetShadowProgress = 0;
       let demoAnimationFrame = null;
       let lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
 
@@ -517,14 +523,24 @@
           1
         );
         const easedProgress = easeOutCubic(rawProgress);
+        const settleProgress = clamp((easedProgress - 0.84) / 0.16, 0, 1);
+        const settledProgress = easedProgress - (0.018 * settleProgress * (1 - settleProgress));
 
-        targetProgress = easedProgress;
-        targetScale = mapRange(easedProgress, 0, 1, minDemoScale, maxDemoScale);
+        targetProgress = settledProgress;
+        targetScale = mapRange(settledProgress, 0, 1, minDemoScale, maxDemoScale);
+        targetTranslateY = mapRange(settledProgress, 0, 1, 52, 0);
+        targetRotateX = mapRange(settledProgress, 0, 1, -3.5, 0);
+        targetShadowProgress = mapRange(settledProgress, 0, 1, 0, 1);
       };
 
       const applyDemoState = () => {
-        currentProgress += (targetProgress - currentProgress) * 0.08;
-        currentScale += (targetScale - currentScale) * 0.08;
+        const settleBlend = currentProgress > 0.92 ? 0.065 : 0.1;
+
+        currentProgress += (targetProgress - currentProgress) * settleBlend;
+        currentScale += (targetScale - currentScale) * settleBlend;
+        currentTranslateY += (targetTranslateY - currentTranslateY) * settleBlend;
+        currentRotateX += (targetRotateX - currentRotateX) * settleBlend;
+        currentShadowProgress += (targetShadowProgress - currentShadowProgress) * settleBlend;
 
         if (Math.abs(targetProgress - currentProgress) < 0.0008) {
           currentProgress = targetProgress;
@@ -534,19 +550,38 @@
           currentScale = targetScale;
         }
 
-        const dimProgress = clamp(currentProgress * 0.88, 0, 0.88);
-        const nextParticleIntensity = clamp(1 - currentProgress * 0.45, 0.55, 1);
-        const hintOpacity = clamp(1 - currentProgress * 7, 0, 1);
-        const translateY = (1 - currentProgress) * 36;
+        if (Math.abs(targetTranslateY - currentTranslateY) < 0.02) {
+          currentTranslateY = targetTranslateY;
+        }
 
+        if (Math.abs(targetRotateX - currentRotateX) < 0.02) {
+          currentRotateX = targetRotateX;
+        }
+
+        if (Math.abs(targetShadowProgress - currentShadowProgress) < 0.0008) {
+          currentShadowProgress = targetShadowProgress;
+        }
+
+        if (targetProgress > 0.995) {
+          currentProgress = 1;
+          currentScale = 1;
+          currentTranslateY = 0;
+          currentRotateX = 0;
+          currentShadowProgress = 1;
+        }
+
+        const dimProgress = clamp(currentProgress * 0.98, 0, 0.98);
+        const nextParticleIntensity = clamp(1 - currentProgress * 0.65, 0.35, 1);
+        const hintOpacity = clamp(1 - currentProgress * 7, 0, 1);
         demoSection.style.setProperty('--vxr-demo-progress', currentProgress.toFixed(4));
+        demoSection.style.setProperty('--vxr-demo-shadow-progress', currentShadowProgress.toFixed(4));
         demoSection.style.setProperty('--vxr-demo-dim', dimProgress.toFixed(4));
         demoSection.style.setProperty('--vxr-hint-opacity', hintOpacity.toFixed(4));
         heroDimTarget = dimProgress;
         particleIntensityTarget = nextParticleIntensity;
         document.documentElement.style.setProperty('--vxr-hero-dim-progress', dimProgress.toFixed(4));
         document.documentElement.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
-        demoPanel.style.transform = `translate3d(0, ${translateY.toFixed(2)}px, 0) scale(${currentScale.toFixed(4)})`;
+        demoPanel.style.transform = `perspective(1600px) translate3d(0, ${currentTranslateY.toFixed(2)}px, 0) rotateX(${currentRotateX.toFixed(2)}deg) scale(${currentScale.toFixed(4)})`;
       };
 
       const animateDemo = () => {
@@ -576,13 +611,20 @@
           currentProgress = 1;
           targetScale = maxDemoScale;
           currentScale = maxDemoScale;
+          targetTranslateY = 0;
+          currentTranslateY = 0;
+          targetRotateX = 0;
+          currentRotateX = 0;
+          targetShadowProgress = 1;
+          currentShadowProgress = 1;
           demoSection.style.setProperty('--vxr-demo-dim', '0.82');
+          demoSection.style.setProperty('--vxr-demo-shadow-progress', '1');
           demoSection.style.setProperty('--vxr-hint-opacity', '0');
           document.documentElement.style.setProperty('--vxr-hero-dim-progress', '0.82');
           document.documentElement.style.setProperty('--vxr-particle-intensity', '0.6');
           heroDimTarget = 0.82;
           particleIntensityTarget = 0.6;
-          demoPanel.style.transform = 'translate3d(0, 0, 0) scale(1)';
+          demoPanel.style.transform = 'perspective(1600px) translate3d(0, 0, 0) rotateX(0deg) scale(1)';
           return;
         }
 
@@ -597,7 +639,7 @@
       demoPanel.style.willChange = 'transform';
       demoPanel.style.transformOrigin = 'center center';
       demoPanel.style.backfaceVisibility = 'hidden';
-      demoPanel.style.transform = `translate3d(0, 36px, 0) scale(${minDemoScale})`;
+      demoPanel.style.transform = `perspective(1600px) translate3d(0, 52px, 0) rotateX(-3.5deg) scale(${minDemoScale})`;
       refreshDemoScene();
       handleMotionPreferenceChange();
       window.addEventListener('scroll', handleDemoScroll, { passive: true });
