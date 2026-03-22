@@ -477,18 +477,20 @@
     }
 
     if (demoSection && demoPanel) {
-      const minDemoScale = 0.9;
+      const minDemoScale = 0.85;
       const maxDemoScale = 1;
+      const demoLockThreshold = 0.92;
+      const demoSettleThreshold = 0.985;
       const mobileMedia = window.matchMedia('(max-width: 768px)');
       let demoMetrics = { start: 0, height: 1, baseWidth: 0, viewportWidth: window.innerWidth || 1 };
       let currentScale = minDemoScale;
       let targetScale = minDemoScale;
       let currentProgress = 0;
       let targetProgress = 0;
-      let currentTranslateY = 52;
-      let targetTranslateY = 52;
-      let currentRotateX = -3.5;
-      let targetRotateX = -3.5;
+      let currentTranslateY = 60;
+      let targetTranslateY = 60;
+      let currentRotateX = -4.5;
+      let targetRotateX = -4.5;
       let currentShadowProgress = 0;
       let targetShadowProgress = 0;
       let currentWidth = 0;
@@ -508,7 +510,7 @@
       let isMobileDemo = mobileMedia.matches;
 
       const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-      const easeOutCubic = (value) => 1 - Math.pow(1 - value, 3);
+      const easeOutQuart = (value) => 1 - Math.pow(1 - value, 4);
       const easeInOutCubic = (value) => (value < 0.5 ? 4 * value * value * value : 1 - Math.pow(-2 * value + 2, 3) / 2);
       const mapRange = (value, inMin, inMax, outMin, outMax) => {
         if (inMax - inMin === 0) {
@@ -537,12 +539,12 @@
       const updateDemoTargets = () => {
         const viewportHeight = window.innerHeight || 1;
         const rawProgress = clamp((lastKnownScrollY - demoMetrics.start) / demoMetrics.height, 0, 1);
-        const easedProgress = easeOutCubic(rawProgress);
+        const easedProgress = easeOutQuart(rawProgress);
 
         if (isMobileDemo) {
           targetProgress = easedProgress;
-          targetScale = mapRange(easedProgress, 0, 1, 0.94, 1);
-          targetTranslateY = mapRange(easedProgress, 0, 1, 24, 0);
+          targetScale = mapRange(easedProgress, 0, 1, 0.9, 1);
+          targetTranslateY = mapRange(easedProgress, 0, 1, 28, 0);
           targetRotateX = mapRange(easedProgress, 0, 1, -2, 0);
           targetShadowProgress = mapRange(easedProgress, 0, 1, 0.2, 0.6);
           targetWidth = demoMetrics.baseWidth;
@@ -550,35 +552,35 @@
           targetRadius = mapRange(easedProgress, 0, 1, 20, 16);
           targetOverlayProgress = mapRange(easedProgress, 0, 1, 0.08, 0.24);
           targetContentOpacity = mapRange(easedProgress, 0, 1, 1, 0.84);
-          targetGlow = mapRange(easedProgress, 0, 1, 0.2, 0.14);
+          targetGlow = mapRange(easedProgress, 0, 1, 0.18, 0.12);
           return;
         }
 
         const cinematicProgress = easeInOutCubic(easedProgress);
-        const settleProgress = clamp((cinematicProgress - 0.84) / 0.16, 0, 1);
-        const settledProgress = clamp(cinematicProgress - (0.02 * settleProgress * (1 - settleProgress)), 0, 1);
-        const widthProgress = easeInOutCubic(clamp(settledProgress / 0.92, 0, 1));
-        const heightProgress = easeInOutCubic(clamp((settledProgress - 0.18) / 0.82, 0, 1));
+        const preLockProgress = clamp(cinematicProgress / demoLockThreshold, 0, 1);
+        const widthProgress = easeInOutCubic(preLockProgress);
+        const heightProgress = easeInOutCubic(clamp((cinematicProgress - 0.12) / (demoLockThreshold - 0.12), 0, 1));
+        const focusProgress = clamp(cinematicProgress / demoLockThreshold, 0, 1);
+        const lockedProgress = cinematicProgress >= demoLockThreshold;
 
-        targetProgress = settledProgress;
-        targetScale = mapRange(settledProgress, 0, 0.6, minDemoScale, maxDemoScale);
-        targetTranslateY = mapRange(settledProgress, 0, 1, 52, 0);
-        targetRotateX = mapRange(settledProgress, 0, 1, -3.5, 0);
+        targetProgress = lockedProgress ? 1 : cinematicProgress;
+        targetScale = lockedProgress ? maxDemoScale : mapRange(focusProgress, 0, 1, minDemoScale, maxDemoScale);
+        targetTranslateY = lockedProgress ? 0 : mapRange(focusProgress, 0, 1, 60, 0);
+        targetRotateX = lockedProgress ? 0 : mapRange(focusProgress, 0, 1, -4.5, 0);
         targetWidth = mapRange(widthProgress, 0, 1, demoMetrics.baseWidth, demoMetrics.viewportWidth);
         targetHeight = mapRange(heightProgress, 0, 1, demoMetrics.baseWidth * 9 / 16, viewportHeight * 0.94);
-        targetRadius = mapRange(settledProgress, 0, 1, 22, 0);
-        targetOverlayProgress = mapRange(settledProgress, 0, 1, 0.04, 1);
-        targetContentOpacity = mapRange(settledProgress, 0, 1, 1, 0.12);
-        targetGlow = settledProgress < 0.72
-          ? mapRange(settledProgress, 0, 0.72, 0.28, 0.38)
-          : mapRange(settledProgress, 0.72, 1, 0.38, 0.08);
-        targetShadowProgress = settledProgress < 0.72
-          ? mapRange(settledProgress, 0, 0.72, 0, 1)
-          : mapRange(settledProgress, 0.72, 1, 1, 0.08);
+        targetRadius = lockedProgress ? 0 : mapRange(focusProgress, 0, 1, 22, 0);
+        targetOverlayProgress = lockedProgress ? 1 : mapRange(focusProgress, 0, 1, 0.04, 1);
+        targetContentOpacity = lockedProgress ? 0.08 : mapRange(focusProgress, 0, 1, 1, 0.08);
+        targetGlow = lockedProgress ? 0.04 : mapRange(focusProgress, 0, 1, 0.24, 0.04);
+        targetShadowProgress = lockedProgress ? 0.06 : mapRange(focusProgress, 0, 1, 0, 0.94);
       };
 
       const applyDemoState = () => {
-        const settleBlend = !isMobileDemo && currentProgress > 0.9 ? 0.058 : 0.11;
+        const dampingProgress = isMobileDemo ? currentProgress : clamp(currentProgress / demoLockThreshold, 0, 1);
+        const settleBlend = isMobileDemo
+          ? 0.08
+          : mapRange(dampingProgress, 0, 1, 0.08, 0.04);
 
         currentProgress += (targetProgress - currentProgress) * settleBlend;
         currentScale += (targetScale - currentScale) * settleBlend;
@@ -604,26 +606,27 @@
         if (Math.abs(targetContentOpacity - currentContentOpacity) < 0.0008) currentContentOpacity = targetContentOpacity;
         if (Math.abs(targetGlow - currentGlow) < 0.0008) currentGlow = targetGlow;
 
-        if (!isMobileDemo && targetProgress > 0.995) {
+        if (!isMobileDemo && targetProgress >= 1 && currentProgress >= demoSettleThreshold) {
           currentProgress = 1;
           currentScale = 1;
           currentTranslateY = 0;
           currentRotateX = 0;
-          currentShadowProgress = 0.08;
+          currentShadowProgress = 0.06;
           currentWidth = demoMetrics.viewportWidth;
           currentHeight = (window.innerHeight || 1) * 0.94;
           currentRadius = 0;
           currentOverlayProgress = 1;
-          currentContentOpacity = 0.12;
-          currentGlow = 0.08;
+          currentContentOpacity = 0.08;
+          currentGlow = 0.04;
         }
 
+        const focusProgress = isMobileDemo ? currentProgress : clamp(currentProgress / demoLockThreshold, 0, 1);
         const dimProgress = isMobileDemo
-          ? clamp(0.12 + currentProgress * 0.22, 0, 0.34)
-          : clamp(0.08 + currentProgress * 0.9, 0, 0.98);
+          ? clamp(0.12 + currentProgress * 0.18, 0, 0.3)
+          : clamp(0.06 + focusProgress * 0.56, 0, 0.62);
         const nextParticleIntensity = isMobileDemo
-          ? clamp(1 - currentProgress * 0.18, 0.82, 1)
-          : clamp(1 - currentProgress * 0.78, 0.16, 1);
+          ? clamp(1 - currentProgress * 0.22, 0.78, 1)
+          : clamp(1 - focusProgress * 0.7, 0.3, 1);
         const hintOpacity = clamp(1 - currentProgress * 7, 0, 1);
 
         demoSection.style.setProperty('--vxr-demo-progress', currentProgress.toFixed(4));
@@ -641,6 +644,8 @@
         document.documentElement.style.setProperty('--vxr-hero-dim-progress', dimProgress.toFixed(4));
         document.documentElement.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
         demoPanel.style.transform = `perspective(1800px) translate3d(0, ${currentTranslateY.toFixed(2)}px, 0) rotateX(${currentRotateX.toFixed(2)}deg) scale(${currentScale.toFixed(4)})`;
+        demoPanel.classList.toggle('vxr-demo-focus-mode', !isMobileDemo && currentProgress >= 0.7);
+        demoPanel.classList.toggle('vxr-demo-lock-mode', !isMobileDemo && currentProgress >= demoLockThreshold);
       };
 
       const animateDemo = () => {
@@ -702,9 +707,11 @@
           heroDimTarget = isMobileDemo ? 0.24 : 0.9;
           particleIntensityTarget = isMobileDemo ? 0.88 : 0.2;
           demoPanel.style.transform = 'perspective(1800px) translate3d(0, 0, 0) rotateX(0deg) scale(1)';
+          demoPanel.classList.add('vxr-demo-focus-mode', 'vxr-demo-lock-mode');
           return;
         }
 
+        demoPanel.classList.remove('vxr-demo-focus-mode', 'vxr-demo-lock-mode');
         refreshDemoScene();
         applyDemoState();
 
@@ -716,7 +723,7 @@
       demoPanel.style.willChange = 'transform, width, height, border-radius, box-shadow';
       demoPanel.style.transformOrigin = 'center center';
       demoPanel.style.backfaceVisibility = 'hidden';
-      demoPanel.style.transform = `perspective(1800px) translate3d(0, 52px, 0) rotateX(-3.5deg) scale(${minDemoScale})`;
+      demoPanel.style.transform = `perspective(1800px) translate3d(0, 60px, 0) rotateX(-4.5deg) scale(${minDemoScale})`;
       refreshDemoScene();
       handleMotionPreferenceChange();
       window.addEventListener('scroll', handleDemoScroll, { passive: true });
@@ -1123,7 +1130,8 @@
         ctx.fillStyle = bgGradient;
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-        const brightness = 0.88 + Math.min(0.04, mouseSpeed * 0.0015) - heroDimProgress * 0.22;
+        const ambientSuppression = 1 - clamp(heroDimProgress * 0.55, 0, 0.55);
+        const brightness = (0.88 + Math.min(0.04, mouseSpeed * 0.0015) - heroDimProgress * 0.22) * ambientSuppression;
         ctx.globalAlpha = brightness;
 
         if (mouse.x !== null && mouse.y !== null) {
@@ -1136,7 +1144,7 @@
             260
           );
 
-          beamGradient.addColorStop(0, `rgba(255,255,255,${0.06 * particleIntensity})`);
+          beamGradient.addColorStop(0, `rgba(255,255,255,${0.035 * particleIntensity})`);
           beamGradient.addColorStop(1, 'rgba(255,255,255,0)');
 
           ctx.fillStyle = beamGradient;
@@ -1151,7 +1159,7 @@
             180
           );
 
-          glowGradient.addColorStop(0, `rgba(255,255,255,${0.05 * particleIntensity})`);
+          glowGradient.addColorStop(0, `rgba(255,255,255,${0.028 * particleIntensity})`);
           glowGradient.addColorStop(1, 'rgba(255,255,255,0)');
 
           ctx.fillStyle = glowGradient;
@@ -1167,7 +1175,7 @@
           canvasWidth * 0.4
         );
 
-        focusGradient.addColorStop(0, `rgba(255,255,255,${0.03 * particleIntensity})`);
+        focusGradient.addColorStop(0, `rgba(255,255,255,${0.016 * particleIntensity})`);
         focusGradient.addColorStop(1, 'rgba(255,255,255,0)');
 
         ctx.fillStyle = focusGradient;
@@ -1198,7 +1206,7 @@
         });
 
         const particleStride = particleIntensity < 0.72 ? 2 : 1;
-        const particleAlphaScale = particleIntensity < 0.72 ? 0.82 : 1;
+        const particleAlphaScale = particleIntensity < 0.72 ? 0.58 : 0.9;
 
         for (let i = 0; i < particles.length; i += 1) {
           const particle = particles[i];
