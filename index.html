@@ -484,8 +484,7 @@
       let targetScale = minDemoScale;
       let currentProgress = 0;
       let targetProgress = 0;
-      let rafAnimationId = null;
-      let rafRunning = false;
+      let demoAnimationFrame = null;
       let lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
 
       const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -509,8 +508,6 @@
         demoMetrics.height = sectionHeight;
         demoPanel.style.width = `${panelWidth}px`;
         demoPanel.style.maxWidth = '100%';
-        demoPanel.style.padding = '0.85rem';
-        demoPanel.style.borderRadius = '1.4rem';
       };
 
       const updateDemoTargets = () => {
@@ -540,11 +537,9 @@
         const dimProgress = clamp(currentProgress * 0.88, 0, 0.88);
         const nextParticleIntensity = clamp(1 - currentProgress * 0.45, 0.55, 1);
         const hintOpacity = clamp(1 - currentProgress * 7, 0, 1);
-        const blurStrength = currentProgress * 0.55;
         const translateY = (1 - currentProgress) * 36;
 
         demoSection.style.setProperty('--vxr-demo-progress', currentProgress.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-scale', currentScale.toFixed(4));
         demoSection.style.setProperty('--vxr-demo-dim', dimProgress.toFixed(4));
         demoSection.style.setProperty('--vxr-hint-opacity', hintOpacity.toFixed(4));
         heroDimTarget = dimProgress;
@@ -552,77 +547,67 @@
         document.documentElement.style.setProperty('--vxr-hero-dim-progress', dimProgress.toFixed(4));
         document.documentElement.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
         demoPanel.style.transform = `translate3d(0, ${translateY.toFixed(2)}px, 0) scale(${currentScale.toFixed(4)})`;
-        demoPanel.style.filter = `saturate(${(0.92 + currentProgress * 0.08).toFixed(3)}) blur(${blurStrength.toFixed(3)}px)`;
       };
 
       const animateDemo = () => {
         updateDemoTargets();
         applyDemoState();
-
-        if (
-          Math.abs(targetProgress - currentProgress) > 0.0008 ||
-          Math.abs(targetScale - currentScale) > 0.0008
-        ) {
-          rafAnimationId = window.requestAnimationFrame(animateDemo);
-          return;
-        }
-
-        rafRunning = false;
-        rafAnimationId = null;
-      };
-
-      const requestDemoFrame = () => {
-        if (!rafRunning) {
-          rafRunning = true;
-          rafAnimationId = window.requestAnimationFrame(animateDemo);
-        }
-
-        applyDemoState();
         demoAnimationFrame = window.requestAnimationFrame(animateDemo);
-      };
-
-      const handleDemoScroll = () => {
-        updateDemoTargets();
-      };
-
-      const queueDemoProgress = () => {
-        lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
-        requestDemoFrame();
       };
 
       const refreshDemoScene = () => {
         updateDemoMetrics();
+        lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
         updateDemoTargets();
       };
 
-      if (prefersReducedMotion.matches) {
-        targetProgress = 1;
-        currentProgress = 1;
-        targetScale = maxDemoScale;
-        currentScale = maxDemoScale;
-        targetTranslateY = 0;
-        currentTranslateY = 0;
-        demoSection.style.setProperty('--vxr-demo-dim', '0.82');
-        demoSection.style.setProperty('--vxr-particle-intensity', '0.6');
-        document.documentElement.style.setProperty('--vxr-hero-dim-progress', '0.82');
-        document.documentElement.style.setProperty('--vxr-particle-intensity', '0.6');
-      } else {
-        demoPanel.style.willChange = 'transform';
-        demoPanel.style.transformOrigin = 'center center';
-        demoPanel.style.backfaceVisibility = 'hidden';
-        demoPanel.style.transform = `translateZ(0) scale(${minDemoScale})`;
-        refreshDemoScene();
-        applyDemoState();
-        demoAnimationFrame = window.requestAnimationFrame(animateDemo);
-        window.addEventListener('scroll', handleDemoScroll, { passive: true });
-        window.addEventListener('resize', refreshDemoScene, { passive: true });
-        prefersReducedMotion.addEventListener('change', refreshDemoScene);
-        window.addEventListener('beforeunload', () => {
+      const handleDemoScroll = () => {
+        lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
+      };
+
+      const handleMotionPreferenceChange = () => {
+        if (prefersReducedMotion.matches) {
           if (demoAnimationFrame) {
             window.cancelAnimationFrame(demoAnimationFrame);
+            demoAnimationFrame = null;
           }
-        });
-      }
+
+          targetProgress = 1;
+          currentProgress = 1;
+          targetScale = maxDemoScale;
+          currentScale = maxDemoScale;
+          demoSection.style.setProperty('--vxr-demo-dim', '0.82');
+          demoSection.style.setProperty('--vxr-hint-opacity', '0');
+          document.documentElement.style.setProperty('--vxr-hero-dim-progress', '0.82');
+          document.documentElement.style.setProperty('--vxr-particle-intensity', '0.6');
+          heroDimTarget = 0.82;
+          particleIntensityTarget = 0.6;
+          demoPanel.style.transform = 'translate3d(0, 0, 0) scale(1)';
+          return;
+        }
+
+        refreshDemoScene();
+        applyDemoState();
+
+        if (!demoAnimationFrame) {
+          demoAnimationFrame = window.requestAnimationFrame(animateDemo);
+        }
+      };
+
+      demoPanel.style.willChange = 'transform';
+      demoPanel.style.transformOrigin = 'center center';
+      demoPanel.style.backfaceVisibility = 'hidden';
+      demoPanel.style.transform = `translate3d(0, 36px, 0) scale(${minDemoScale})`;
+      refreshDemoScene();
+      handleMotionPreferenceChange();
+      window.addEventListener('scroll', handleDemoScroll, { passive: true });
+      window.addEventListener('resize', refreshDemoScene, { passive: true });
+      prefersReducedMotion.addEventListener('change', handleMotionPreferenceChange);
+      window.addEventListener('beforeunload', () => {
+        if (demoAnimationFrame) {
+          window.cancelAnimationFrame(demoAnimationFrame);
+        }
+      });
     }
 
     if (canvas && ctx) {
