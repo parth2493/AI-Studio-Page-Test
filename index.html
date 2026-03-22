@@ -363,9 +363,15 @@
 
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
-    AOS.init({
-      duration: 700
-    });
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    if (window.AOS) {
+      AOS.init({
+        duration: 700
+      });
+    }
 
     const premiumCards = document.querySelectorAll('.vxr-premium-card');
 
@@ -507,7 +513,6 @@
       let lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
       let isMobileDemo = mobileMedia.matches;
 
-      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
       const easeOutQuart = (value) => 1 - Math.pow(1 - value, 4);
       const easeInOutCubic = (value) => (value < 0.5 ? 4 * value * value * value : 1 - Math.pow(-2 * value + 2, 3) / 2);
       const mapRange = (value, inMin, inMax, outMin, outMax) => {
@@ -639,9 +644,14 @@
       };
 
       const animateDemo = () => {
-        updateDemoTargets();
-        applyDemoState();
         demoAnimationFrame = window.requestAnimationFrame(animateDemo);
+
+        try {
+          updateDemoTargets();
+          applyDemoState();
+        } catch (error) {
+          console.error('Demo animation frame failed.', error);
+        }
       };
 
       const refreshDemoScene = () => {
@@ -1072,183 +1082,191 @@
       });
 
       function animate() {
-        pulse += 0.01;
-        mouseOffset.x += (mouseOffsetTarget.x - mouseOffset.x) * 0.08;
-        mouseOffset.y += (mouseOffsetTarget.y - mouseOffset.y) * 0.08;
-
-        const cameraTargetX = mouse.x !== null ? (mouse.x / canvasWidth - 0.5) * 20 : 0;
-        const cameraTargetY = mouse.y !== null ? (mouse.y / canvasHeight - 0.5) * 20 : 0;
-
-        cameraOffset.x += (cameraTargetX - cameraOffset.x) * 0.03;
-        cameraOffset.y += (cameraTargetY - cameraOffset.y) * 0.03;
-
-        ripples.forEach((r) => {
-          r.radius += r.speed;
-          r.life *= 0.95;
-        });
-        ripples = ripples.filter((r) => r.life > 0.05 && r.radius < r.maxRadius);
-
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-        bgShift += 0.002;
-        particleIntensity += (
-          (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vxr-particle-intensity')) || 1) -
-          particleIntensity
-        ) * 0.12;
-        heroDimProgress = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vxr-hero-dim-progress')) || 0;
-
-        const bgGradient = ctx.createLinearGradient(
-          0,
-          0,
-          canvasWidth,
-          canvasHeight
-        );
-
-        bgGradient.addColorStop(
-          0,
-          `rgba(237,50,55,${(0.02 + Math.sin(bgShift) * 0.008) * particleIntensity})`
-        );
-
-        bgGradient.addColorStop(
-          1,
-          `rgba(99,102,241,${(0.02 + Math.cos(bgShift) * 0.008) * particleIntensity})`
-        );
-
-        ctx.fillStyle = bgGradient;
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-        const ambientSuppression = 1 - clamp(heroDimProgress * 0.55, 0, 0.55);
-        const brightness = (0.88 + Math.min(0.04, mouseSpeed * 0.0015) - heroDimProgress * 0.22) * ambientSuppression;
-        ctx.globalAlpha = brightness;
-
-        if (mouse.x !== null && mouse.y !== null) {
-          const beamGradient = ctx.createRadialGradient(
-            mouse.x,
-            mouse.y,
-            0,
-            mouse.x,
-            mouse.y,
-            260
-          );
-
-          beamGradient.addColorStop(0, `rgba(255,255,255,${0.035 * particleIntensity})`);
-          beamGradient.addColorStop(1, 'rgba(255,255,255,0)');
-
-          ctx.fillStyle = beamGradient;
-          ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-          const glowGradient = ctx.createRadialGradient(
-            mouse.x,
-            mouse.y,
-            0,
-            mouse.x,
-            mouse.y,
-            180
-          );
-
-          glowGradient.addColorStop(0, `rgba(255,255,255,${0.028 * particleIntensity})`);
-          glowGradient.addColorStop(1, 'rgba(255,255,255,0)');
-
-          ctx.fillStyle = glowGradient;
-          ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-        }
-
-        const focusGradient = ctx.createRadialGradient(
-          canvasWidth / 2,
-          canvasHeight / 2,
-          0,
-          canvasWidth / 2,
-          canvasHeight / 2,
-          canvasWidth * 0.4
-        );
-
-        focusGradient.addColorStop(0, `rgba(255,255,255,${0.016 * particleIntensity})`);
-        focusGradient.addColorStop(1, 'rgba(255,255,255,0)');
-
-        ctx.fillStyle = focusGradient;
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-        ctx.globalAlpha = 1;
-
-        ripples.forEach((r) => {
-          const gradient = ctx.createRadialGradient(
-            r.x, r.y, r.radius * 0.6,
-            r.x, r.y, r.radius
-          );
-
-          gradient.addColorStop(0, 'rgba(255,255,255,0)');
-          gradient.addColorStop(0.7, `rgba(255,255,255,${r.life * 0.08 * particleIntensity})`);
-          gradient.addColorStop(1, 'rgba(255,255,255,0)');
-
-          ctx.beginPath();
-          ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
-          ctx.strokeStyle = gradient;
-          ctx.lineWidth = 8;
-          ctx.stroke();
-
-          ctx.beginPath();
-          ctx.arc(r.x, r.y, r.radius * 0.7, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255,255,255,${r.life * 0.02 * particleIntensity})`;
-          ctx.fill();
-        });
-
-        const particleStride = particleIntensity < 0.72 ? 2 : 1;
-        const particleAlphaScale = particleIntensity < 0.72 ? 0.58 : 0.9;
-
-        for (let i = 0; i < particles.length; i += 1) {
-          const particle = particles[i];
-          const shouldUpdateThisFrame = particleStride === 1 || ((i + Math.floor(pulse * 60)) % particleStride === 0);
-
-          if (shouldUpdateThisFrame) {
-            particle.update();
-          }
-
-          ctx.save();
-          ctx.globalAlpha *= particleAlphaScale;
-          particle.draw();
-          ctx.restore();
-        }
-
-        const vignette = ctx.createRadialGradient(
-          canvasWidth / 2,
-          canvasHeight / 2,
-          canvasWidth * 0.3,
-          canvasWidth / 2,
-          canvasHeight / 2,
-          canvasWidth * 0.7
-        );
-
-        vignette.addColorStop(0, 'rgba(0,0,0,0)');
-        vignette.addColorStop(1, `rgba(0,0,0,${0.15 + heroDimProgress * 0.16})`);
-
-        ctx.fillStyle = vignette;
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-        if (xrReadyText) {
-          if (!xrReadyGlow.rect) {
-            updateXrReadyMetrics();
-          }
-
-          if (mouse.x !== null && mouse.y !== null && xrReadyGlow.rect) {
-            const dx = mouse.x - xrReadyGlow.centerX;
-            const dy = mouse.y - xrReadyGlow.centerY;
-            const distance = Math.sqrt((dx * dx) + (dy * dy));
-            const normalizedDistance = Math.min(1, distance / xrReadyGlow.maxDistance);
-            xrReadyGlow.target = Math.max(0, 1 - normalizedDistance);
-          } else {
-            xrReadyGlow.target = 0;
-          }
-
-          xrReadyGlow.current += (xrReadyGlow.target - xrReadyGlow.current) * 0.1;
-
-          const glowAlpha = xrReadyGlow.baseAlpha + xrReadyGlow.current * 0.22;
-          const glowBlur = xrReadyGlow.baseBlur + xrReadyGlow.current * 10;
-          const glowSpread = 14 + xrReadyGlow.current * 18;
-
-          xrReadyText.style.textShadow = `0 0 ${glowBlur}px rgba(237, 50, 55, ${glowAlpha}), 0 0 ${glowSpread}px rgba(237, 50, 55, ${glowAlpha * 0.45})`;
-        }
-
         animationFrameId = window.requestAnimationFrame(animate);
+
+        try {
+          if (!canvasWidth || !canvasHeight) {
+            return;
+          }
+
+          pulse += 0.01;
+          mouseOffset.x += (mouseOffsetTarget.x - mouseOffset.x) * 0.08;
+          mouseOffset.y += (mouseOffsetTarget.y - mouseOffset.y) * 0.08;
+
+          const cameraTargetX = mouse.x !== null ? (mouse.x / canvasWidth - 0.5) * 20 : 0;
+          const cameraTargetY = mouse.y !== null ? (mouse.y / canvasHeight - 0.5) * 20 : 0;
+
+          cameraOffset.x += (cameraTargetX - cameraOffset.x) * 0.03;
+          cameraOffset.y += (cameraTargetY - cameraOffset.y) * 0.03;
+
+          ripples.forEach((r) => {
+            r.radius += r.speed;
+            r.life *= 0.95;
+          });
+          ripples = ripples.filter((r) => r.life > 0.05 && r.radius < r.maxRadius);
+
+          ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+          bgShift += 0.002;
+          particleIntensity += (
+            (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vxr-particle-intensity')) || 1) -
+            particleIntensity
+          ) * 0.12;
+          heroDimProgress = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vxr-hero-dim-progress')) || 0;
+
+          const bgGradient = ctx.createLinearGradient(
+            0,
+            0,
+            canvasWidth,
+            canvasHeight
+          );
+
+          bgGradient.addColorStop(
+            0,
+            `rgba(237,50,55,${(0.02 + Math.sin(bgShift) * 0.008) * particleIntensity})`
+          );
+
+          bgGradient.addColorStop(
+            1,
+            `rgba(99,102,241,${(0.02 + Math.cos(bgShift) * 0.008) * particleIntensity})`
+          );
+
+          ctx.fillStyle = bgGradient;
+          ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+          const ambientSuppression = 1 - clamp(heroDimProgress * 0.55, 0, 0.55);
+          const brightness = (0.88 + Math.min(0.04, mouseSpeed * 0.0015) - heroDimProgress * 0.22) * ambientSuppression;
+          ctx.globalAlpha = brightness;
+
+          if (mouse.x !== null && mouse.y !== null) {
+            const beamGradient = ctx.createRadialGradient(
+              mouse.x,
+              mouse.y,
+              0,
+              mouse.x,
+              mouse.y,
+              260
+            );
+
+            beamGradient.addColorStop(0, `rgba(255,255,255,${0.035 * particleIntensity})`);
+            beamGradient.addColorStop(1, 'rgba(255,255,255,0)');
+
+            ctx.fillStyle = beamGradient;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+            const glowGradient = ctx.createRadialGradient(
+              mouse.x,
+              mouse.y,
+              0,
+              mouse.x,
+              mouse.y,
+              180
+            );
+
+            glowGradient.addColorStop(0, `rgba(255,255,255,${0.028 * particleIntensity})`);
+            glowGradient.addColorStop(1, 'rgba(255,255,255,0)');
+
+            ctx.fillStyle = glowGradient;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+          }
+
+          const focusGradient = ctx.createRadialGradient(
+            canvasWidth / 2,
+            canvasHeight / 2,
+            0,
+            canvasWidth / 2,
+            canvasHeight / 2,
+            canvasWidth * 0.4
+          );
+
+          focusGradient.addColorStop(0, `rgba(255,255,255,${0.016 * particleIntensity})`);
+          focusGradient.addColorStop(1, 'rgba(255,255,255,0)');
+
+          ctx.fillStyle = focusGradient;
+          ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+          ctx.globalAlpha = 1;
+
+          ripples.forEach((r) => {
+            const gradient = ctx.createRadialGradient(
+              r.x, r.y, r.radius * 0.6,
+              r.x, r.y, r.radius
+            );
+
+            gradient.addColorStop(0, 'rgba(255,255,255,0)');
+            gradient.addColorStop(0.7, `rgba(255,255,255,${r.life * 0.08 * particleIntensity})`);
+            gradient.addColorStop(1, 'rgba(255,255,255,0)');
+
+            ctx.beginPath();
+            ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 8;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(r.x, r.y, r.radius * 0.7, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,255,255,${r.life * 0.02 * particleIntensity})`;
+            ctx.fill();
+          });
+
+          const particleStride = particleIntensity < 0.72 ? 2 : 1;
+          const particleAlphaScale = particleIntensity < 0.72 ? 0.58 : 0.9;
+
+          for (let i = 0; i < particles.length; i += 1) {
+            const particle = particles[i];
+            const shouldUpdateThisFrame = particleStride === 1 || ((i + Math.floor(pulse * 60)) % particleStride === 0);
+
+            if (shouldUpdateThisFrame) {
+              particle.update();
+            }
+
+            ctx.save();
+            ctx.globalAlpha *= particleAlphaScale;
+            particle.draw();
+            ctx.restore();
+          }
+
+          const vignette = ctx.createRadialGradient(
+            canvasWidth / 2,
+            canvasHeight / 2,
+            canvasWidth * 0.3,
+            canvasWidth / 2,
+            canvasHeight / 2,
+            canvasWidth * 0.7
+          );
+
+          vignette.addColorStop(0, 'rgba(0,0,0,0)');
+          vignette.addColorStop(1, `rgba(0,0,0,${0.15 + heroDimProgress * 0.16})`);
+
+          ctx.fillStyle = vignette;
+          ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+          if (xrReadyText) {
+            if (!xrReadyGlow.rect) {
+              updateXrReadyMetrics();
+            }
+
+            if (mouse.x !== null && mouse.y !== null && xrReadyGlow.rect) {
+              const dx = mouse.x - xrReadyGlow.centerX;
+              const dy = mouse.y - xrReadyGlow.centerY;
+              const distance = Math.sqrt((dx * dx) + (dy * dy));
+              const normalizedDistance = Math.min(1, distance / xrReadyGlow.maxDistance);
+              xrReadyGlow.target = Math.max(0, 1 - normalizedDistance);
+            } else {
+              xrReadyGlow.target = 0;
+            }
+
+            xrReadyGlow.current += (xrReadyGlow.target - xrReadyGlow.current) * 0.1;
+
+            const glowAlpha = xrReadyGlow.baseAlpha + xrReadyGlow.current * 0.22;
+            const glowBlur = xrReadyGlow.baseBlur + xrReadyGlow.current * 10;
+            const glowSpread = 14 + xrReadyGlow.current * 18;
+
+            xrReadyText.style.textShadow = `0 0 ${glowBlur}px rgba(237, 50, 55, ${glowAlpha}), 0 0 ${glowSpread}px rgba(237, 50, 55, ${glowAlpha * 0.45})`;
+          }
+        } catch (error) {
+          console.error('Particle animation frame failed.', error);
+        }
       }
 
       resize();
