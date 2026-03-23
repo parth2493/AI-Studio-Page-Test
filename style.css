@@ -261,7 +261,7 @@ li {
   font-size: 0.95rem;
   font-family: 'Roboto', Inter, Segoe UI, sans-serif;
   font-weight: 600;
-  text-align: center;
+  text-align: left;
 }
 
 .vxr-eyebrow-vue {
@@ -448,7 +448,7 @@ button:hover {
   --vxr-demo-scale: 0.9;
   --vxr-demo-dim: 0;
   --vxr-particle-intensity: 1;
-  padding: 2.5rem 0 0;
+  padding: 2.5rem 0 2.5rem;
   position: relative;
   border-top: 1px solid var(--line);
 }
@@ -766,14 +766,13 @@ button:hover {
 
 .vxr-demo-scene {
   position: relative;
-  height: 220vh;
+  height: 55vh;
   margin-top: 0;
 }
 
 .vxr-demo-sticky {
   position: sticky;
   top: 0;
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
