@@ -443,12 +443,20 @@ button:hover {
 
 .vxr-demo-section {
   --vxr-demo-progress: 0;
+<<<<<<< HEAD
   --vxr-demo-width: min(100%, 1100px);
   --vxr-demo-max-height: 80vh;
   --vxr-demo-radius: 20px;
   --vxr-demo-overlay-opacity: 0;
   --vxr-demo-glow-opacity: 0.24;
   --vxr-demo-shadow-progress: 0.45;
+=======
+  --vxr-demo-scale: 0.68;
+  --vxr-demo-dim: 0;
+  --vxr-particle-intensity: 1;
+  --vxr-demo-blur: 0px;
+  padding: 0;
+>>>>>>> parent of 3acd83b (Simplify demo video scroll animation)
   position: relative;
   padding: 4.5rem 0 0;
   border-top: 1px solid var(--line);
@@ -791,6 +799,7 @@ button:hover {
 
 .vxr-demo-video {
   position: relative;
+<<<<<<< HEAD
   width: min(100%, var(--vxr-demo-width));
   aspect-ratio: 16 / 9;
   max-width: 1100px;
@@ -800,14 +809,35 @@ button:hover {
   background: linear-gradient(180deg, rgba(255, 255, 255, calc(0.96 - var(--vxr-demo-progress) * 0.2)), rgba(248, 250, 252, calc(0.92 - var(--vxr-demo-progress) * 0.16)));
   border: 1px solid color-mix(in srgb, var(--line) calc(80% - var(--vxr-demo-progress) * 28%), rgba(255, 255, 255, 0.7));
   border-radius: var(--vxr-demo-radius);
+=======
+  width: min(100%, calc(60vw + var(--vxr-demo-progress) * 36vw));
+  max-width: none;
+  padding: clamp(0.65rem, calc(1rem - var(--vxr-demo-progress) * 0.32rem), 1rem);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.92));
+  border: 1px solid color-mix(in srgb, var(--line) 78%, rgba(255, 255, 255, 0.8));
+  border-radius: clamp(1rem, calc(1rem + (1 - var(--vxr-demo-progress)) * 1.5rem), 2.5rem);
+  transform: translate3d(0, calc((1 - var(--vxr-demo-progress)) * 48px), 0) scale(var(--vxr-demo-scale));
+>>>>>>> parent of 3acd83b (Simplify demo video scroll animation)
   transform-origin: center center;
   overflow: hidden;
   box-shadow:
+<<<<<<< HEAD
     0 calc(18px + var(--vxr-demo-shadow-progress) * 10px) calc(42px + var(--vxr-demo-shadow-progress) * 10px) rgba(15, 23, 42, 0.16),
     0 10px 24px rgba(15, 23, 42, 0.08);
   will-change: transform;
   backface-visibility: hidden;
   isolation: isolate;
+=======
+    0 calc(18px + var(--vxr-demo-progress) * 44px) calc(48px + var(--vxr-demo-progress) * 40px) rgba(15, 23, 42, calc(0.14 + var(--vxr-demo-progress) * 0.14)),
+    0 0 0 1px rgba(255, 255, 255, calc(0.55 - var(--vxr-demo-progress) * 0.18));
+  will-change: transform, box-shadow, border-radius, width, padding, filter;
+  backface-visibility: hidden;
+  filter: saturate(calc(0.92 + var(--vxr-demo-progress) * 0.12)) blur(var(--vxr-demo-blur));
+}
+
+.vxr-demo-video:hover {
+  transform: translate3d(0, calc((1 - var(--vxr-demo-progress)) * 48px), 0) scale(calc(var(--vxr-demo-scale) + 0.01));
+>>>>>>> parent of 3acd83b (Simplify demo video scroll animation)
 }
 
 .vxr-demo-video::before {

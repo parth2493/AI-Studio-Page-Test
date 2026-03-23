@@ -497,6 +497,7 @@
       let demoMetrics = { top: 0, height: 1, maxWidth: 1100, maxHeight: window.innerHeight * 0.8 };
       let currentProgress = 0;
       let targetProgress = 0;
+<<<<<<< HEAD
       let currentScale = minDemoScale;
       let targetScale = minDemoScale;
       let currentTranslateY = startTranslateY;
@@ -504,6 +505,10 @@
       let currentShadowProgress = 0;
       let targetShadowProgress = 0;
       let demoAnimationFrame = null;
+=======
+      let rafAnimationId = null;
+      let rafRunning = false;
+>>>>>>> parent of 3acd83b (Simplify demo video scroll animation)
       let lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
       let isMobileDemo = mobileMedia.matches;
       let isDemoLocked = false;
@@ -519,6 +524,7 @@
         const containerWidth = demoPanel.parentElement?.clientWidth || demoSection.clientWidth || viewportWidth;
         const maxWidth = Math.min(containerWidth, 1100);
 
+<<<<<<< HEAD
         demoMetrics.top = sceneTop;
         demoMetrics.height = sceneHeight;
         demoMetrics.maxWidth = maxWidth;
@@ -526,6 +532,14 @@
 
         demoSection.style.setProperty('--vxr-demo-width', `${maxWidth.toFixed(2)}px`);
         demoSection.style.setProperty('--vxr-demo-max-height', `${demoMetrics.maxHeight.toFixed(2)}px`);
+=======
+        demoMetrics.start = Math.max(0, sectionTop - (window.innerHeight || 0) * 0.12);
+        demoMetrics.height = sectionHeight;
+        demoPanel.style.width = `${panelWidth}px`;
+        demoPanel.style.maxWidth = '100%';
+        demoPanel.style.padding = '0.85rem';
+        demoPanel.style.borderRadius = '1.4rem';
+>>>>>>> parent of 3acd83b (Simplify demo video scroll animation)
       };
 
       const updateDemoTargets = () => {
@@ -562,6 +576,7 @@
         if (Math.abs(targetTranslateY - currentTranslateY) < 0.05) currentTranslateY = targetTranslateY;
         if (Math.abs(targetShadowProgress - currentShadowProgress) < 0.001) currentShadowProgress = targetShadowProgress;
 
+<<<<<<< HEAD
         const overlayOpacity = isMobileDemo ? 0.12 : lerp(0.04, 0.2, currentProgress);
         const glowOpacity = isMobileDemo ? 0.12 : lerp(0.24, 0.12, currentProgress);
         const dimProgress = isMobileDemo ? 0.18 : lerp(0.06, 0.4, currentProgress);
@@ -573,32 +588,78 @@
         demoSection.style.setProperty('--vxr-demo-glow-opacity', glowOpacity.toFixed(4));
         demoSection.style.setProperty('--vxr-demo-shadow-progress', shadowStrength.toFixed(4));
         demoSection.style.setProperty('--vxr-demo-radius', `${lerp(20, 16, currentProgress).toFixed(2)}px`);
+=======
+        const dimProgress = clamp(currentProgress * 0.88, 0, 0.88);
+        const nextParticleIntensity = clamp(1 - currentProgress * 0.45, 0.55, 1);
+        const hintOpacity = clamp(1 - currentProgress * 7, 0, 1);
+        const blurStrength = currentProgress * 0.55;
+        const translateY = (1 - currentProgress) * 36;
+
+        demoSection.style.setProperty('--vxr-demo-progress', currentProgress.toFixed(4));
+        demoSection.style.setProperty('--vxr-demo-scale', currentScale.toFixed(4));
+        demoSection.style.setProperty('--vxr-demo-dim', dimProgress.toFixed(4));
+>>>>>>> parent of 3acd83b (Simplify demo video scroll animation)
         demoSection.style.setProperty('--vxr-hint-opacity', hintOpacity.toFixed(4));
 
         heroDimTarget = dimProgress;
         particleIntensityTarget = isMobileDemo ? 0.9 : lerp(1, 0.62, currentProgress);
         document.documentElement.style.setProperty('--vxr-hero-dim-progress', dimProgress.toFixed(4));
+<<<<<<< HEAD
         document.documentElement.style.setProperty('--vxr-particle-intensity', particleIntensityTarget.toFixed(4));
 
         demoPanel.style.transform = `translate3d(0, ${currentTranslateY.toFixed(2)}px, 0) scale(${currentScale.toFixed(4)})`;
         demoPanel.classList.toggle('vxr-demo-lock-mode', currentProgress >= freezeThreshold);
+=======
+        document.documentElement.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
+        demoPanel.style.transform = `translate3d(0, ${translateY.toFixed(2)}px, 0) scale(${currentScale.toFixed(4)})`;
+        demoPanel.style.filter = `saturate(${(0.92 + currentProgress * 0.08).toFixed(3)}) blur(${blurStrength.toFixed(3)}px)`;
+>>>>>>> parent of 3acd83b (Simplify demo video scroll animation)
       };
 
       const animateDemo = () => {
         updateDemoTargets();
         applyDemoState();
+
+        if (
+          Math.abs(targetProgress - currentProgress) > 0.0008 ||
+          Math.abs(targetScale - currentScale) > 0.0008
+        ) {
+          rafAnimationId = window.requestAnimationFrame(animateDemo);
+          return;
+        }
+
+        rafRunning = false;
+        rafAnimationId = null;
+      };
+
+      const requestDemoFrame = () => {
+        if (!rafRunning) {
+          rafRunning = true;
+          rafAnimationId = window.requestAnimationFrame(animateDemo);
+        }
+
+        applyDemoState();
         demoAnimationFrame = window.requestAnimationFrame(animateDemo);
+      };
+
+      const handleDemoScroll = () => {
+        updateDemoTargets();
+      };
+
+      const queueDemoProgress = () => {
+        lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
+        requestDemoFrame();
       };
 
       const refreshDemoScene = () => {
         isMobileDemo = mobileMedia.matches;
         isDemoLocked = false;
         updateDemoMetrics();
-        lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
         updateDemoTargets();
         applyDemoState(true);
       };
 
+<<<<<<< HEAD
       const handleDemoScroll = () => {
         lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
       };
@@ -643,6 +704,36 @@
           window.cancelAnimationFrame(demoAnimationFrame);
         }
       });
+=======
+      if (prefersReducedMotion.matches) {
+        targetProgress = 1;
+        currentProgress = 1;
+        targetScale = maxDemoScale;
+        currentScale = maxDemoScale;
+        targetTranslateY = 0;
+        currentTranslateY = 0;
+        demoSection.style.setProperty('--vxr-demo-dim', '0.82');
+        demoSection.style.setProperty('--vxr-particle-intensity', '0.6');
+        document.documentElement.style.setProperty('--vxr-hero-dim-progress', '0.82');
+        document.documentElement.style.setProperty('--vxr-particle-intensity', '0.6');
+      } else {
+        demoPanel.style.willChange = 'transform';
+        demoPanel.style.transformOrigin = 'center center';
+        demoPanel.style.backfaceVisibility = 'hidden';
+        demoPanel.style.transform = `translateZ(0) scale(${minDemoScale})`;
+        refreshDemoScene();
+        applyDemoState();
+        demoAnimationFrame = window.requestAnimationFrame(animateDemo);
+        window.addEventListener('scroll', handleDemoScroll, { passive: true });
+        window.addEventListener('resize', refreshDemoScene, { passive: true });
+        prefersReducedMotion.addEventListener('change', refreshDemoScene);
+        window.addEventListener('beforeunload', () => {
+          if (demoAnimationFrame) {
+            window.cancelAnimationFrame(demoAnimationFrame);
+          }
+        });
+      }
+>>>>>>> parent of 3acd83b (Simplify demo video scroll animation)
     }
 
     if (canvas && ctx) {
