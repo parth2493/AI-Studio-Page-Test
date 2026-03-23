@@ -738,7 +738,6 @@ button:hover {
 
 .vxr-demo-center {
   position: sticky;
-  top: max(4.5rem, 8vh);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -799,7 +798,6 @@ button:hover {
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
-  aspect-ratio: 16 / 9;
   padding: clamp(0.5rem, calc(0.8rem - var(--vxr-demo-progress) * 0.2rem), 0.8rem);
   overflow: hidden;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.92));
@@ -1042,7 +1040,6 @@ button:hover {
 
 .vxr-demo-player {
   width: 100%;
-  aspect-ratio: 16 / 9;
   border-radius: 0.6rem;
   display: block;
   object-fit: cover;
