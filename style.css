@@ -759,7 +759,24 @@ button:hover {
 }
 
 .vxr-demo-copy {
-  margin: 0;
+  margin: 0 auto;
+  max-width: 42rem;
+}
+
+.vxr-demo-scene {
+  position: relative;
+  height: 220vh;
+  margin-top: 0;
+}
+
+.vxr-demo-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
 }
 
 .vxr-demo-points {
@@ -1357,10 +1374,7 @@ button:hover {
   }
 
   .vxr-demo-center {
-    position: relative;
-    top: auto;
-    min-height: auto;
-    padding: 0;
+    gap: 16px;
   }
 
   .vxr-model-card,

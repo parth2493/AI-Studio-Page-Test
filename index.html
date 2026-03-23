@@ -41,8 +41,8 @@
       </div>
     </section>
     <section class="vxr-section vxr-demo-section" id="demo">
-      <div class="vxr-container">
-        <div class="vxr-demo-center">
+      <div class="vxr-demo-center">
+        <div class="vxr-container">
           <div class="vxr-demo-content" data-aos="fade-up">
             <h2 class="vxr-section-title text-h2">See VueXR Studio in Action</h2>
             <p class="vxr-demo-copy text-body text-muted">
@@ -50,11 +50,17 @@
               Generate locally, preview instantly, and publish immersive XR experiences.
             </p>
           </div>
-          <div class="vxr-demo-video" data-aos="fade-up">
-            <video class="vxr-demo-player" autoplay muted loop playsinline controls>
-              <source src="assets/videos/demo.webm" type="video/webm" />
-              Your browser does not support the video tag.
-            </video>
+        </div>
+        <div class="vxr-demo-scene" aria-label="VueXR Studio demo video showcase">
+          <div class="vxr-demo-sticky">
+            <div class="vxr-container">
+              <div class="vxr-demo-video" data-aos="fade-up">
+                <video class="vxr-demo-player" autoplay muted loop playsinline controls>
+                  <source src="assets/videos/demo.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -432,6 +438,7 @@
     const xrReadyText = document.querySelector('[data-xr-ready]');
     const heroSection = document.querySelector('.vxr-hero');
     const demoSection = document.querySelector('.vxr-demo-section');
+    const demoScene = document.querySelector('.vxr-demo-scene');
     const demoPanel = document.querySelector('.vxr-demo-video');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
