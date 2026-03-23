@@ -374,26 +374,80 @@
     });
 
     const premiumCards = document.querySelectorAll('.vxr-premium-card');
+    const premiumCardMaxRotation = 10;
+    const premiumCardInterpolation = 0.1;
 
     premiumCards.forEach((card) => {
-      card.addEventListener('mousemove', (event) => {
-        const rect = card.getBoundingClientRect();
-        const offsetX = event.clientX - rect.left;
-        const offsetY = event.clientY - rect.top;
-        const rotateY = ((offsetX / rect.width) - 0.5) * 16;
-        const rotateX = (0.5 - (offsetY / rect.height)) * 16;
+      let cachedRect = null;
+      let animationFrameId = null;
+      let isPointerActive = false;
+      let currentRotateX = 0;
+      let currentRotateY = 0;
+      let currentScale = 1;
+      let targetRotateX = 0;
+      let targetRotateY = 0;
+      let targetScale = 1;
 
-        card.style.setProperty('--vxr-card-rotate-x', `${rotateX.toFixed(2)}deg`);
-        card.style.setProperty('--vxr-card-rotate-y', `${rotateY.toFixed(2)}deg`);
-        card.style.setProperty('--vxr-card-lift', '-10px');
-        card.style.setProperty('--vxr-card-scale', '1.02');
+      const renderCardTilt = () => {
+        currentRotateX += (targetRotateX - currentRotateX) * premiumCardInterpolation;
+        currentRotateY += (targetRotateY - currentRotateY) * premiumCardInterpolation;
+        currentScale += (targetScale - currentScale) * premiumCardInterpolation;
+
+        card.style.setProperty('--vxr-card-rotate-x', `${currentRotateX.toFixed(2)}deg`);
+        card.style.setProperty('--vxr-card-rotate-y', `${currentRotateY.toFixed(2)}deg`);
+        card.style.setProperty('--vxr-card-scale', currentScale.toFixed(3));
+
+        const isSettled = Math.abs(targetRotateX - currentRotateX) < 0.01
+          && Math.abs(targetRotateY - currentRotateY) < 0.01
+          && Math.abs(targetScale - currentScale) < 0.001;
+
+        if (isPointerActive || !isSettled) {
+          animationFrameId = window.requestAnimationFrame(renderCardTilt);
+          return;
+        }
+
+        animationFrameId = null;
+      };
+
+      const startCardAnimation = () => {
+        if (animationFrameId !== null) {
+          return;
+        }
+
+        animationFrameId = window.requestAnimationFrame(renderCardTilt);
+      };
+
+      const cacheCardBounds = () => {
+        cachedRect = card.getBoundingClientRect();
+      };
+
+      card.addEventListener('mouseenter', () => {
+        cacheCardBounds();
+        isPointerActive = true;
+        targetScale = 1.02;
+        startCardAnimation();
+      });
+
+      card.addEventListener('mousemove', (event) => {
+        if (!cachedRect) {
+          return;
+        }
+
+        const offsetX = event.clientX - cachedRect.left;
+        const offsetY = event.clientY - cachedRect.top;
+        targetRotateY = ((offsetX / cachedRect.width) - 0.5) * premiumCardMaxRotation * 2;
+        targetRotateX = (0.5 - (offsetY / cachedRect.height)) * premiumCardMaxRotation * 2;
+        targetScale = 1.02;
+        startCardAnimation();
       });
 
       card.addEventListener('mouseleave', () => {
-        card.style.setProperty('--vxr-card-rotate-x', '0deg');
-        card.style.setProperty('--vxr-card-rotate-y', '0deg');
-        card.style.setProperty('--vxr-card-lift', '0px');
-        card.style.setProperty('--vxr-card-scale', '1');
+        isPointerActive = false;
+        targetRotateX = 0;
+        targetRotateY = 0;
+        targetScale = 1;
+        cachedRect = null;
+        startCardAnimation();
       });
     });
 

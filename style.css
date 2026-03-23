@@ -311,6 +311,11 @@ li {
   border-radius: 0.9rem;
 }
 
+.vxr-card {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
 .vxr-hero-form {
   display: flex;
   flex-direction: row;
@@ -1131,18 +1136,17 @@ button:hover {
 .vxr-premium-card {
   --vxr-card-rotate-x: 0deg;
   --vxr-card-rotate-y: 0deg;
-  --vxr-card-lift: 0px;
   --vxr-card-scale: 1;
   position: relative;
   border-radius: 1.5rem;
   overflow: visible;
   background: rgba(255, 255, 255, 0);
   backdrop-filter: blur(15px);
-  transform: perspective(1000px) translateY(var(--vxr-card-lift)) rotateX(var(--vxr-card-rotate-x)) rotateY(var(--vxr-card-rotate-y)) scale(var(--vxr-card-scale));
+  transform: perspective(1000px) translateZ(0) rotateX(var(--vxr-card-rotate-x)) rotateY(var(--vxr-card-rotate-y)) scale(var(--vxr-card-scale));
   transform-style: preserve-3d;
   perspective: 1000px;
   will-change: transform;
-  transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
+  transition: transform 0.18s ease-out;
 }
 
 /* GLOW BORDER */
@@ -1218,7 +1222,6 @@ button:hover {
 
 /* HOVER */
 .vxr-premium-card:hover {
-  --vxr-card-lift: -10px;
   --vxr-card-scale: 1.02;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
 }
