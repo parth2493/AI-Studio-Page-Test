@@ -442,11 +442,10 @@ button:hover {
 
 .vxr-demo-section {
   --vxr-demo-progress: 0;
-  --vxr-demo-scale: 0.68;
+  --vxr-demo-scale: 0.9;
   --vxr-demo-dim: 0;
   --vxr-particle-intensity: 1;
-  --vxr-demo-blur: 0px;
-  padding: 0;
+  padding: 2.5rem 0 0;
   position: relative;
   border-top: 1px solid var(--line);
 }
@@ -745,12 +744,12 @@ button:hover {
   min-height: 50vh;
   max-width: 1200px;
   margin: 0 auto;
-  gap: 1rem;
-  padding: clamp(2rem, 6vh, 4rem) 0;
+  gap: 16px;
+  padding: clamp(1.5rem, 4vh, 2.75rem) 0 0;
 }
 
 .vxr-demo-content {
-  margin-bottom: 1.5rem;
+  margin-bottom: 8px;
 }
 
 .vxr-demo-content .vxr-section-title {
@@ -786,46 +785,44 @@ button:hover {
   gap: 0.45rem;
 }
 
+.vxr-demo-sticky .vxr-container,
+.vxr-demo-wrapper {
+  width: 92%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
 .vxr-demo-video {
   position: relative;
-  width: min(100%, calc(60vw + var(--vxr-demo-progress) * 36vw));
-  max-width: none;
-  padding: clamp(0.65rem, calc(1rem - var(--vxr-demo-progress) * 0.32rem), 1rem);
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+  padding: clamp(0.5rem, calc(0.8rem - var(--vxr-demo-progress) * 0.2rem), 0.8rem);
+  overflow: hidden;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.92));
   border: 1px solid color-mix(in srgb, var(--line) 78%, rgba(255, 255, 255, 0.8));
-  border-radius: clamp(1rem, calc(1rem + (1 - var(--vxr-demo-progress)) * 1.5rem), 2.5rem);
-  transform: translate3d(0, calc((1 - var(--vxr-demo-progress)) * 48px), 0) scale(var(--vxr-demo-scale));
+  border-radius: 16px;
+  transform: translate3d(0, calc((1 - var(--vxr-demo-progress)) * 20px), 0) scale(var(--vxr-demo-scale));
   transform-origin: center center;
   box-shadow:
-    0 calc(18px + var(--vxr-demo-progress) * 44px) calc(48px + var(--vxr-demo-progress) * 40px) rgba(15, 23, 42, calc(0.14 + var(--vxr-demo-progress) * 0.14)),
+    0 calc(18px + var(--vxr-demo-progress) * 14px) calc(36px + var(--vxr-demo-progress) * 18px) rgba(15, 23, 42, calc(0.12 + var(--vxr-demo-progress) * 0.08)),
     0 0 0 1px rgba(255, 255, 255, calc(0.55 - var(--vxr-demo-progress) * 0.18));
-  will-change: transform, box-shadow, border-radius, width, padding, filter;
+  will-change: transform, box-shadow;
   backface-visibility: hidden;
-  filter: saturate(calc(0.92 + var(--vxr-demo-progress) * 0.12)) blur(var(--vxr-demo-blur));
 }
 
 .vxr-demo-video:hover {
-  transform: translate3d(0, calc((1 - var(--vxr-demo-progress)) * 48px), 0) scale(calc(var(--vxr-demo-scale) + 0.01));
+  transform: translate3d(0, calc((1 - var(--vxr-demo-progress)) * 20px), 0) scale(min(calc(var(--vxr-demo-scale) + 0.01), 1));
 }
 
-.vxr-demo-video::before {
-  content: '';
-  position: absolute;
-  inset: -12%;
-  z-index: -1;
-  border-radius: inherit;
-  pointer-events: none;
-  background: radial-gradient(circle at center, rgba(237, 50, 55, calc(0.08 + var(--vxr-demo-progress) * 0.12)), transparent 58%);
-  opacity: calc(0.25 + var(--vxr-demo-progress) * 0.45);
-  transform: scale(calc(0.92 + var(--vxr-demo-progress) * 0.1));
-  filter: blur(28px);
-}
-
+.vxr-demo-player,
 .vxr-demo-video iframe {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: 100%;
+  object-fit: cover;
   border: 0;
-  border-radius: 0.6rem;
+  border-radius: 12px;
   display: block;
 }
 
@@ -1369,19 +1366,15 @@ button:hover {
 
   .vxr-demo-section {
     min-height: auto;
-    padding: 3.5rem 0;
+    padding: 2.5rem 0;
   }
 
-  .vxr-demo-center {
-<<<<<<< Updated upstream
-    gap: 16px;
-=======
   .vxr-demo-center {
     position: relative;
     top: auto;
     min-height: auto;
+    gap: 16px;
     padding: 0;
->>>>>>> Stashed changes
   }
 
   .vxr-model-card,
