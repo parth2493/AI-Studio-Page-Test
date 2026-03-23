@@ -41,8 +41,8 @@
       </div>
     </section>
     <section class="vxr-section vxr-demo-section" id="demo">
-      <div class="vxr-container">
-        <div class="vxr-demo-center">
+      <div class="vxr-demo-center">
+        <div class="vxr-container">
           <div class="vxr-demo-content" data-aos="fade-up">
             <h2 class="vxr-section-title text-h2">See VueXR Studio in Action</h2>
             <p class="vxr-demo-copy text-body text-muted">
@@ -50,11 +50,17 @@
               Generate locally, preview instantly, and publish immersive XR experiences.
             </p>
           </div>
-          <div class="vxr-demo-video" data-aos="fade-up">
-            <video class="vxr-demo-player" autoplay muted loop playsinline controls>
-              <source src="assets/videos/demo.webm" type="video/webm" />
-              Your browser does not support the video tag.
-            </video>
+        </div>
+        <div class="vxr-demo-scene" aria-label="VueXR Studio demo video showcase">
+          <div class="vxr-demo-sticky">
+            <div class="vxr-container">
+              <div class="vxr-demo-video" data-aos="fade-up">
+                <video class="vxr-demo-player" autoplay muted loop playsinline controls>
+                  <source src="assets/videos/demo.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -438,16 +444,9 @@
     const xrReadyText = document.querySelector('[data-xr-ready]');
     const heroSection = document.querySelector('.vxr-hero');
     const demoSection = document.querySelector('.vxr-demo-section');
+    const demoScene = document.querySelector('.vxr-demo-scene');
     const demoPanel = document.querySelector('.vxr-demo-video');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-    if (demoSection && demoPanel && !demoPanel.parentElement?.classList.contains('vxr-demo-wrapper')) {
-      const demoWrapper = document.createElement('div');
-      demoWrapper.className = 'vxr-demo-wrapper';
-      const demoCenter = demoPanel.parentElement;
-      demoCenter.insertBefore(demoWrapper, demoCenter.firstChild);
-      demoWrapper.append(...Array.from(demoCenter.childNodes).filter((node) => node !== demoWrapper));
-    }
 
     let particles = [];
     let ripples = [];
@@ -490,191 +489,116 @@
       heroSection.appendChild(scrollHint);
     }
 
-    if (demoSection && demoPanel) {
+    if (demoSection && demoScene && demoPanel) {
       const minDemoScale = 0.85;
       const maxDemoScale = 1;
-      const demoLockThreshold = 1;
-      const demoSettleThreshold = 0.995;
+      const startTranslateY = 60;
+      const freezeThreshold = 0.95;
       const mobileMedia = window.matchMedia('(max-width: 768px)');
-      let demoMetrics = { start: 0, height: 1, baseWidth: 0, viewportWidth: window.innerWidth || 1, maxHeight: window.innerHeight || 1 };
-      let currentScale = minDemoScale;
-      let targetScale = minDemoScale;
+      const clampValue = (value, min, max) => Math.min(Math.max(value, min), max);
+      let demoMetrics = { top: 0, height: 1, maxWidth: 1100, maxHeight: window.innerHeight * 0.8 };
       let currentProgress = 0;
       let targetProgress = 0;
-      let currentTranslateY = 48;
-      let targetTranslateY = 48;
-      let currentRotateX = 0;
-      let targetRotateX = 0;
+      let currentScale = minDemoScale;
+      let targetScale = minDemoScale;
+      let currentTranslateY = startTranslateY;
+      let targetTranslateY = startTranslateY;
       let currentShadowProgress = 0;
       let targetShadowProgress = 0;
-      let currentWidth = 0;
-      let targetWidth = 0;
-      let currentRadius = 22;
-      let targetRadius = 22;
-      let currentOverlayProgress = 0;
-      let targetOverlayProgress = 0;
-      let currentContentOpacity = 1;
-      let targetContentOpacity = 1;
-      let currentGlow = 0.24;
-      let targetGlow = 0.24;
       let demoAnimationFrame = null;
       let lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
       let isMobileDemo = mobileMedia.matches;
+      let isDemoLocked = false;
 
       const easeOutQuart = (value) => 1 - Math.pow(1 - value, 4);
-      const easeInOutCubic = (value) => (value < 0.5 ? 4 * value * value * value : 1 - Math.pow(-2 * value + 2, 3) / 2);
-      const mapRange = (value, inMin, inMax, outMin, outMax) => {
-        if (inMax - inMin === 0) {
-          return outMin;
-        }
-
-        const normalized = (value - inMin) / (inMax - inMin);
-        return outMin + (outMax - outMin) * normalized;
-      };
-
+      const lerp = (start, end, factor) => start + (end - start) * factor;
       const updateDemoMetrics = () => {
         const viewportHeight = window.innerHeight || 1;
         const viewportWidth = window.innerWidth || 1;
-        const sectionRect = demoSection.getBoundingClientRect();
-        const sectionTop = sectionRect.top + (window.scrollY || window.pageYOffset || 0);
-        const wrapper = demoSection.querySelector('.vxr-demo-wrapper');
-        const parentWidth = wrapper?.clientWidth || demoPanel.parentElement?.clientWidth || demoSection.clientWidth || viewportWidth;
-        const maxPanelWidth = Math.min(parentWidth, 1120);
-        const maxPanelHeight = viewportHeight * 0.85;
-        const widthFromHeight = maxPanelHeight * (16 / 9);
-        const baseWidth = Math.min(maxPanelWidth, widthFromHeight);
-        const scrollDistance = Math.max(viewportHeight * 0.9, viewportHeight);
+        const sceneRect = demoScene.getBoundingClientRect();
+        const sceneTop = sceneRect.top + (window.scrollY || window.pageYOffset || 0);
+        const sceneHeight = Math.max(demoScene.offsetHeight - viewportHeight, viewportHeight);
+        const containerWidth = demoPanel.parentElement?.clientWidth || demoSection.clientWidth || viewportWidth;
+        const maxWidth = Math.min(containerWidth, 1100);
 
-        demoMetrics.start = Math.max(0, sectionTop - viewportHeight * 0.08);
-        demoMetrics.height = scrollDistance;
-        demoMetrics.baseWidth = baseWidth;
-        demoMetrics.viewportWidth = viewportWidth;
-        demoMetrics.maxHeight = maxPanelHeight;
-        demoSection.style.setProperty('--vxr-scroll-range', `${scrollDistance.toFixed(2)}px`);
-        demoSection.style.setProperty('--vxr-demo-wrapper-width', `${Math.min(maxPanelWidth, 1120).toFixed(2)}px`);
+        demoMetrics.top = sceneTop;
+        demoMetrics.height = sceneHeight;
+        demoMetrics.maxWidth = maxWidth;
+        demoMetrics.maxHeight = viewportHeight * 0.8;
+
+        demoSection.style.setProperty('--vxr-demo-width', `${maxWidth.toFixed(2)}px`);
+        demoSection.style.setProperty('--vxr-demo-max-height', `${demoMetrics.maxHeight.toFixed(2)}px`);
       };
 
       const updateDemoTargets = () => {
-        const rawProgress = clamp((lastKnownScrollY - demoMetrics.start) / demoMetrics.height, 0, 1);
-        const easedProgress = easeOutQuart(rawProgress);
-
         if (isMobileDemo) {
           targetProgress = 1;
           targetScale = 1;
           targetTranslateY = 0;
-          targetRotateX = 0;
-          targetShadowProgress = 0;
-          targetWidth = demoMetrics.baseWidth;
-          targetRadius = 16;
-          targetOverlayProgress = 0.12;
-          targetContentOpacity = 1;
-          targetGlow = 0.12;
+          targetShadowProgress = 1;
+          isDemoLocked = true;
           return;
         }
 
-        const cinematicProgress = easeInOutCubic(easedProgress);
-        const focusProgress = clamp(cinematicProgress / demoLockThreshold, 0, 1);
+        const rawProgress = clampValue((lastKnownScrollY - demoMetrics.top) / demoMetrics.height, 0, 1);
+        const easedProgress = easeOutQuart(rawProgress);
+        const lockedProgress = easedProgress >= freezeThreshold ? 1 : easedProgress;
 
-        targetProgress = cinematicProgress;
-        targetScale = mapRange(focusProgress, 0, 1, minDemoScale, maxDemoScale);
-        targetTranslateY = mapRange(focusProgress, 0, 1, 48, 0);
-        targetRotateX = 0;
-        targetWidth = demoMetrics.baseWidth;
-        targetRadius = mapRange(focusProgress, 0, 1, 20, 16);
-        targetOverlayProgress = mapRange(focusProgress, 0, 1, 0.04, 0.22);
-        targetContentOpacity = mapRange(focusProgress, 0, 1, 1, 0.72);
-        targetGlow = mapRange(focusProgress, 0, 1, 0.24, 0.1);
-        targetShadowProgress = mapRange(focusProgress, 0, 1, 0, 0.18);
+        targetProgress = lockedProgress;
+        targetScale = lerp(minDemoScale, maxDemoScale, lockedProgress);
+        targetTranslateY = lerp(startTranslateY, 0, lockedProgress);
+        targetShadowProgress = lockedProgress;
+        isDemoLocked = easedProgress >= freezeThreshold;
       };
 
-      const applyDemoState = () => {
-        const dampingProgress = isMobileDemo ? currentProgress : clamp(currentProgress / demoLockThreshold, 0, 1);
-        const settleBlend = isMobileDemo
-          ? 0.08
-          : mapRange(dampingProgress, 0, 1, 0.08, 0.04);
+      const applyDemoState = (force = false) => {
+        const smoothing = force || isMobileDemo || isDemoLocked ? 1 : 0.12;
 
-        currentProgress += (targetProgress - currentProgress) * settleBlend;
-        currentScale += (targetScale - currentScale) * settleBlend;
-        currentTranslateY += (targetTranslateY - currentTranslateY) * settleBlend;
-        currentRotateX += (targetRotateX - currentRotateX) * settleBlend;
-        currentShadowProgress += (targetShadowProgress - currentShadowProgress) * settleBlend;
-        currentWidth += (targetWidth - currentWidth) * settleBlend;
-        currentRadius += (targetRadius - currentRadius) * settleBlend;
-        currentOverlayProgress += (targetOverlayProgress - currentOverlayProgress) * settleBlend;
-        currentContentOpacity += (targetContentOpacity - currentContentOpacity) * settleBlend;
-        currentGlow += (targetGlow - currentGlow) * settleBlend;
+        currentProgress = lerp(currentProgress, targetProgress, smoothing);
+        currentScale = lerp(currentScale, targetScale, smoothing);
+        currentTranslateY = lerp(currentTranslateY, targetTranslateY, smoothing);
+        currentShadowProgress = lerp(currentShadowProgress, targetShadowProgress, smoothing);
 
-        if (Math.abs(targetProgress - currentProgress) < 0.0008) currentProgress = targetProgress;
-        if (Math.abs(targetScale - currentScale) < 0.0008) currentScale = targetScale;
-        if (Math.abs(targetTranslateY - currentTranslateY) < 0.02) currentTranslateY = targetTranslateY;
-        if (Math.abs(targetRotateX - currentRotateX) < 0.02) currentRotateX = targetRotateX;
-        if (Math.abs(targetShadowProgress - currentShadowProgress) < 0.0008) currentShadowProgress = targetShadowProgress;
-        if (Math.abs(targetWidth - currentWidth) < 0.2) currentWidth = targetWidth;
-        if (Math.abs(targetRadius - currentRadius) < 0.2) currentRadius = targetRadius;
-        if (Math.abs(targetOverlayProgress - currentOverlayProgress) < 0.0008) currentOverlayProgress = targetOverlayProgress;
-        if (Math.abs(targetContentOpacity - currentContentOpacity) < 0.0008) currentContentOpacity = targetContentOpacity;
-        if (Math.abs(targetGlow - currentGlow) < 0.0008) currentGlow = targetGlow;
+        if (Math.abs(targetProgress - currentProgress) < 0.001) currentProgress = targetProgress;
+        if (Math.abs(targetScale - currentScale) < 0.001) currentScale = targetScale;
+        if (Math.abs(targetTranslateY - currentTranslateY) < 0.05) currentTranslateY = targetTranslateY;
+        if (Math.abs(targetShadowProgress - currentShadowProgress) < 0.001) currentShadowProgress = targetShadowProgress;
 
-        if (!isMobileDemo && targetProgress >= 1 && currentProgress >= demoSettleThreshold) {
-          currentProgress = 1;
-          currentScale = 1;
-          currentTranslateY = 0;
-          currentRotateX = 0;
-          currentShadowProgress = 0.18;
-          currentWidth = demoMetrics.baseWidth;
-          currentRadius = 16;
-          currentOverlayProgress = 0.22;
-          currentContentOpacity = 0.72;
-          currentGlow = 0.1;
-        }
-
-        const particleFadeProgress = currentProgress > 0.7 ? clamp((currentProgress - 0.7) / 0.3, 0, 1) : 0;
-        const dimProgress = isMobileDemo
-          ? clamp(0.12 + particleFadeProgress * 0.18, 0.12, 0.3)
-          : clamp(0.06 + particleFadeProgress * 0.56, 0.06, 0.62);
-        const nextParticleIntensity = isMobileDemo
-          ? clamp(1 - particleFadeProgress * 0.22, 0.78, 1)
-          : clamp(1 - particleFadeProgress * 0.7, 0.3, 1);
-        const hintOpacity = clamp(1 - currentProgress * 7, 0, 1);
+        const overlayOpacity = isMobileDemo ? 0.12 : lerp(0.04, 0.2, currentProgress);
+        const glowOpacity = isMobileDemo ? 0.12 : lerp(0.24, 0.12, currentProgress);
+        const dimProgress = isMobileDemo ? 0.18 : lerp(0.06, 0.4, currentProgress);
+        const hintOpacity = clampValue(1 - currentProgress * 6, 0, 1);
+        const shadowStrength = isMobileDemo ? 0.65 : lerp(0.45, 1, currentShadowProgress);
 
         demoSection.style.setProperty('--vxr-demo-progress', currentProgress.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-shadow-progress', currentShadowProgress.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-dim', dimProgress.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-overlay-opacity', currentOverlayProgress.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-content-opacity', currentContentOpacity.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-glow-opacity', currentGlow.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-radius', `${currentRadius.toFixed(2)}px`);
-        demoSection.style.setProperty('--vxr-demo-width', `${currentWidth.toFixed(2)}px`);
+        demoSection.style.setProperty('--vxr-demo-overlay-opacity', overlayOpacity.toFixed(4));
+        demoSection.style.setProperty('--vxr-demo-glow-opacity', glowOpacity.toFixed(4));
+        demoSection.style.setProperty('--vxr-demo-shadow-progress', shadowStrength.toFixed(4));
+        demoSection.style.setProperty('--vxr-demo-radius', `${lerp(20, 16, currentProgress).toFixed(2)}px`);
         demoSection.style.setProperty('--vxr-hint-opacity', hintOpacity.toFixed(4));
+
         heroDimTarget = dimProgress;
-        particleIntensityTarget = nextParticleIntensity;
+        particleIntensityTarget = isMobileDemo ? 0.9 : lerp(1, 0.62, currentProgress);
         document.documentElement.style.setProperty('--vxr-hero-dim-progress', dimProgress.toFixed(4));
-        document.documentElement.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
-        demoPanel.style.transform = `translateY(${currentTranslateY.toFixed(2)}px) scale(${Math.min(currentScale, maxDemoScale).toFixed(4)})`;
-        demoPanel.classList.toggle('vxr-demo-focus-mode', !isMobileDemo && currentProgress >= 0.7);
-        demoPanel.classList.toggle('vxr-demo-lock-mode', !isMobileDemo && currentProgress >= 0.95);
+        document.documentElement.style.setProperty('--vxr-particle-intensity', particleIntensityTarget.toFixed(4));
+
+        demoPanel.style.transform = `translate3d(0, ${currentTranslateY.toFixed(2)}px, 0) scale(${currentScale.toFixed(4)})`;
+        demoPanel.classList.toggle('vxr-demo-lock-mode', currentProgress >= freezeThreshold);
       };
 
       const animateDemo = () => {
+        updateDemoTargets();
+        applyDemoState();
         demoAnimationFrame = window.requestAnimationFrame(animateDemo);
-
-        try {
-          updateDemoTargets();
-          applyDemoState();
-        } catch (error) {
-          console.error('Demo animation frame failed.', error);
-        }
       };
 
       const refreshDemoScene = () => {
         isMobileDemo = mobileMedia.matches;
+        isDemoLocked = false;
         updateDemoMetrics();
         lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
         updateDemoTargets();
-
-        if (!currentWidth) {
-          currentWidth = targetWidth || demoMetrics.baseWidth;
-        }
+        applyDemoState(true);
       };
 
       const handleDemoScroll = () => {
@@ -689,50 +613,27 @@
           }
 
           targetProgress = 1;
-          currentProgress = 1;
           targetScale = 1;
-          currentScale = 1;
           targetTranslateY = 0;
+          targetShadowProgress = 1;
+          currentProgress = 1;
+          currentScale = 1;
           currentTranslateY = 0;
-          targetRotateX = 0;
-          currentRotateX = 0;
-          targetShadowProgress = isMobileDemo ? 0 : 0.18;
-          currentShadowProgress = isMobileDemo ? 0 : 0.18;
-          currentWidth = demoMetrics.baseWidth;
-          currentRadius = 16;
-          currentOverlayProgress = isMobileDemo ? 0.12 : 0.22;
-          currentContentOpacity = 1;
-          currentGlow = isMobileDemo ? 0.12 : 0.1;
-          demoSection.style.setProperty('--vxr-demo-dim', isMobileDemo ? '0.18' : '0.3');
-          demoSection.style.setProperty('--vxr-demo-shadow-progress', `${currentShadowProgress.toFixed(2)}`);
-          demoSection.style.setProperty('--vxr-demo-overlay-opacity', `${currentOverlayProgress.toFixed(2)}`);
-          demoSection.style.setProperty('--vxr-demo-content-opacity', '1');
-          demoSection.style.setProperty('--vxr-demo-glow-opacity', `${currentGlow.toFixed(2)}`);
-          demoSection.style.setProperty('--vxr-demo-radius', `${currentRadius.toFixed(2)}px`);
-          demoSection.style.setProperty('--vxr-demo-width', `${currentWidth.toFixed(2)}px`);
-          demoSection.style.setProperty('--vxr-hint-opacity', '0');
-          document.documentElement.style.setProperty('--vxr-hero-dim-progress', isMobileDemo ? '0.18' : '0.3');
-          document.documentElement.style.setProperty('--vxr-particle-intensity', isMobileDemo ? '0.9' : '0.65');
-          heroDimTarget = isMobileDemo ? 0.18 : 0.3;
-          particleIntensityTarget = isMobileDemo ? 0.9 : 0.65;
-          demoPanel.style.transform = 'translateY(0) scale(1)';
-          demoPanel.classList.add('vxr-demo-focus-mode', 'vxr-demo-lock-mode');
+          currentShadowProgress = 1;
+          isDemoLocked = true;
+          applyDemoState(true);
           return;
         }
 
-        demoPanel.classList.remove('vxr-demo-focus-mode', 'vxr-demo-lock-mode');
         refreshDemoScene();
-        applyDemoState();
-
         if (!demoAnimationFrame) {
           demoAnimationFrame = window.requestAnimationFrame(animateDemo);
         }
       };
 
-      demoPanel.style.willChange = 'transform, border-radius, box-shadow';
+      demoPanel.style.willChange = 'transform';
       demoPanel.style.transformOrigin = 'center center';
       demoPanel.style.backfaceVisibility = 'hidden';
-      demoPanel.style.transform = `translateY(48px) scale(${minDemoScale})`;
       refreshDemoScene();
       handleMotionPreferenceChange();
       window.addEventListener('scroll', handleDemoScroll, { passive: true });
