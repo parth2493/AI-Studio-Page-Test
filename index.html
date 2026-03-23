@@ -42,23 +42,19 @@
     </section>
     <section class="vxr-section vxr-demo-section" id="demo">
       <div class="vxr-container">
-        <div class="vxr-demo-content" data-aos="fade-up">
-          <h2 class="vxr-section-title text-h2">See VueXR Studio in Action</h2>
-          <p class="vxr-demo-copy text-body text-muted">
-            Turn a simple prompt into a production-ready 3D model in seconds.
-            Generate locally, preview instantly, and publish immersive XR experiences.
-          </p>
-        </div>
-      </div>
-      <div class="vxr-demo-scene" aria-label="VueXR Studio demo video showcase">
-        <div class="vxr-demo-sticky">
-          <div class="vxr-container">
-            <div class="vxr-demo-video" data-aos="fade-up">
-              <video class="vxr-demo-player" autoplay muted loop playsinline controls>
-                <source src="assets/videos/demo.webm" type="video/webm" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
+        <div class="vxr-demo-center">
+          <div class="vxr-demo-content" data-aos="fade-up">
+            <h2 class="vxr-section-title text-h2">See VueXR Studio in Action</h2>
+            <p class="vxr-demo-copy text-body text-muted">
+              Turn a simple prompt into a production-ready 3D model in seconds.
+              Generate locally, preview instantly, and publish immersive XR experiences.
+            </p>
+          </div>
+          <div class="vxr-demo-video" data-aos="fade-up">
+            <video class="vxr-demo-player" autoplay muted loop playsinline controls>
+              <source src="assets/videos/demo.webm" type="video/webm" />
+              Your browser does not support the video tag.
+            </video>
           </div>
         </div>
       </div>
@@ -367,15 +363,9 @@
 
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
-    function clamp(value, min, max) {
-      return Math.max(min, Math.min(max, value));
-    }
-
-    if (window.AOS) {
-      AOS.init({
-        duration: 700
-      });
-    }
+    AOS.init({
+      duration: 700
+    });
 
     const premiumCards = document.querySelectorAll('.vxr-premium-card');
 
@@ -442,7 +432,6 @@
     const xrReadyText = document.querySelector('[data-xr-ready]');
     const heroSection = document.querySelector('.vxr-hero');
     const demoSection = document.querySelector('.vxr-demo-section');
-    const demoScene = document.querySelector('.vxr-demo-scene');
     const demoPanel = document.querySelector('.vxr-demo-video');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -450,9 +439,7 @@
     let ripples = [];
     const PARTICLE_COUNT = 420;
     let particleIntensity = 1;
-    let particleIntensityTarget = 1;
     let heroDimProgress = 0;
-    let heroDimTarget = 0;
     let flowTime = 0;
     let isMouseActive = false;
     let mouse = {
@@ -487,253 +474,84 @@
       heroSection.appendChild(scrollHint);
     }
 
-    if (demoSection && demoScene && demoPanel) {
-      const minDemoScale = 0.85;
-      const maxDemoScale = 1;
-      const startTranslateY = 60;
-      const freezeThreshold = 0.95;
-      const mobileMedia = window.matchMedia('(max-width: 768px)');
-      const clampValue = (value, min, max) => Math.min(Math.max(value, min), max);
-      let demoMetrics = { top: 0, height: 1, maxWidth: 1100, maxHeight: window.innerHeight * 0.8 };
+    if (demoSection && demoPanel) {
+      const maxScrollFactor = 1.35;
+      let demoMetrics = { start: 0, range: 1 };
+      let activeFrame = null;
       let currentProgress = 0;
       let targetProgress = 0;
-<<<<<<< HEAD
-      let currentScale = minDemoScale;
-      let targetScale = minDemoScale;
-      let currentTranslateY = startTranslateY;
-      let targetTranslateY = startTranslateY;
-      let currentShadowProgress = 0;
-      let targetShadowProgress = 0;
-      let demoAnimationFrame = null;
-=======
-      let rafAnimationId = null;
-      let rafRunning = false;
->>>>>>> parent of 3acd83b (Simplify demo video scroll animation)
-      let lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
-      let isMobileDemo = mobileMedia.matches;
-      let isDemoLocked = false;
 
-      const easeOutQuart = (value) => 1 - Math.pow(1 - value, 4);
-      const lerp = (start, end, factor) => start + (end - start) * factor;
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+      const easeOutCubic = (value) => 1 - Math.pow(1 - value, 3);
+
       const updateDemoMetrics = () => {
         const viewportHeight = window.innerHeight || 1;
-        const viewportWidth = window.innerWidth || 1;
-        const sceneRect = demoScene.getBoundingClientRect();
-        const sceneTop = sceneRect.top + (window.scrollY || window.pageYOffset || 0);
-        const sceneHeight = Math.max(demoScene.offsetHeight - viewportHeight, viewportHeight);
-        const containerWidth = demoPanel.parentElement?.clientWidth || demoSection.clientWidth || viewportWidth;
-        const maxWidth = Math.min(containerWidth, 1100);
-
-<<<<<<< HEAD
-        demoMetrics.top = sceneTop;
-        demoMetrics.height = sceneHeight;
-        demoMetrics.maxWidth = maxWidth;
-        demoMetrics.maxHeight = viewportHeight * 0.8;
-
-        demoSection.style.setProperty('--vxr-demo-width', `${maxWidth.toFixed(2)}px`);
-        demoSection.style.setProperty('--vxr-demo-max-height', `${demoMetrics.maxHeight.toFixed(2)}px`);
-=======
-        demoMetrics.start = Math.max(0, sectionTop - (window.innerHeight || 0) * 0.12);
-        demoMetrics.height = sectionHeight;
-        demoPanel.style.width = `${panelWidth}px`;
-        demoPanel.style.maxWidth = '100%';
-        demoPanel.style.padding = '0.85rem';
-        demoPanel.style.borderRadius = '1.4rem';
->>>>>>> parent of 3acd83b (Simplify demo video scroll animation)
+        demoSection.style.setProperty('--vxr-scroll-range', `${Math.round(viewportHeight * maxScrollFactor)}px`);
+        const rect = demoSection.getBoundingClientRect();
+        demoMetrics.start = rect.top + window.scrollY - viewportHeight * 0.18;
+        demoMetrics.range = viewportHeight * maxScrollFactor;
       };
 
-      const updateDemoTargets = () => {
-        if (isMobileDemo) {
-          targetProgress = 1;
-          targetScale = 1;
-          targetTranslateY = 0;
-          targetShadowProgress = 1;
-          isDemoLocked = true;
-          return;
+      const renderDemoProgress = () => {
+        currentProgress += (targetProgress - currentProgress) * 0.14;
+
+        if (Math.abs(targetProgress - currentProgress) < 0.0015) {
+          currentProgress = targetProgress;
         }
 
-        const rawProgress = clampValue((lastKnownScrollY - demoMetrics.top) / demoMetrics.height, 0, 1);
-        const easedProgress = easeOutQuart(rawProgress);
-        const lockedProgress = easedProgress >= freezeThreshold ? 1 : easedProgress;
+        const easedProgress = easeOutCubic(currentProgress);
+        const settleWindow = clamp((currentProgress - 0.82) / 0.18, 0, 1);
+        const settleStrength = 1 - Math.pow(1 - settleWindow, 2);
+        const bounce = Math.sin(settleStrength * Math.PI) * 0.012;
+        const finalScale = 0.68 + easedProgress * 0.34 + bounce;
+        const dimProgress = clamp(easedProgress * 0.92, 0, 0.92);
+        const nextParticleIntensity = clamp(1 - easedProgress * 0.7, 0.28, 1);
+        const hintOpacity = clamp(1 - currentProgress * 8, 0, 1);
+        const blurStrength = easedProgress * 0.8;
 
-        targetProgress = lockedProgress;
-        targetScale = lerp(minDemoScale, maxDemoScale, lockedProgress);
-        targetTranslateY = lerp(startTranslateY, 0, lockedProgress);
-        targetShadowProgress = lockedProgress;
-        isDemoLocked = easedProgress >= freezeThreshold;
-      };
-
-      const applyDemoState = (force = false) => {
-        const smoothing = force || isMobileDemo || isDemoLocked ? 1 : 0.12;
-
-        currentProgress = lerp(currentProgress, targetProgress, smoothing);
-        currentScale = lerp(currentScale, targetScale, smoothing);
-        currentTranslateY = lerp(currentTranslateY, targetTranslateY, smoothing);
-        currentShadowProgress = lerp(currentShadowProgress, targetShadowProgress, smoothing);
-
-        if (Math.abs(targetProgress - currentProgress) < 0.001) currentProgress = targetProgress;
-        if (Math.abs(targetScale - currentScale) < 0.001) currentScale = targetScale;
-        if (Math.abs(targetTranslateY - currentTranslateY) < 0.05) currentTranslateY = targetTranslateY;
-        if (Math.abs(targetShadowProgress - currentShadowProgress) < 0.001) currentShadowProgress = targetShadowProgress;
-
-<<<<<<< HEAD
-        const overlayOpacity = isMobileDemo ? 0.12 : lerp(0.04, 0.2, currentProgress);
-        const glowOpacity = isMobileDemo ? 0.12 : lerp(0.24, 0.12, currentProgress);
-        const dimProgress = isMobileDemo ? 0.18 : lerp(0.06, 0.4, currentProgress);
-        const hintOpacity = clampValue(1 - currentProgress * 6, 0, 1);
-        const shadowStrength = isMobileDemo ? 0.65 : lerp(0.45, 1, currentShadowProgress);
-
-        demoSection.style.setProperty('--vxr-demo-progress', currentProgress.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-overlay-opacity', overlayOpacity.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-glow-opacity', glowOpacity.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-shadow-progress', shadowStrength.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-radius', `${lerp(20, 16, currentProgress).toFixed(2)}px`);
-=======
-        const dimProgress = clamp(currentProgress * 0.88, 0, 0.88);
-        const nextParticleIntensity = clamp(1 - currentProgress * 0.45, 0.55, 1);
-        const hintOpacity = clamp(1 - currentProgress * 7, 0, 1);
-        const blurStrength = currentProgress * 0.55;
-        const translateY = (1 - currentProgress) * 36;
-
-        demoSection.style.setProperty('--vxr-demo-progress', currentProgress.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-scale', currentScale.toFixed(4));
+        demoSection.style.setProperty('--vxr-demo-progress', easedProgress.toFixed(4));
+        demoSection.style.setProperty('--vxr-demo-scale', finalScale.toFixed(4));
         demoSection.style.setProperty('--vxr-demo-dim', dimProgress.toFixed(4));
->>>>>>> parent of 3acd83b (Simplify demo video scroll animation)
+        demoSection.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
         demoSection.style.setProperty('--vxr-hint-opacity', hintOpacity.toFixed(4));
-
-        heroDimTarget = dimProgress;
-        particleIntensityTarget = isMobileDemo ? 0.9 : lerp(1, 0.62, currentProgress);
+        demoSection.style.setProperty('--vxr-demo-blur', `${blurStrength.toFixed(3)}px`);
         document.documentElement.style.setProperty('--vxr-hero-dim-progress', dimProgress.toFixed(4));
-<<<<<<< HEAD
-        document.documentElement.style.setProperty('--vxr-particle-intensity', particleIntensityTarget.toFixed(4));
-
-        demoPanel.style.transform = `translate3d(0, ${currentTranslateY.toFixed(2)}px, 0) scale(${currentScale.toFixed(4)})`;
-        demoPanel.classList.toggle('vxr-demo-lock-mode', currentProgress >= freezeThreshold);
-=======
         document.documentElement.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
-        demoPanel.style.transform = `translate3d(0, ${translateY.toFixed(2)}px, 0) scale(${currentScale.toFixed(4)})`;
-        demoPanel.style.filter = `saturate(${(0.92 + currentProgress * 0.08).toFixed(3)}) blur(${blurStrength.toFixed(3)}px)`;
->>>>>>> parent of 3acd83b (Simplify demo video scroll animation)
-      };
 
-      const animateDemo = () => {
-        updateDemoTargets();
-        applyDemoState();
-
-        if (
-          Math.abs(targetProgress - currentProgress) > 0.0008 ||
-          Math.abs(targetScale - currentScale) > 0.0008
-        ) {
-          rafAnimationId = window.requestAnimationFrame(animateDemo);
-          return;
+        if (Math.abs(targetProgress - currentProgress) >= 0.0015) {
+          activeFrame = window.requestAnimationFrame(renderDemoProgress);
+        } else {
+          activeFrame = null;
         }
-
-        rafRunning = false;
-        rafAnimationId = null;
-      };
-
-      const requestDemoFrame = () => {
-        if (!rafRunning) {
-          rafRunning = true;
-          rafAnimationId = window.requestAnimationFrame(animateDemo);
-        }
-
-        applyDemoState();
-        demoAnimationFrame = window.requestAnimationFrame(animateDemo);
-      };
-
-      const handleDemoScroll = () => {
-        updateDemoTargets();
       };
 
       const queueDemoProgress = () => {
-        lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
-        requestDemoFrame();
+        const scrollY = window.scrollY || window.pageYOffset;
+        targetProgress = clamp((scrollY - demoMetrics.start) / demoMetrics.range, 0, 1);
+
+        if (!activeFrame) {
+          activeFrame = window.requestAnimationFrame(renderDemoProgress);
+        }
       };
 
       const refreshDemoScene = () => {
-        isMobileDemo = mobileMedia.matches;
-        isDemoLocked = false;
         updateDemoMetrics();
-        updateDemoTargets();
-        applyDemoState(true);
+        queueDemoProgress();
       };
 
-<<<<<<< HEAD
-      const handleDemoScroll = () => {
-        lastKnownScrollY = window.scrollY || window.pageYOffset || 0;
-      };
-
-      const handleMotionPreferenceChange = () => {
-        if (prefersReducedMotion.matches) {
-          if (demoAnimationFrame) {
-            window.cancelAnimationFrame(demoAnimationFrame);
-            demoAnimationFrame = null;
-          }
-
-          targetProgress = 1;
-          targetScale = 1;
-          targetTranslateY = 0;
-          targetShadowProgress = 1;
-          currentProgress = 1;
-          currentScale = 1;
-          currentTranslateY = 0;
-          currentShadowProgress = 1;
-          isDemoLocked = true;
-          applyDemoState(true);
-          return;
-        }
-
-        refreshDemoScene();
-        if (!demoAnimationFrame) {
-          demoAnimationFrame = window.requestAnimationFrame(animateDemo);
-        }
-      };
-
-      demoPanel.style.willChange = 'transform';
-      demoPanel.style.transformOrigin = 'center center';
-      demoPanel.style.backfaceVisibility = 'hidden';
-      refreshDemoScene();
-      handleMotionPreferenceChange();
-      window.addEventListener('scroll', handleDemoScroll, { passive: true });
-      window.addEventListener('resize', refreshDemoScene, { passive: true });
-      mobileMedia.addEventListener('change', refreshDemoScene);
-      prefersReducedMotion.addEventListener('change', handleMotionPreferenceChange);
-      window.addEventListener('beforeunload', () => {
-        if (demoAnimationFrame) {
-          window.cancelAnimationFrame(demoAnimationFrame);
-        }
-      });
-=======
       if (prefersReducedMotion.matches) {
-        targetProgress = 1;
-        currentProgress = 1;
-        targetScale = maxDemoScale;
-        currentScale = maxDemoScale;
-        targetTranslateY = 0;
-        currentTranslateY = 0;
+        demoSection.style.setProperty('--vxr-demo-progress', '1');
+        demoSection.style.setProperty('--vxr-demo-scale', '1');
         demoSection.style.setProperty('--vxr-demo-dim', '0.82');
-        demoSection.style.setProperty('--vxr-particle-intensity', '0.6');
+        demoSection.style.setProperty('--vxr-particle-intensity', '0.35');
         document.documentElement.style.setProperty('--vxr-hero-dim-progress', '0.82');
-        document.documentElement.style.setProperty('--vxr-particle-intensity', '0.6');
+        document.documentElement.style.setProperty('--vxr-particle-intensity', '0.35');
       } else {
-        demoPanel.style.willChange = 'transform';
-        demoPanel.style.transformOrigin = 'center center';
-        demoPanel.style.backfaceVisibility = 'hidden';
-        demoPanel.style.transform = `translateZ(0) scale(${minDemoScale})`;
         refreshDemoScene();
-        applyDemoState();
-        demoAnimationFrame = window.requestAnimationFrame(animateDemo);
-        window.addEventListener('scroll', handleDemoScroll, { passive: true });
+        window.addEventListener('scroll', queueDemoProgress, { passive: true });
         window.addEventListener('resize', refreshDemoScene, { passive: true });
         prefersReducedMotion.addEventListener('change', refreshDemoScene);
-        window.addEventListener('beforeunload', () => {
-          if (demoAnimationFrame) {
-            window.cancelAnimationFrame(demoAnimationFrame);
-          }
-        });
       }
->>>>>>> parent of 3acd83b (Simplify demo video scroll animation)
     }
 
     if (canvas && ctx) {
@@ -1084,191 +902,167 @@
       });
 
       function animate() {
-        animationFrameId = window.requestAnimationFrame(animate);
+        pulse += 0.01;
+        mouseOffset.x += (mouseOffsetTarget.x - mouseOffset.x) * 0.08;
+        mouseOffset.y += (mouseOffsetTarget.y - mouseOffset.y) * 0.08;
 
-        try {
-          if (!canvasWidth || !canvasHeight) {
-            return;
-          }
+        const cameraTargetX = mouse.x !== null ? (mouse.x / canvasWidth - 0.5) * 20 : 0;
+        const cameraTargetY = mouse.y !== null ? (mouse.y / canvasHeight - 0.5) * 20 : 0;
 
-          pulse += 0.01;
-          mouseOffset.x += (mouseOffsetTarget.x - mouseOffset.x) * 0.08;
-          mouseOffset.y += (mouseOffsetTarget.y - mouseOffset.y) * 0.08;
+        cameraOffset.x += (cameraTargetX - cameraOffset.x) * 0.03;
+        cameraOffset.y += (cameraTargetY - cameraOffset.y) * 0.03;
 
-          const cameraTargetX = mouse.x !== null ? (mouse.x / canvasWidth - 0.5) * 20 : 0;
-          const cameraTargetY = mouse.y !== null ? (mouse.y / canvasHeight - 0.5) * 20 : 0;
+        ripples.forEach((r) => {
+          r.radius += r.speed;
+          r.life *= 0.95;
+        });
+        ripples = ripples.filter((r) => r.life > 0.05 && r.radius < r.maxRadius);
 
-          cameraOffset.x += (cameraTargetX - cameraOffset.x) * 0.03;
-          cameraOffset.y += (cameraTargetY - cameraOffset.y) * 0.03;
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-          ripples.forEach((r) => {
-            r.radius += r.speed;
-            r.life *= 0.95;
-          });
-          ripples = ripples.filter((r) => r.life > 0.05 && r.radius < r.maxRadius);
+        bgShift += 0.002;
+        particleIntensity = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vxr-particle-intensity')) || 1;
+        heroDimProgress = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vxr-hero-dim-progress')) || 0;
 
-          ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        const bgGradient = ctx.createLinearGradient(
+          0,
+          0,
+          canvasWidth,
+          canvasHeight
+        );
 
-          bgShift += 0.002;
-          particleIntensity += (
-            (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vxr-particle-intensity')) || 1) -
-            particleIntensity
-          ) * 0.12;
-          heroDimProgress = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vxr-hero-dim-progress')) || 0;
+        bgGradient.addColorStop(
+          0,
+          `rgba(237,50,55,${(0.02 + Math.sin(bgShift) * 0.008) * particleIntensity})`
+        );
 
-          const bgGradient = ctx.createLinearGradient(
+        bgGradient.addColorStop(
+          1,
+          `rgba(99,102,241,${(0.02 + Math.cos(bgShift) * 0.008) * particleIntensity})`
+        );
+
+        ctx.fillStyle = bgGradient;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        const brightness = 0.88 + Math.min(0.04, mouseSpeed * 0.0015) - heroDimProgress * 0.22;
+        ctx.globalAlpha = brightness;
+
+        if (mouse.x !== null && mouse.y !== null) {
+          const beamGradient = ctx.createRadialGradient(
+            mouse.x,
+            mouse.y,
             0,
-            0,
-            canvasWidth,
-            canvasHeight
+            mouse.x,
+            mouse.y,
+            260
           );
 
-          bgGradient.addColorStop(
-            0,
-            `rgba(237,50,55,${(0.02 + Math.sin(bgShift) * 0.008) * particleIntensity})`
-          );
+          beamGradient.addColorStop(0, `rgba(255,255,255,${0.06 * particleIntensity})`);
+          beamGradient.addColorStop(1, 'rgba(255,255,255,0)');
 
-          bgGradient.addColorStop(
-            1,
-            `rgba(99,102,241,${(0.02 + Math.cos(bgShift) * 0.008) * particleIntensity})`
-          );
-
-          ctx.fillStyle = bgGradient;
+          ctx.fillStyle = beamGradient;
           ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-          const ambientSuppression = 1 - clamp(heroDimProgress * 0.55, 0, 0.55);
-          const brightness = (0.88 + Math.min(0.04, mouseSpeed * 0.0015) - heroDimProgress * 0.22) * ambientSuppression;
-          ctx.globalAlpha = brightness;
-
-          if (mouse.x !== null && mouse.y !== null) {
-            const beamGradient = ctx.createRadialGradient(
-              mouse.x,
-              mouse.y,
-              0,
-              mouse.x,
-              mouse.y,
-              260
-            );
-
-            beamGradient.addColorStop(0, `rgba(255,255,255,${0.035 * particleIntensity})`);
-            beamGradient.addColorStop(1, 'rgba(255,255,255,0)');
-
-            ctx.fillStyle = beamGradient;
-            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-            const glowGradient = ctx.createRadialGradient(
-              mouse.x,
-              mouse.y,
-              0,
-              mouse.x,
-              mouse.y,
-              180
-            );
-
-            glowGradient.addColorStop(0, `rgba(255,255,255,${0.028 * particleIntensity})`);
-            glowGradient.addColorStop(1, 'rgba(255,255,255,0)');
-
-            ctx.fillStyle = glowGradient;
-            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-          }
-
-          const focusGradient = ctx.createRadialGradient(
-            canvasWidth / 2,
-            canvasHeight / 2,
+          const glowGradient = ctx.createRadialGradient(
+            mouse.x,
+            mouse.y,
             0,
-            canvasWidth / 2,
-            canvasHeight / 2,
-            canvasWidth * 0.4
+            mouse.x,
+            mouse.y,
+            180
           );
 
-          focusGradient.addColorStop(0, `rgba(255,255,255,${0.016 * particleIntensity})`);
-          focusGradient.addColorStop(1, 'rgba(255,255,255,0)');
+          glowGradient.addColorStop(0, `rgba(255,255,255,${0.05 * particleIntensity})`);
+          glowGradient.addColorStop(1, 'rgba(255,255,255,0)');
 
-          ctx.fillStyle = focusGradient;
+          ctx.fillStyle = glowGradient;
           ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-          ctx.globalAlpha = 1;
-
-          ripples.forEach((r) => {
-            const gradient = ctx.createRadialGradient(
-              r.x, r.y, r.radius * 0.6,
-              r.x, r.y, r.radius
-            );
-
-            gradient.addColorStop(0, 'rgba(255,255,255,0)');
-            gradient.addColorStop(0.7, `rgba(255,255,255,${r.life * 0.08 * particleIntensity})`);
-            gradient.addColorStop(1, 'rgba(255,255,255,0)');
-
-            ctx.beginPath();
-            ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth = 8;
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.arc(r.x, r.y, r.radius * 0.7, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255,255,255,${r.life * 0.02 * particleIntensity})`;
-            ctx.fill();
-          });
-
-          const particleStride = particleIntensity < 0.72 ? 2 : 1;
-          const particleAlphaScale = particleIntensity < 0.72 ? 0.58 : 0.9;
-
-          for (let i = 0; i < particles.length; i += 1) {
-            const particle = particles[i];
-            const shouldUpdateThisFrame = particleStride === 1 || ((i + Math.floor(pulse * 60)) % particleStride === 0);
-
-            if (shouldUpdateThisFrame) {
-              particle.update();
-            }
-
-            ctx.save();
-            ctx.globalAlpha *= particleAlphaScale;
-            particle.draw();
-            ctx.restore();
-          }
-
-          const vignette = ctx.createRadialGradient(
-            canvasWidth / 2,
-            canvasHeight / 2,
-            canvasWidth * 0.3,
-            canvasWidth / 2,
-            canvasHeight / 2,
-            canvasWidth * 0.7
-          );
-
-          vignette.addColorStop(0, 'rgba(0,0,0,0)');
-          vignette.addColorStop(1, `rgba(0,0,0,${0.15 + heroDimProgress * 0.16})`);
-
-          ctx.fillStyle = vignette;
-          ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-          if (xrReadyText) {
-            if (!xrReadyGlow.rect) {
-              updateXrReadyMetrics();
-            }
-
-            if (mouse.x !== null && mouse.y !== null && xrReadyGlow.rect) {
-              const dx = mouse.x - xrReadyGlow.centerX;
-              const dy = mouse.y - xrReadyGlow.centerY;
-              const distance = Math.sqrt((dx * dx) + (dy * dy));
-              const normalizedDistance = Math.min(1, distance / xrReadyGlow.maxDistance);
-              xrReadyGlow.target = Math.max(0, 1 - normalizedDistance);
-            } else {
-              xrReadyGlow.target = 0;
-            }
-
-            xrReadyGlow.current += (xrReadyGlow.target - xrReadyGlow.current) * 0.1;
-
-            const glowAlpha = xrReadyGlow.baseAlpha + xrReadyGlow.current * 0.22;
-            const glowBlur = xrReadyGlow.baseBlur + xrReadyGlow.current * 10;
-            const glowSpread = 14 + xrReadyGlow.current * 18;
-
-            xrReadyText.style.textShadow = `0 0 ${glowBlur}px rgba(237, 50, 55, ${glowAlpha}), 0 0 ${glowSpread}px rgba(237, 50, 55, ${glowAlpha * 0.45})`;
-          }
-        } catch (error) {
-          console.error('Particle animation frame failed.', error);
         }
+
+        const focusGradient = ctx.createRadialGradient(
+          canvasWidth / 2,
+          canvasHeight / 2,
+          0,
+          canvasWidth / 2,
+          canvasHeight / 2,
+          canvasWidth * 0.4
+        );
+
+        focusGradient.addColorStop(0, `rgba(255,255,255,${0.03 * particleIntensity})`);
+        focusGradient.addColorStop(1, 'rgba(255,255,255,0)');
+
+        ctx.fillStyle = focusGradient;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        ctx.globalAlpha = 1;
+
+        ripples.forEach((r) => {
+          const gradient = ctx.createRadialGradient(
+            r.x, r.y, r.radius * 0.6,
+            r.x, r.y, r.radius
+          );
+
+          gradient.addColorStop(0, 'rgba(255,255,255,0)');
+          gradient.addColorStop(0.7, `rgba(255,255,255,${r.life * 0.08 * particleIntensity})`);
+          gradient.addColorStop(1, 'rgba(255,255,255,0)');
+
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = 8;
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, r.radius * 0.7, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${r.life * 0.02 * particleIntensity})`;
+          ctx.fill();
+        });
+
+        particles.forEach((particle) => {
+          particle.update();
+          particle.draw();
+        });
+
+        const vignette = ctx.createRadialGradient(
+          canvasWidth / 2,
+          canvasHeight / 2,
+          canvasWidth * 0.3,
+          canvasWidth / 2,
+          canvasHeight / 2,
+          canvasWidth * 0.7
+        );
+
+        vignette.addColorStop(0, 'rgba(0,0,0,0)');
+        vignette.addColorStop(1, `rgba(0,0,0,${0.15 + heroDimProgress * 0.16})`);
+
+        ctx.fillStyle = vignette;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        if (xrReadyText) {
+          if (!xrReadyGlow.rect) {
+            updateXrReadyMetrics();
+          }
+
+          if (mouse.x !== null && mouse.y !== null && xrReadyGlow.rect) {
+            const dx = mouse.x - xrReadyGlow.centerX;
+            const dy = mouse.y - xrReadyGlow.centerY;
+            const distance = Math.sqrt((dx * dx) + (dy * dy));
+            const normalizedDistance = Math.min(1, distance / xrReadyGlow.maxDistance);
+            xrReadyGlow.target = Math.max(0, 1 - normalizedDistance);
+          } else {
+            xrReadyGlow.target = 0;
+          }
+
+          xrReadyGlow.current += (xrReadyGlow.target - xrReadyGlow.current) * 0.1;
+
+          const glowAlpha = xrReadyGlow.baseAlpha + xrReadyGlow.current * 0.22;
+          const glowBlur = xrReadyGlow.baseBlur + xrReadyGlow.current * 10;
+          const glowSpread = 14 + xrReadyGlow.current * 18;
+
+          xrReadyText.style.textShadow = `0 0 ${glowBlur}px rgba(237, 50, 55, ${glowAlpha}), 0 0 ${glowSpread}px rgba(237, 50, 55, ${glowAlpha * 0.45})`;
+        }
+
+        animationFrameId = window.requestAnimationFrame(animate);
       }
 
       resize();
