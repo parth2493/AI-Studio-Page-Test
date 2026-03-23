@@ -489,15 +489,6 @@
       baseAlpha: 0.12,
       baseBlur: 6
     };
-
-    if (heroSection) {
-      const scrollHint = document.createElement('div');
-      scrollHint.className = 'vxr-scroll-hint';
-      scrollHint.setAttribute('aria-hidden', 'true');
-      scrollHint.innerHTML = '<span>Scroll to explore</span>';
-      heroSection.appendChild(scrollHint);
-    }
-
     if (demoSection && demoPanel) {
       const maxScrollFactor = 1.35;
       const staticMobileState = () => {
@@ -505,7 +496,6 @@
         demoSection.style.setProperty('--vxr-demo-scale', '1');
         demoSection.style.setProperty('--vxr-demo-dim', '0.18');
         demoSection.style.setProperty('--vxr-particle-intensity', '0.55');
-        demoSection.style.setProperty('--vxr-hint-opacity', '0');
         document.documentElement.style.setProperty('--vxr-hero-dim-progress', '0.18');
         document.documentElement.style.setProperty('--vxr-particle-intensity', '0.55');
       };
@@ -536,13 +526,10 @@
         const finalScale = clamp(0.9 + easedProgress * 0.1, 0.9, 1);
         const dimProgress = clamp(easedProgress * 0.92, 0, 0.92);
         const nextParticleIntensity = clamp(1 - easedProgress * 0.7, 0.28, 1);
-        const hintOpacity = clamp(1 - currentProgress * 8, 0, 1);
-
         demoSection.style.setProperty('--vxr-demo-progress', easedProgress.toFixed(4));
         demoSection.style.setProperty('--vxr-demo-scale', finalScale.toFixed(4));
         demoSection.style.setProperty('--vxr-demo-dim', dimProgress.toFixed(4));
         demoSection.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
-        demoSection.style.setProperty('--vxr-hint-opacity', hintOpacity.toFixed(4));
         document.documentElement.style.setProperty('--vxr-hero-dim-progress', dimProgress.toFixed(4));
         document.documentElement.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
 
