@@ -489,39 +489,34 @@
       let targetProgress = 0;
 
       const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-      const easeOutCubic = (value) => 1 - Math.pow(1 - value, 3);
+      const easeOutQuart = (value) => 1 - Math.pow(1 - value, 4);
 
       const updateDemoMetrics = () => {
         const viewportHeight = window.innerHeight || 1;
         demoSection.style.setProperty('--vxr-scroll-range', `${Math.round(viewportHeight * maxScrollFactor)}px`);
         const rect = demoSection.getBoundingClientRect();
-        demoMetrics.start = rect.top + window.scrollY - viewportHeight * 0.18;
+        demoMetrics.start = rect.top + window.scrollY - viewportHeight * 0.05;
         demoMetrics.range = viewportHeight * maxScrollFactor;
       };
 
       const renderDemoProgress = () => {
-        currentProgress += (targetProgress - currentProgress) * 0.14;
+        currentProgress += (targetProgress - currentProgress) * 0.08;
 
         if (Math.abs(targetProgress - currentProgress) < 0.0015) {
           currentProgress = targetProgress;
         }
 
-        const easedProgress = easeOutCubic(currentProgress);
-        const settleWindow = clamp((currentProgress - 0.82) / 0.18, 0, 1);
-        const settleStrength = 1 - Math.pow(1 - settleWindow, 2);
-        const bounce = Math.sin(settleStrength * Math.PI) * 0.012;
-        const finalScale = 0.68 + easedProgress * 0.34 + bounce;
+        const easedProgress = easeOutQuart(currentProgress);
+        const finalScale = clamp(0.9 + easedProgress * 0.1, 0.9, 1);
         const dimProgress = clamp(easedProgress * 0.92, 0, 0.92);
         const nextParticleIntensity = clamp(1 - easedProgress * 0.7, 0.28, 1);
         const hintOpacity = clamp(1 - currentProgress * 8, 0, 1);
-        const blurStrength = easedProgress * 0.8;
 
         demoSection.style.setProperty('--vxr-demo-progress', easedProgress.toFixed(4));
         demoSection.style.setProperty('--vxr-demo-scale', finalScale.toFixed(4));
         demoSection.style.setProperty('--vxr-demo-dim', dimProgress.toFixed(4));
         demoSection.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
         demoSection.style.setProperty('--vxr-hint-opacity', hintOpacity.toFixed(4));
-        demoSection.style.setProperty('--vxr-demo-blur', `${blurStrength.toFixed(3)}px`);
         document.documentElement.style.setProperty('--vxr-hero-dim-progress', dimProgress.toFixed(4));
         document.documentElement.style.setProperty('--vxr-particle-intensity', nextParticleIntensity.toFixed(4));
 
