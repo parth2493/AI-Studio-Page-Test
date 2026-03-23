@@ -97,7 +97,6 @@ li {
   letter-spacing: -0.04em;
   font-weight: 700;
   max-width: 17ch;
-  margin: 0 auto 0.75rem;
   position: relative;
   z-index: 2;
   transition: text-shadow 0.3s ease;
@@ -228,12 +227,6 @@ li {
   z-index: 0;
   pointer-events: none;
 }
-
-.vxr-hero > *:not(#vxr-particles-canvas) {
-  position: relative;
-  z-index: 1;
-}
-
 
 .vxr-hero-grid {
   position: relative;
