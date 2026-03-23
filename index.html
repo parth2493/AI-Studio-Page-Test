@@ -441,10 +441,27 @@
     const demoScene = document.querySelector('.vxr-demo-scene');
     const demoPanel = document.querySelector('.vxr-demo-video');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mobileViewport = window.matchMedia('(max-width: 768px)');
 
     let particles = [];
     let ripples = [];
     const PARTICLE_COUNT = 420;
+
+    const getResponsiveParticleCount = () => {
+      if (window.innerWidth <= 480) {
+        return 140;
+      }
+
+      if (window.innerWidth <= 768) {
+        return 200;
+      }
+
+      if (window.innerWidth <= 1024) {
+        return 280;
+      }
+
+      return PARTICLE_COUNT;
+    };
     let particleIntensity = 1;
     let heroDimProgress = 0;
     let flowTime = 0;
@@ -483,6 +500,15 @@
 
     if (demoSection && demoPanel) {
       const maxScrollFactor = 1.35;
+      const staticMobileState = () => {
+        demoSection.style.setProperty('--vxr-demo-progress', '1');
+        demoSection.style.setProperty('--vxr-demo-scale', '1');
+        demoSection.style.setProperty('--vxr-demo-dim', '0.18');
+        demoSection.style.setProperty('--vxr-particle-intensity', '0.55');
+        demoSection.style.setProperty('--vxr-hint-opacity', '0');
+        document.documentElement.style.setProperty('--vxr-hero-dim-progress', '0.18');
+        document.documentElement.style.setProperty('--vxr-particle-intensity', '0.55');
+      };
       let demoMetrics = { start: 0, range: 1 };
       let activeFrame = null;
       let currentProgress = 0;
@@ -537,6 +563,13 @@
       };
 
       const refreshDemoScene = () => {
+        if (mobileViewport.matches) {
+          targetProgress = 1;
+          currentProgress = 1;
+          staticMobileState();
+          return;
+        }
+
         updateDemoMetrics();
         queueDemoProgress();
       };
@@ -545,9 +578,9 @@
         demoSection.style.setProperty('--vxr-demo-progress', '1');
         demoSection.style.setProperty('--vxr-demo-scale', '1');
         demoSection.style.setProperty('--vxr-demo-dim', '0.82');
-        demoSection.style.setProperty('--vxr-particle-intensity', '0.35');
+        demoSection.style.setProperty('--vxr-particle-intensity', mobileViewport.matches ? '0.55' : '0.35');
         document.documentElement.style.setProperty('--vxr-hero-dim-progress', '0.82');
-        document.documentElement.style.setProperty('--vxr-particle-intensity', '0.35');
+        document.documentElement.style.setProperty('--vxr-particle-intensity', mobileViewport.matches ? '0.55' : '0.35');
       } else {
         refreshDemoScene();
         window.addEventListener('scroll', queueDemoProgress, { passive: true });
@@ -823,7 +856,8 @@
         particleIntensity = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--vxr-particle-intensity')) || 1;
         particles = [];
         ripples = [];
-        for (let i = 0; i < Math.max(140, Math.round(PARTICLE_COUNT * particleIntensity)); i += 1) {
+        const particleCount = Math.round(getResponsiveParticleCount() * particleIntensity);
+        for (let i = 0; i < Math.max(100, particleCount); i += 1) {
           particles.push(new Particle());
         }
       }
