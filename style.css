@@ -467,19 +467,7 @@ button:hover {
   padding: 2.5rem 0 2.5rem;
   position: relative;
   border-top: 1px solid var(--line);
-  margin-bottom: 80px;
-}
-
-@media (min-width: 1440px) {
-  .vxr-demo-section {
-    margin-bottom: 60px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .vxr-demo-section {
-    margin-bottom: 100px;
-  }
+  margin-bottom: clamp(40px, 6vh, 80px);
 }
 
 
@@ -493,7 +481,7 @@ button:hover {
 }
 
 .vxr-features-section {
-  margin-top: 40px;
+  margin-top: clamp(20px, 4vh, 40px);
 }
 
 .vxr-models-header {
@@ -781,7 +769,7 @@ button:hover {
   margin: 0 auto;
   gap: 16px;
   padding: clamp(1.5rem, 4vh, 2.75rem) 0 0;
-  padding-bottom: 40px;
+  padding-bottom: clamp(20px, 4vh, 40px);
 }
 
 .vxr-demo-content {
