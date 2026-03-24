@@ -499,22 +499,13 @@
 
     let particles = [];
     let ripples = [];
-    const PARTICLE_COUNT = 300;
-
+    // TASK 3: INCREASE PARTICLE DENSITY (SAFE)
+    const baseDensity = 0.00025;
     const getResponsiveParticleCount = () => {
-      if (window.innerWidth <= 480) {
-        return 140;
-      }
-
-      if (window.innerWidth <= 768) {
-        return 200;
-      }
-
-      if (window.innerWidth <= 1024) {
-        return 280;
-      }
-
-      return PARTICLE_COUNT;
+      return Math.min(
+        360,
+        Math.floor(window.innerWidth * window.innerHeight * baseDensity)
+      );
     };
     let particleIntensity = 1;
     let heroDimProgress = 0;
@@ -672,7 +663,7 @@
           let y;
           const rand = Math.random();
 
-          // Spawn spread
+          // Spawn spread (preserve layout constraint)
           if (rand < 0.55) {
             if (Math.random() > 0.5) {
               x = Math.random() * (centerX - safeWidth / 2);
@@ -689,23 +680,20 @@
           this.y = y;
           this.vx = 0;
           this.vy = 0;
-          
-          // TASK 3: OFFSET & TIME
           this.offset = Math.random() * 1000;
           this.time = 0;
           
-          // TASK 1: ADD DEPTH (CRITICAL)
-          this.depth = 0.3 + Math.random() * 0.7; // random(0.3 -> 1)
+          this.depth = 0.3 + Math.random() * 0.7;
           
-          this.baseSize = Math.random() * 2 + 1;
-          this.size = this.baseSize * this.depth;
+          // TASK 4: ADD SIZE VARIATION (VISUAL DEPTH)
+          this.size = 0.6 + Math.random() * 1.8;
           
           this.baseSpeed = 0.5 + Math.random() * 0.5;
           this.speed = this.baseSpeed * this.depth;
           
-          this.baseOpacity = 0.3 + this.depth * 0.7;
+          // TASK 5: ADD OPACITY VARIATION
+          this.baseOpacity = 0.2 + Math.random() * 0.6;
           
-          // Store exact rgb color values to combine with dynamic opacity/glow later
           this.color = Math.random() > 0.5 ? '237,50,55' : '99,102,241';
         }
 
@@ -713,29 +701,39 @@
           let centerX = canvasWidth / 2;
           let centerY = canvasHeight / 2;
           
-          // TASK 6: PARALLAX WITH MOUSE
           let parallax = this.depth * 0.3;
           if (mouse.x !== null && mouse.y !== null) {
             this.x += (mouse.x - centerX) * parallax * 0.002;
             this.y += (mouse.y - centerY) * parallax * 0.002;
           }
 
-          // TASK 2: IMPROVE MAGNETIC INTERACTION
+          // TASK 1: FIX MAGNETIC DIRECTION (CRITICAL)
+          // TASK 7: INCREASE MAGNETIC FIELD RANGE
           if (mouse.x !== null && mouse.y !== null) {
             let dx = mouse.x - this.x;
             let dy = mouse.y - this.y;
             let distance = Math.sqrt(dx * dx + dy * dy);
-            let radius = mouse.radius || 200; // 180-220 radius falloff range
-
-            if (distance < radius) {
-              let force = 1 - (distance / radius);
-              let strength = force * force; // stronger near cursor, subtle far
-              this.vx += dx * strength * 0.002;
-              this.vy += dy * strength * 0.002;
+            
+            if (distance > 0) {
+              let radius = 250; // Dynamic range between 240-260
+              
+              if (distance < radius) {
+                let force = 1 - (distance / radius);
+                
+                // Normalize direction to attract precisely to cursor
+                let nx = dx / distance;
+                let ny = dy / distance;
+                
+                // Stronger near cursor, softer far away
+                let strength = force * force;
+                
+                this.vx += nx * strength * 0.7;
+                this.vy += ny * strength * 0.7;
+              }
             }
           }
 
-          // Integration with existing ripples to avoid breaking previous high-end interactions
+          // Non-blocking integration for mouse exit ripples
           ripples.forEach(r => {
             let dx = this.x - r.x;
             let dy = this.y - r.y;
@@ -750,19 +748,18 @@
             }
           });
 
-          // TASK 3: ADD IDLE WAVE MOTION
           this.time += 0.01;
           this.x += Math.sin(this.time + this.offset) * 0.15;
           this.y += Math.cos(this.time + this.offset) * 0.15;
 
-          // TASK 4: ADD DAMPING (SMOOTHNESS)
+          // TASK 2: ADD VELOCITY DAMPING (SMOOTHNESS)
           this.vx *= 0.92;
           this.vy *= 0.92;
           
           this.x += this.vx;
           this.y += this.vy;
 
-          // TASK 5: ADD TEXT SAFE ZONE (IMPORTANT)
+          // TASK 6: KEEP TEXT AREA CLEAN
           this.currentOpacity = this.baseOpacity;
           this.currentSize = this.size;
 
@@ -771,13 +768,14 @@
             let dy = this.y - xrReadyGlow.centerY;
             let distance = Math.sqrt(dx * dx + dy * dy);
             
+            // Checks bounds relative to the main text node offset
             if (distance < xrReadyGlow.radius + 40) {
-              this.currentOpacity *= 0.6; // reduce opacity by ~40%
-              this.currentSize *= 0.8;    // reduce size slightly
+              this.currentOpacity *= 0.55; // Reduce opacity by ~45%
+              this.currentSize *= 0.8;    // Slightly reduce size
             }
           }
           
-          // Performance guard: screen wrapping (prevents infinite particle drift out of bounds)
+          // Frame guard to maintain steady loop count smoothly mapping
           if (this.x < -50) this.x = canvasWidth + 50;
           if (this.x > canvasWidth + 50) this.x = -50;
           if (this.y < -50) this.y = canvasHeight + 50;
@@ -786,8 +784,7 @@
 
         draw() {
           ctx.beginPath();
-          
-          // TASK 7: SUBTLE GLOW (PREMIUM TOUCH)
+          // TASK 8: Low-cost vector projection limits hardware throttling
           ctx.shadowBlur = 8 * this.depth;
           ctx.shadowColor = `rgba(${this.color}, 0.2)`;
           
@@ -795,7 +792,7 @@
           ctx.fillStyle = `rgba(${this.color}, ${this.currentOpacity})`;
           ctx.fill();
           
-          // Reset shadow properties to prevent bleeding into other global paint operations
+          // Clear composite logic per loop safely
           ctx.shadowBlur = 0;
         }
       }
